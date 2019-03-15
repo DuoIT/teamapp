@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const config = require("config")
-var connect = mongoose.connect("mongodb://localhost/foodteam");
+var connect = mongoose.connect(process.env.MONGODB_URI);
 
 var schema = mongoose.Schema({
     email: String,
