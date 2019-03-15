@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const config = require("config")
-var connect = mongoose.connect("mongodb+srv://songtuyen97:proxike123@@cluster0-rmdzb.mongodb.net/test?retryWrites=true");
+var connect = mongoose.connect(process.env.MONGODB_URI);
 
 var schema = mongoose.Schema({
     email: String,
