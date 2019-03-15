@@ -25,7 +25,7 @@ app.use(controllers);
 
 var port = config.get("server.port");
 var host = config.get("server.host");
-app.listen(port, host, function(err) {
+app.listen(process.env.PORT || port, host, function(err) {
     if(err) console.log("Connect to " + port + "of Server fail");
     else  console.log("Connect to " + port + " of Server success!");
 })
