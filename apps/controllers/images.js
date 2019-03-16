@@ -22,8 +22,8 @@ router.get("/avatar", function(req, res) {
     //     }
     //   });
     res.contentType('image/jpeg');
-    
-    var director = __dirname.substring(0, __dirname.lastIndexOf("DA") + 3) + "public\\imgs\\avatar\\";
+    var project_name = "teamapp";
+    var director = __dirname.substring(0, __dirname.lastIndexOf(project_name) + project_name.length + 1) + "public\\imgs\\avatar\\";
     console.log(director);
     data = fs.readFileSync(director + filename + ".jpg");
     res.send(data);
