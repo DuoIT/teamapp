@@ -14,7 +14,7 @@
 </head>
 <body>
     <div id="logreg-forms">
-        <form class="form-signin" method="POST" action="/signin" enctype="application/json">
+        <form class="form-signin" method="POST" action="/signin" enctype="multipart/form-data/json">
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>  
             <div class="alert alert-warning col-sm-12" style="<%if(!data || !data.error){ %>display: none;<%};%>">
                 <span><%= data.error%></span>

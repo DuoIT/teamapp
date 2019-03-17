@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 var router = express.Router();
 
 router.get("/avatar", function(req, res) {
@@ -22,10 +23,11 @@ router.get("/avatar", function(req, res) {
     //     }
     //   });
     res.contentType('image/jpeg');
-    var project_name = "public";
-    var director = __dirname.substring(0, __dirname.lastIndexOf(project_name) + project_name.length) + "imgs/avatar/";
+    var project_name = "apps";
+    var director = __dirname.substring(0, __dirname.lastIndexOf(project_name)) + "public/imgs/avatar/";
+    //var director = path.normalize(__dirname);
     console.log(director);
-    data = fs.readFileSync(director + filename + ".jpg");
+    data = fs.readFileSync(director + filename + '.jpg');
     res.send(data);
 })
 router.get("/monan", function(req, res) {
