@@ -5,23 +5,6 @@ var router = express.Router();
 
 router.get("/avatar", function(req, res) {
     var filename = req.query.id;
-    // console.log(filename);
-    // var options = {
-    //     root: __dirname + "/public/imgs/",
-    //     dotfiles: 'allow',
-    //     headers: {
-    //         'x-timestamp': Date.now(),
-    //         'x-sent': true
-    //     }
-    //   };
-    
-    //   res.sendFile(filename + ".jpg", options, function (err) {
-    //     if (err) {
-    //       console.log("error get imgs");
-    //     } else {
-    //       console.log('Sent:', filename);
-    //     }
-    //   });
     res.contentType('image/jpeg');
     var project_name = "apps";
     var director = __dirname.substring(0, __dirname.lastIndexOf(project_name)) + "public/imgs/avatar/";

@@ -5,11 +5,11 @@ const bcrypt = require("../helpers/encode_password");
 var router = express.Router();
 //---------------------API------------------------
 router.get("/", function(req, res) {
-    console.log("da vao user");
+    console.log("Came into store's page");
 }); 
-//---------API SIGNUP FOR USERS ON MOBILE APP-----------
+//---------API SIGNUP FOR USERS ON WEB APP-----------
 router.post("/signup", function(req, res) {
-    console.log("into signup of users");
+    console.log("into signup of store");
     var user = req.body;
     var username = user.username;
     var encode_Password = bcrypt.encode_Password(user.password);
@@ -17,22 +17,26 @@ router.post("/signup", function(req, res) {
     var name = user.name;
     var address = user.address;
     var phonenumber = user.phonenumber;
+    var tenthanhpho = user.tenthanhpho;
+    var tenquan = user.tenquan;
+    var tenduong = user.tenduong;
+    var mota = user.mota;
     //have to edit schema for new DB
     var data_Of_DichVu = {
         username : username,
         password : encode_Password,
         role : {
-            name_role : "user",
-            description : "Co the tim kiem do an",
+            name_role : "store",
+            description : "Co the ban do an",
             licensed : true,
             permission : [{
                 name_per : "monan",
                 description : "CRUD monan cua minh",
                 per_detail : {
-                    view : false,
-                    create : false,
-                    update : false,
-                    delete : false
+                    view : true,
+                    create : true,
+                    update : true,
+                    delete : true
                 }
             },
             {
@@ -40,9 +44,9 @@ router.post("/signup", function(req, res) {
                 description : "CRUD comment trong monan cua minh",
                 per_detail : {
                     view : true,
-                    create : true,
-                    update : true,
-                    delete : true
+                    create : false,
+                    update : false,
+                    delete : false
                 }
             }]
         },
@@ -50,6 +54,16 @@ router.post("/signup", function(req, res) {
             name : name,
             address : address, 
             phonenumber : phonenumber,
+            avatar_url : null,
+        },
+        dichvu : {
+            ten : name,
+            diachi : {
+                tenthanhpho : tenthanhpho,
+                tenquan : tenquan,
+                tenduong : tenduong
+            },
+            mota : mota, 
             avatar_url : null,
         }
     }
