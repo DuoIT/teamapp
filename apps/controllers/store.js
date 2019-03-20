@@ -1,11 +1,13 @@
 const express = require("express");
+const path = require("path");
 const data_User_From_DB = require("../models/user");
 const bcrypt = require("../helpers/encode_password");
 
 var router = express.Router();
 //---------------------API------------------------
 router.get("/", function(req, res) {
-    console.log("Came into store's page");
+    // console.log("Came into store's page");
+    // console.log(path.join(__dirname , "../../", "public"));
 }); 
 //---------API SIGNUP FOR USERS ON WEB APP-----------
 router.post("/signup", function(req, res) {
@@ -77,9 +79,6 @@ router.post("/signup", function(req, res) {
         
     });
 });
-function abc() {
-    console.log("abc");
-}
 
 //------------------EXPORT MODULE------------------
 module.exports = router;
