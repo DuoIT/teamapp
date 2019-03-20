@@ -64,7 +64,6 @@ router.post("/signup", function(req, res) {
     });
 });
 
-
 //------------------EXPORT MODULE------------------
 module.exports = router;
 
