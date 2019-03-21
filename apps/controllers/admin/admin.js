@@ -1,6 +1,8 @@
 const express = require("express");
-const data_Users_From_Db =  require("../models/user");
-const data_MonAn_From_Db =  require("../models/monan");
+const path = require("path");
+const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user"));//"../models/user"
+const data_MonAn_From_Db = require(path.join(__dirname, "../../", "/models/monan"));//"../models/monan"
+
 var router = express.Router();
 
 router.get("/", function(req, res) {

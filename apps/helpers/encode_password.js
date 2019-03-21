@@ -1,12 +1,12 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt-nodejs");
 const config = require("config");
 
 function encode_Password(password) {
     var saltRounds = config.get("bcrypt.saltrounds");
 
-    var salt = bcrypt.genSaltSync(saltRounds);
-    var hash = bcrypt.hashSync(password, salt);
-
+    // var salt = bcrypt.genSaltSync(saltRounds);
+    // var hash = bcrypt.hashSync(password, salt);
+    var hash = bcrypt.hashSync(password);
     return hash;
 }
 function decode_Password(password, hash) {

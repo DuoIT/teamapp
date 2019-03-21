@@ -8,5 +8,8 @@
     },
     "bcrypt" :{
         "saltrounds": 10
+    },
+    "jsonwebtoken" : {
+        "codesecret" : "secret"
     }
 }

@@ -1,6 +1,8 @@
 const express = require("express");
 const user_Service = require("../models/user");
 const bcrypt = require("../helpers/encode_password");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 var router = express.Router();
 //------------FOR TEST---------------
 router.get("/", function(req, res) {
@@ -13,10 +15,12 @@ router.post("/", function(req, res) {
     var input_password = user.password;
     var input_username = user.username;
     user_Service.getUserForSignin(input_username, input_password, function(result) {
-        if(!result) res.status(400).json({notification:"sai username hoac password"});
-        else res.status(200).json(
-            {_id : result._id,
-             role : result.role.name_role});                             //json return a role value
+        if(!result) res.status(401).json({notification:"sai username hoac password"});
+        else res.status(200).json({
+            token: jwt.sign({_id : result._id, username: result.username}, config.get("jsonwebtoken.codesecret"), {
+                expiresIn : "3h"
+            })
+        });                             //json return a role value
     });
 });
 //------------FOR EXPORT MODULE------------------   

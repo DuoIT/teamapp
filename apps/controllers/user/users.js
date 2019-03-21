@@ -1,6 +1,7 @@
 const express = require("express");
-const data_User_From_DB = require("../models/user");
-const bcrypt = require("../helpers/encode_password");
+const path = require("path");
+const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user"));//"../models/user"
+const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"));//"../helpers/encode_password"
 
 var router = express.Router();
 //---------------------API------------------------
