@@ -1,17 +1,19 @@
 const express = require("express");
 const path = require("path");
-const data_User_From_DB = require("../models/user");
-const bcrypt = require("../helpers/encode_password");
+const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user"));//"../models/user"
+const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"));//"../helpers/encode_password"
 
 var router = express.Router();
+
 //---------------------API------------------------
+router.use("/api", require("./store_api")); // require api for store
 router.get("/", function(req, res) {
     // console.log("Came into store's page");
     // console.log(path.join(__dirname , "../../", "public"));
 }); 
 //---------API SIGNUP FOR USERS ON WEB APP-----------
 router.post("/signup", function(req, res) {
-    console.log("into signup of store");
+    console.log(req.user);
     var user = req.body;
     var username = user.username;
     var encode_Password = bcrypt.encode_Password(user.password);
@@ -67,6 +69,18 @@ router.post("/signup", function(req, res) {
             },
             mota : mota, 
             avatar_url : null,
+            danhmuc : [{
+                ten : "com",
+                mota : "Cơm là một loại thức ăn được làm ra từ gạo bằng cách đem nấu với một lượng vừa đủ nước.",
+            },
+            {
+                ten : "thucan",
+                mota : "thức ăn kèm cơm",
+            },
+            {
+                ten : "canh",
+                mota : "thức ăn, cơm kèm canh",
+            }]
         }
     }
     data_User_From_DB.getUserByUsername(username, function(result){
