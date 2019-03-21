@@ -25,6 +25,8 @@ router.post("/signup", function(req, res) {
     var tenquan = user.tenquan;
     var tenduong = user.tenduong;
     var mota = user.mota;
+    var avatar_default_url = req.headers.host + "/images/avatar?id=avatar_default.jpg";
+    var dichvu_default_url = req.headers.host + "/images/avatar?id=dichvu_default.jpg";
     //have to edit schema for new DB
     var data_Of_DichVu = {
         username : username,
@@ -58,7 +60,7 @@ router.post("/signup", function(req, res) {
             name : name,
             address : address, 
             phonenumber : phonenumber,
-            avatar_url : null,
+            avatar_url : avatar_default_url,
         },
         dichvu : {
             ten : name,
@@ -68,7 +70,7 @@ router.post("/signup", function(req, res) {
                 tenduong : tenduong
             },
             mota : mota, 
-            avatar_url : null,
+            avatar_url : dichvu_default_url,
             danhmuc : [{
                 ten : "com",
                 mota : "Cơm là một loại thức ăn được làm ra từ gạo bằng cách đem nấu với một lượng vừa đủ nước.",
