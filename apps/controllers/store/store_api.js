@@ -5,6 +5,7 @@ const config = require("config");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user"));//"../models/user"
 const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/monan"));//"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile"));//"../models/profile"
+const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/order"));//"../models/order"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"));//"../helpers/encode_password"
 
 var router = express.Router();
@@ -16,7 +17,7 @@ router.use(function(req, res, next) {
     if(!token) return res.status(403).json({ notification: "no token" });    
     else {
         jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
-            if(err) return res.json({notification: "token is error" });  
+            if(err) return res.status(403).json({notification: "token is error" });  
             else {
                 var id = decoded._id;
                 data_User_From_DB.getUserByIdToCheckRole(id, function(result) {
@@ -51,6 +52,18 @@ router.get("/profile", function(req, res) {
     var id = req.user._id;
 
     data_Profile_From_DB.getProfileUserById(id, function(result) {
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({
+            data:{
+                success : true,
+                result : result
+            }})
+    })
+});
+router.get("/listorder", function(req, res) {
+    var id = req.user._id;
+
+    data_Order_From_DB.getListOrderById(id, function(result) {
         if(!result) res.status(500).json({data:{success:false}});
         else res.status(200).json({
             data:{
