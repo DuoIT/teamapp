@@ -15,11 +15,15 @@ router.post("/", function(req, res) {
     var input_password = user.password;
     var input_username = user.username;
     user_Service.getUserForSignin(input_username, input_password, function(result) {
-        if(!result) res.status(401).json({notification:"sai username hoac password"});
+        if(!result) res.status(401).json({data:{success:false}});
         else res.status(200).json({
-            token: jwt.sign({_id : result._id, username: result.username}, config.get("jsonwebtoken.codesecret"), {
-                expiresIn : "3h"
-            })
+            data:{
+                success:true,
+                token: jwt.sign({_id : result._id, username: result.username}, config.get("jsonwebtoken.codesecret"), {
+                    expiresIn : "3h"
+                })
+            }
+            
         });                             //json return a role value
     });
 });
