@@ -43,9 +43,9 @@ function getUserById(id, fn_result) {
     });
 }
 function getUserByIdToCheckRole(id, fn_result) {
-    mogoose.model_dichvu.find({_id : id}).select("role.name_role role.licensed").exec((err, result) => {
+    mogoose.model_dichvu.findOne({_id : id}).select("role.name_role role.licensed").exec((err, result) => {
         if(err) return fn_result(false);
-        return fn_result(result[0]);
+        return fn_result(result);
     });
 }
 // function createKhachHang(user, fn_result) {

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user"));//"../models/user"
 const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/monan"));//"../models/user"
+const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile"));//"../models/profile"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"));//"../helpers/encode_password"
 
 var router = express.Router();
@@ -46,6 +47,17 @@ router.get("/listsanpham", function(req, res) {
         else res.status(200).json(result);
     });
 })
+router.get("/profile", function(req, res) {
+    var id = req.user._id;
 
+    data_Profile_From_DB.getProfileUserById(id, function(result) {
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({
+            data:{
+                success : true,
+                result : result
+            }})
+    })
+});
 //-----------MODULE EXPORTS -----------
 module.exports = router;
