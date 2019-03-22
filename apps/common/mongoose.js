@@ -20,7 +20,7 @@ var schema_dichvu = mongoose.Schema({
             }
         }]
     },
-    infomation : {
+    information : {
         name : String,
         address : String, 
         phonenumber : String,
