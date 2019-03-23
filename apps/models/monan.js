@@ -9,7 +9,12 @@ function getAllMonAn(fn_result) {
 function getMonAnById(id, fn_result) {
     mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if(err) return fn_result(false);
-        return fn_result(result);
+        else {
+            var data = {
+                danhmuc : result.dichvu.danhmuc
+            }
+            fn_result(data);
+        }
     });
 }
 function getMonAnByName(name, fn_result) {
