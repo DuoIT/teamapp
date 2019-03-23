@@ -6,6 +6,7 @@ const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user")
 const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/monan"));//"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile"));//"../models/profile"
 const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/order"));//"../models/order"
+const data_Doanhthu_From_DB = require(path.join(__dirname, "../../", "/models/doanhthu"));//"../models/order"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"));//"../helpers/encode_password"
 
 var router = express.Router();
@@ -17,11 +18,11 @@ router.use(function(req, res, next) {
     if(!token) return res.status(403).json({ notification: "no token" });    
     else {
         jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
-            if(err) return res.status(403).json({notification: "token is error" });  
+            if(err) res.status(403).json({data:{success:false, notification:"token error"}});  
             else {
                 var id = decoded._id;
                 data_User_From_DB.getUserByIdToCheckRole(id, function(result) {
-                    if(!result) res.status(403).json({notification:"wrong"});
+                    if(!result) res.status(403).json({data:{success:false, notification:"token error, not found user"}});
                     else {
                         console.log(result.role.name_role);
                         if(result.role.name_role == "store" && result.role.licensed == true) {
@@ -29,7 +30,7 @@ router.use(function(req, res, next) {
                             req.user = decoded;
                             next();
                         }
-                        else return res.status(401).json({notification:"can't view with this role account"});
+                        else res.status(401).json({data:{success:false, notification:"this account can't access"}});
                     }
                 })
                 
@@ -38,16 +39,21 @@ router.use(function(req, res, next) {
     }
 });
 //---------API FOR STORE--------------
+//-----sanpham-------------
 router.get("/listsanpham", function(req, res) {
-//    res.json(req.user);
     var id = req.user._id;
     
     data_Monan_From_DB.getMonAnById(id, function(result) {
-        if(!result) res.status(500).json({notification:"server error"});
-        else if(result.length == 0) res.status(404).json({notification:"not result"});
-        else res.status(200).json(result);
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({
+            data:{
+                success : true,
+                result : result
+            }});
+    
     });
 })
+//------profile---------
 router.get("/profile", function(req, res) {
     var id = req.user._id;
 
@@ -60,6 +66,7 @@ router.get("/profile", function(req, res) {
             }})
     })
 });
+//------order--------
 router.get("/listorder", function(req, res) {
     var id = req.user._id;
 
@@ -72,5 +79,18 @@ router.get("/listorder", function(req, res) {
             }})
     })
 });
+//--------doanhthu---------
+router.get("/listdoanhthu", function(req, res) {
+    var id = req.user._id;
+
+    data_Doanhthu_From_DB.getListDoanhThu(id, function(result) {
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({
+            data:{
+                success : true,
+                result : result
+            }})
+    })
+})
 //-----------MODULE EXPORTS -----------
 module.exports = router;
