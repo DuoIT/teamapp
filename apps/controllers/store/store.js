@@ -16,7 +16,7 @@ router.post("/signup", function(req, res) {
     console.log(req.user);
     var user = req.body;
     var username = user.username;
-    var encode_Password = bcrypt.encode_Password(user.password);
+    var password = user.password;
 
     var name = user.name;
     var address = user.address;
@@ -27,6 +27,12 @@ router.post("/signup", function(req, res) {
     var mota = user.mota;
     var avatar_default_url = req.headers.host + "/images/avatar?id=avatar_default.jpg";
     var dichvu_default_url = req.headers.host + "/images/avatar?id=dichvu_default.jpg";
+    //CHECK INPUT VALID
+    if(!username || username.trim().length == 0 || !password || password.trim().length == 0 || !phonenumber || phonenumber.trim().length == 0
+    || !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name || name.trim().length == 0) 
+    return res.status(400).json({data:{success:false, notification:"ban phai nhap day du thong tin"}});
+    //ENCODE PASSWORD
+    var encode_Password = bcrypt.encode_Password(password);
     //have to edit schema for new DB
     var data_Of_DichVu = {
         username : username,
@@ -50,9 +56,9 @@ router.post("/signup", function(req, res) {
                 description : "CRUD comment trong monan cua minh",
                 per_detail : {
                     view : true,
-                    create : false,
+                    create : true,
                     update : false,
-                    delete : false
+                    delete : true
                 }
             }]
         },
@@ -86,11 +92,11 @@ router.post("/signup", function(req, res) {
         }
     }
     data_User_From_DB.getUserByUsername(username, function(result){
-        if(result.length != 0) res.status(400).json({notification:"username is exist"});                                                 //status 400 for same username
-        else data_User_From_DB.createUser(data_Of_DichVu, function(result) {
-            if(result)          
-                res.status(200).json({_id : result._id});            
-            else res.status(500).json({notification:"server error"});                                                                //status 500 for no know erroe
+        console.log(result);
+        if(result) return res.status(401).json({data:{success:false, notification:"username was exist"}});                                               //status 400 for same username
+        data_User_From_DB.createUser(data_Of_DichVu, function(result) {
+            if(result) return res.status(200).json({data:{success:true}});          
+            return res.status(500).json({data:{success:false}});                                                                //status 500 for no know erroe
         });
         
     });

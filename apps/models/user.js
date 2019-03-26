@@ -31,7 +31,7 @@ function getAllUsersKhachHang(fn_result) {
     })
 }
 function getUserByUsername(username, fn_result) {
-    mogoose.model_dichvu.find({username : username}).exec((err, result) => {
+    mogoose.model_dichvu.findOne({username : username}).exec((err, result) => {
         if(err) return fn_result(false);
         return fn_result(result);
     });
@@ -43,7 +43,7 @@ function getUserById(id, fn_result) {
     });
 }
 function getUserByIdToCheckRole(id, fn_result) {
-    mogoose.model_dichvu.findOne({_id : id}).select("role.name_role role.licensed").exec((err, result) => {
+    mogoose.model_dichvu.findOne({_id : id}).select("role").exec((err, result) => {
         if(err) return fn_result(false);
         return fn_result(result);
     });
