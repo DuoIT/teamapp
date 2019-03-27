@@ -2,8 +2,16 @@ const express = require("express");
 const config = require("config");
 const body_parser = require("body-parser");
 const session = require("express-session");
+
 var app = express();
+//accept localhost
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 //body-parser
+
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended:false}));
 //express-session

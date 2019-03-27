@@ -31,14 +31,20 @@ function getAllUsersKhachHang(fn_result) {
     })
 }
 function getUserByUsername(username, fn_result) {
-    mogoose.model_dichvu.find({username : username}).exec((err, result) => {
-        if(err) return fn_result(null);
+    mogoose.model_dichvu.findOne({username : username}).exec((err, result) => {
+        if(err) return fn_result(false);
         return fn_result(result);
     });
 }
 function getUserById(id, fn_result) {
     mogoose.model_dichvu.find({_id : id}).exec((err, result) => {
-        if(err) return fn_result(null);
+        if(err) return fn_result(false);
+        return fn_result(result);
+    });
+}
+function getUserByIdToCheckRole(id, fn_result) {
+    mogoose.model_dichvu.findOne({_id : id}).select("role").exec((err, result) => {
+        if(err) return fn_result(false);
         return fn_result(result);
     });
 }
@@ -97,6 +103,7 @@ module.exports = {
     getAllUsersNguoiNau : getAllUsersNguoiNau,
     getUserByUsername : getUserByUsername,
     getUserById : getUserById,
+    getUserByIdToCheckRole : getUserByIdToCheckRole,
     createUser : createUser,
 //    createDichVu : createDichVu,
     getUserForSignin : getUserForSignin,
