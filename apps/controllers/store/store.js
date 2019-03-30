@@ -18,7 +18,8 @@ router.post("/signup", function(req, res) {
     var username = user.username;
     var password = user.password;
 
-    var name = user.name;
+    var name_personal = user.name_personal;
+    var name_store = user.name_store;
     var address = user.address;
     var phonenumber = user.phonenumber;
     var tenthanhpho = user.tenthanhpho;
@@ -29,7 +30,8 @@ router.post("/signup", function(req, res) {
     var dichvu_default_url = req.headers.host + "/images/avatar?id=dichvu_default.jpg";
     //CHECK INPUT VALID
     if(!username || username.trim().length == 0 || !password || password.trim().length == 0 || !phonenumber || phonenumber.trim().length == 0
-    || !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name || name.trim().length == 0) 
+    || !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0
+    || !name_store || name_store.trim().length == 0) 
     return res.status(400).json({data:{success:false, notification:"ban phai nhap day du thong tin"}});
     //ENCODE PASSWORD
     var encode_Password = bcrypt.encode_Password(password);
@@ -60,16 +62,27 @@ router.post("/signup", function(req, res) {
                     update : false,
                     delete : true
                 }
-            }]
+            },
+            {
+                name_per : "profile",
+                description : "EDIT profile cua minh",
+                per_detail : {
+                    view : false,
+                    create : false,
+                    update : true,
+                    delete : false
+                }
+            }
+        ]
         },
         infomation : {
-            name : name,
+            name : name_personal,
             address : address, 
             phonenumber : phonenumber,
             avatar_url : avatar_default_url,
         },
         dichvu : {
-            ten : name,
+            ten : name_store,
             diachi : {
                 tenthanhpho : tenthanhpho,
                 tenquan : tenquan,
