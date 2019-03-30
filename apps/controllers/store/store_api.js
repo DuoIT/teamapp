@@ -34,7 +34,6 @@ router.use(function(req, res, next) {
                         else res.status(401).json({data:{success:false, notification:"this account can't access"}});
                     }
                 })
-                
             }
         })
     }
@@ -105,7 +104,7 @@ router.post("/listsanpham/add", function(req, res) {
 
     if(!sanpham) return res.status(400).json({data:{success:false, notification:"input's wrong"}});
 
-    if(!ten || ten.trim().length == 0 || !gia || !soluong ) 
+    if(!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong)) 
     return res.status(400).json({data:{success:false, notification:"input's wrong"}});
 
     var data = {
@@ -123,6 +122,59 @@ router.post("/listsanpham/add", function(req, res) {
     });
 
 
+})
+router.delete("/listsanpham/delete", function(req, res) {
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+    if(check_Permission(permission, "monan", 4) == false) return res.status(401).json({data:{success:false, notification:"You can't DELETE monan"}});
+    var id_monan = req.query.id_monan || req.body.id_monan;
+    var danhmuc = req.query.danhmuc || req.body.danhmuc;
+
+    if(!id_monan || id_monan.trim().length == 0 || !danhmuc || danhmuc.trim().length == 0)
+    return res.status(400).json({data:{success:false, notification:"input's wrong"}});
+    else if(danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh") 
+    return res.status(400).json({data:{success:false, notification:"danhmuc have to 1 in 3 values ('com','canh','thucan')"}});
+
+    data_Monan_From_DB.deleteMonAnById(id, id_monan, danhmuc, function(result) {
+        if(!result) res.status(500).json({data:{success:false, notification:"You can't ADD monanunknown error"}});
+        else res.status(200).json({data:{success:true, notification:"delete is success"}});
+    })
+
+})
+router.put("/listsanpham/update", function(req, res) {
+    //DEFINE CODDE........
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+    if(check_Permission(permission, "monan", 3) == false) return res.status(401).json({data:{success:false, notification:"You can't EDIT monan"}});
+    var id_monan = req.query.id_monan || req.body.id_monan;
+    var danhmuc = req.query.danhmuc || req.body.danhmuc;
+    var ten = req.query.ten || req.body.ten;
+    var mota = req.query.mota || req.body.mota;
+    var hinhanh_url = null;
+    var gia = req.query.gia || req.body.gia;
+    var soluong = req.query.soluong || req.body.soluong;
+
+    if(!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({data:{success:false, notification:"input's wrong"}});
+    else if(danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh") 
+    return res.status(400).json({data:{success:false, notification:"danhmuc have to 1 in 3 values ('com','canh','thucan')"}});
+
+    if(!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong)) 
+    return res.status(400).json({data:{success:false, notification:"input's wrong"}});
+
+    var data = {
+        ten : ten,
+        mota : mota,
+        hinhanh_url : hinhanh_url,
+        gia : gia,
+        soluong : soluong,
+    }
+
+    data_Monan_From_DB.updateMonAnById(id, id_monan, danhmuc, data, function(result) {
+        if(!result) res.status(500).json({data:{success:false, notification:"unknow error"}});
+        else res.status(200).json({data:{success:true, notification:"updated is success"}});
+    })
 })
 //------profile---------
 router.get("/profile", function(req, res) {
