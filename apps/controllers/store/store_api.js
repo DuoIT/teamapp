@@ -222,7 +222,8 @@ router.put("/profile/update", function(req, res) {
     }
 
     data_Profile_From_DB.updateProfileById(id, data,function(result) {
-
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({data:{success:true, notification:"updated is success"}});
     })
 })
 //------order--------
