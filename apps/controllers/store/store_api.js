@@ -189,6 +189,42 @@ router.get("/profile", function(req, res) {
             }})
     })
 });
+//EDIT PROFILE-------------------------
+router.put("/profile/update", function(req, res) {
+    var id = req.user._id;
+    var user = req.body;
+
+    var name_personal = user.name_personal;
+    var address = user.address;
+    var name_store = user.name_store;
+    var phonenumber = user.phonenumber;
+    var tenthanhpho = user.tenthanhpho;
+    var tenquan = user.tenquan;
+    var tenduong = user.tenduong;
+    var mota = user.mota;
+    var avarta_url = null;
+
+    if(!phonenumber || phonenumber.trim().length == 0
+    || !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0
+    || !name_store || name_store.trim().length == 0) 
+    return res.status(400).json({data:{success:false, notification:"ban phai nhap day du thong tin"}});
+
+    var data = {
+        name_personal : name_personal,
+        address : address,
+        name_store : name_store,
+        phonenumber : phonenumber,
+        tenthanhpho : tenthanhpho,
+        tenquan : tenquan,
+        tenduong : tenduong,
+        mota : mota,
+        avarta_url : avarta_url
+    }
+
+    data_Profile_From_DB.updateProfileById(id, data,function(result) {
+
+    })
+})
 //------order--------
 router.get("/listorder", function(req, res) {
     var id = req.user._id;
