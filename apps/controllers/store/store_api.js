@@ -34,7 +34,6 @@ router.use(function(req, res, next) {
                         else res.status(401).json({data:{success:false, notification:"this account can't access"}});
                     }
                 })
-                
             }
         })
     }
@@ -105,7 +104,7 @@ router.post("/listsanpham/add", function(req, res) {
 
     if(!sanpham) return res.status(400).json({data:{success:false, notification:"input's wrong"}});
 
-    if(!ten || ten.trim().length == 0 || !gia || !soluong ) 
+    if(!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong)) 
     return res.status(400).json({data:{success:false, notification:"input's wrong"}});
 
     var data = {
@@ -124,6 +123,59 @@ router.post("/listsanpham/add", function(req, res) {
 
 
 })
+router.delete("/listsanpham/delete", function(req, res) {
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+    if(check_Permission(permission, "monan", 4) == false) return res.status(401).json({data:{success:false, notification:"You can't DELETE monan"}});
+    var id_monan = req.query.id_monan || req.body.id_monan;
+    var danhmuc = req.query.danhmuc || req.body.danhmuc;
+
+    if(!id_monan || id_monan.trim().length == 0 || !danhmuc || danhmuc.trim().length == 0)
+    return res.status(400).json({data:{success:false, notification:"input's wrong"}});
+    else if(danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh") 
+    return res.status(400).json({data:{success:false, notification:"danhmuc have to 1 in 3 values ('com','canh','thucan')"}});
+
+    data_Monan_From_DB.deleteMonAnById(id, id_monan, danhmuc, function(result) {
+        if(!result) res.status(500).json({data:{success:false, notification:"You can't ADD monanunknown error"}});
+        else res.status(200).json({data:{success:true, notification:"delete is success"}});
+    })
+
+})
+router.put("/listsanpham/update", function(req, res) {
+    //DEFINE CODDE........
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+    if(check_Permission(permission, "monan", 3) == false) return res.status(401).json({data:{success:false, notification:"You can't EDIT monan"}});
+    var id_monan = req.query.id_monan || req.body.id_monan;
+    var danhmuc = req.query.danhmuc || req.body.danhmuc;
+    var ten = req.query.ten || req.body.ten;
+    var mota = req.query.mota || req.body.mota;
+    var hinhanh_url = null;
+    var gia = req.query.gia || req.body.gia;
+    var soluong = req.query.soluong || req.body.soluong;
+
+    if(!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({data:{success:false, notification:"input's wrong"}});
+    else if(danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh") 
+    return res.status(400).json({data:{success:false, notification:"danhmuc have to 1 in 3 values ('com','canh','thucan')"}});
+
+    if(!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong)) 
+    return res.status(400).json({data:{success:false, notification:"input's wrong"}});
+
+    var data = {
+        ten : ten,
+        mota : mota,
+        hinhanh_url : hinhanh_url,
+        gia : gia,
+        soluong : soluong,
+    }
+
+    data_Monan_From_DB.updateMonAnById(id, id_monan, danhmuc, data, function(result) {
+        if(!result) res.status(500).json({data:{success:false, notification:"unknow error"}});
+        else res.status(200).json({data:{success:true, notification:"updated is success"}});
+    })
+})
 //------profile---------
 router.get("/profile", function(req, res) {
     var id = req.user._id;
@@ -137,6 +189,43 @@ router.get("/profile", function(req, res) {
             }})
     })
 });
+//EDIT PROFILE-------------------------
+router.put("/profile/update", function(req, res) {
+    var id = req.user._id;
+    var user = req.body;
+
+    var name_personal = user.name_personal;
+    var address = user.address;
+    var name_store = user.name_store;
+    var phonenumber = user.phonenumber;
+    var tenthanhpho = user.tenthanhpho;
+    var tenquan = user.tenquan;
+    var tenduong = user.tenduong;
+    var mota = user.mota;
+    var avarta_url = null;
+
+    if(!phonenumber || phonenumber.trim().length == 0
+    || !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0
+    || !name_store || name_store.trim().length == 0) 
+    return res.status(400).json({data:{success:false, notification:"ban phai nhap day du thong tin"}});
+
+    var data = {
+        name_personal : name_personal,
+        address : address,
+        name_store : name_store,
+        phonenumber : phonenumber,
+        tenthanhpho : tenthanhpho,
+        tenquan : tenquan,
+        tenduong : tenduong,
+        mota : mota,
+        avarta_url : avarta_url
+    }
+
+    data_Profile_From_DB.updateProfileById(id, data,function(result) {
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({data:{success:true, notification:"updated is success"}});
+    })
+})
 //------order--------
 router.get("/listorder", function(req, res) {
     var id = req.user._id;

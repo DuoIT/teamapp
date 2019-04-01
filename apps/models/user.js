@@ -86,11 +86,10 @@ function deleteUser(id, fn_result) {
 function getUserForSignin(username, password, fn_result) {
     if(location_Of_Password_Attr == -1) ATTRIBUTE_NEED_SHOW += " password";
     getUserByUsername(username, function(result) {
-
         if(result.length != 0) {
-           if(bcrypt.decode_Password(password, result[0].password)) {
-                result[0].password = undefined;
-                return fn_result(result[0]);
+           if(bcrypt.decode_Password(password, result.password)) {
+                result.password = undefined;
+                return fn_result(result);
            }
            return fn_result(false); 
         }else fn_result(false);
