@@ -1,8 +1,8 @@
 const mogoose = require("../common/mongoose");
 
 function getProfileUserById(id, fn_result) {
-    mogoose.model_dichvu.findOne({_id : id}).select("information dichvu").exec(function(err, result) {
-        if(err) fn_result(false);
+    mogoose.model_dichvu.findOne({ _id: id }).select("information dichvu").exec(function(err, result) {
+        if (err) fn_result(false);
         else {
             result.information.danhgia = undefined;
             result.information.order = undefined;
@@ -12,12 +12,13 @@ function getProfileUserById(id, fn_result) {
         }
     })
 }
+
 function updateProfileById(id, data, fn_result) {
-    mogoose.model_dichvu.findOne({_id : id}).exec(function(err, result) {
-        if(err) return fn_result(false);
-        if(!result) return fn_result(false);
+    mogoose.model_dichvu.findOne({ _id: id }).exec(function(err, result) {
+        if (err) return fn_result(false);
+        if (!result) return fn_result(false);
         result.information.name = data.name_personal;
-        result.information.address = data.address; 
+        result.information.address = data.address;
         result.information.phonenumber = data.phonenumber;
         result.information.avarta_url = data.avarta_url;
 
@@ -30,14 +31,18 @@ function updateProfileById(id, data, fn_result) {
 
         var user = new mogoose.model_dichvu(result);
         user.save(function(err, result) {
-            if(!err) return fn_result(result);
+            if (!err) return fn_result(result);
             else return fn_result(false);
         });
-        
+
     })
+}
+
+function GetProfileUserById(id, fn_result) {
+
 }
 //-----------------MODULE EXPORTS----------------------
 module.exports = {
-    getProfileUserById : getProfileUserById,
-    updateProfileById : updateProfileById
+    getProfileUserById: getProfileUserById,
+    updateProfileById: updateProfileById
 }

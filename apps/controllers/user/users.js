@@ -1,13 +1,12 @@
 const express = require("express");
 const path = require("path");
-const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user"));//"../models/user"
-const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"));//"../helpers/encode_password"
+const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user")); //"../models/user"
+const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
-//---------------------API------------------------
-router.get("/", function(req, res) {
-    console.log("da vao user");
-});
+//---------------------Route API------------------------
+router.get("/", function(req, res) {});
+router.use("/api", require("/user_api"));
 //---------API SIGNUP FOR USERS ON MOBILE APP-----------
 router.post("/signup", function(req, res) {
     console.log("into signup of users");
