@@ -16,7 +16,7 @@ function getListDoanhThu(id, fn_result) {
 }
 function getListOrderTheoNgayById(id, soNgay, fn_result) {
     if(!soNgay) return fn_result(false);
-    mogoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu.order").exec(function(err, result) {
+    mogoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu").exec(function(err, result) {
         if(err) fn_result(false);
         else {
             var data_old = {
@@ -38,11 +38,17 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
             }else {
                 getDate -= date_Need_Show;
             }           
-            var date = new Date(getFullYear, getMonth - 1 , getDate + 1);            
+            var date = new Date(getFullYear, getMonth - 1 , getDate + 1);
+            var tongtien = 0;            
             for(i = data_old.doanhthu.order.length - 1; i >= 0; i--) {
                 if(data_old.doanhthu.order[i].giodat < date || data_old.doanhthu.order[i].giodat > new Date()
                 || data_old.doanhthu.order[i].trangthai == false) data_old.doanhthu.order.splice(i, 1);
+                else {
+                    tongtien += data_old.doanhthu.order[i].tongtien;
+                    
+                }
             }
+            data_old.doanhthu.tongdoanhthu = tongtien;
             return fn_result(data_old);
         }
     });
