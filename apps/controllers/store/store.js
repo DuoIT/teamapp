@@ -114,7 +114,12 @@ router.post("/signup", function(req, res) {
         
     });
 });
-
+router.get("/testdate", function(req, res) {
+    var date = new Date();
+    console.log(date);
+    console.log(date.getDay());
+    console.log(date.getMonth());
+})
 //------------------EXPORT MODULE------------------
 module.exports = router;
 

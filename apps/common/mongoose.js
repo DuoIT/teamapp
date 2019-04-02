@@ -37,6 +37,7 @@ var schema_dichvu = mongoose.Schema({
         order: [{
             tongtien: Number,
             giodat : Date,
+            trangthai : Boolean,
             dichvu : {
                 ten : String,
                 avatar_url : String,
@@ -73,6 +74,7 @@ var schema_dichvu = mongoose.Schema({
             order: [{
                 tongtien: Number,
                 giodat : Date,
+                trangthai : Boolean,
                 //id_diachi
                 diachi : {
                     tenthanhpho: String,
