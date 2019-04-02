@@ -7,6 +7,9 @@ function getListDoanhThu(id, fn_result) {
             var data = {
                 doanhthu : result.dichvu.doanhthu
             }
+            for(i = data.doanhthu.order.length - 1; i >= 0; i--) {
+                if(data.doanhthu.order[i].trangthai == false) data.doanhthu.order.splice(i, 1);
+            }
             fn_result(data);
         }
     })
@@ -17,9 +20,6 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
         if(err) fn_result(false);
         else {
             var data_old = {
-                doanhthu : result.dichvu.doanhthu
-            }
-            var data_new = {
                 doanhthu : result.dichvu.doanhthu
             }
             var curDate = new Date();
@@ -40,7 +40,8 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
             }           
             var date = new Date(getFullYear, getMonth - 1 , getDate + 1);            
             for(i = data_old.doanhthu.order.length - 1; i >= 0; i--) {
-                if(data_old.doanhthu.order[i].giodat < date || data_old.doanhthu.order[i].giodat > new Date()) data_old.doanhthu.order.splice(i, 1);
+                if(data_old.doanhthu.order[i].giodat < date || data_old.doanhthu.order[i].giodat > new Date()
+                || data_old.doanhthu.order[i].trangthai == false) data_old.doanhthu.order.splice(i, 1);
             }
             return fn_result(data_old);
         }
