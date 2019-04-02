@@ -4,7 +4,7 @@ const path = require("path");
 var router = express.Router();
 
 router.get("/avatar", function(req, res) {
-    var filename = req.query.id;
+    var filename = req.query.id || req.body.id;
     res.contentType('image/jpeg');
     
     var director = path.join(__dirname, "../../", "public/imgs/avatar/");
