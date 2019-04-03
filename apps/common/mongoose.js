@@ -42,6 +42,12 @@ var schema_dichvu = mongoose.Schema({
                 avatar_url: String,
                 id: String
             },
+            trangthai: Boolean,
+            dichvu: {
+                ten: String,
+                avatar_url: String,
+                id: String
+            },
             //id_diachi
             diachi: {
                 tenthanhpho: String,

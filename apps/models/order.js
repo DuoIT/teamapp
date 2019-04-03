@@ -16,5 +16,6 @@ function getListOrderById(id, fn_result) {
 
 //-----------------------MODULE EXPORTS--------------------
 module.exports = {
-    getListOrderById : getListOrderById
+    getListOrderById : getListOrderById,
+    
 }

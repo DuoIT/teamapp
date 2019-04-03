@@ -273,5 +273,69 @@ router.get("/listdoanhthu", function(req, res) {
             })
         })
     })
+    //--Using to add order into doanhthu to DEMO
+router.post("/addorder", function(req, res) {
+    var id = req.user._id;
+    var order = req.body;
+
+    var giodat = new Date();
+    var tenthanhpho = order.tenthanhpho;
+    var tenquan = order.tenquan;
+    var id_monan = order.id_monan;
+    var ten_monan = order.ten_monan;
+    var soluong = order.soluong;
+    var gia = order.gia;
+
+    var data = {
+        tongtien: soluong * gia,
+        giodat: giodat,
+        diachi: {
+            tenthanhpho: tenthanhpho,
+            tenquan: tenquan
+        },
+        order_detail: [{
+            monan: {
+                ten: ten_monan,
+                id: id_monan
+            },
+            soluong: soluong,
+            gia: gia
+        }]
+    }
+
+    data_Doanhthu_From_DB.addOrderDoanhThuById(id, data, function(result) {
+        if (result) {
+            console.log("result:" + result);
+        } else console.log("khong co ket qua");
+    })
+})
+router.get("/listdoanhthu7ngay", function(req, res) {
+    var id = req.user._id;
+    var soNgay = 7;
+    if (!id || id.trim().length == 0) return res.status(400).json({ data: { success: false } });
+    data_Doanhthu_From_DB.getListOrderTheoNgayById(id, soNgay, function(result) {
+        if (!result) res.status(500).json({ data: { success: false } });
+        else res.status(200).json({
+            data: {
+                success: true,
+                result: result
+            }
+        })
+    });
+})
+router.get("/listdoanhthu30ngay", function(req, res) {
+        var id = req.user._id;
+        var soNgay = 30;
+        if (!id || id.trim().length == 0) return res.status(400).json({ data: { success: false } });
+        data_Doanhthu_From_DB.getListOrderTheoNgayById(id, soNgay, function(result) {
+            if (!result) res.status(500).json({ data: { success: false } });
+            else res.status(200).json({
+                data: {
+                    success: true,
+                    result: result
+                }
+            })
+        });
+    })
     //-----------MODULE EXPORTS -----------
 module.exports = router;
