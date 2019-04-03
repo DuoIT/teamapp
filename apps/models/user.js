@@ -95,11 +95,24 @@ function getUserForSignin(username, password, fn_result) {
         }else fn_result(false);
     })
 }
-function updateAvatarOfUser(id, avatar_url, fn_result) {
+function updateAvatarOfStore(id, avatar_url, fn_result) {
     mogoose.model_dichvu.findOne({_id : id}).exec((err, result) => {
         if(!err) {
             if(result) {
                 result.dichvu.avatar_url = avatar_url;
+                var user = new mogoose.model_dichvu(result);
+                user.save();
+                return fn_result(result); 
+            }
+        }
+        return fn_result(false);
+    });
+}
+function updateAvatarOfUser(id, avatar_url, fn_result) {
+    mogoose.model_dichvu.findOne({_id : id}).exec((err, result) => {
+        if(!err) {
+            if(result) {
+                result.information.avatar_url = avatar_url;
                 var user = new mogoose.model_dichvu(result);
                 user.save();
                 return fn_result(result); 
@@ -121,5 +134,6 @@ module.exports = {
     updateUser : updateUser,
 //    updateDichVu : updateDichVu,
     deleteUser : deleteUser,
+    updateAvatarOfStore : updateAvatarOfStore,
     updateAvatarOfUser : updateAvatarOfUser
 }
