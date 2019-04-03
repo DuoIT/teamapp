@@ -19,7 +19,7 @@ var storage = multer.diskStorage({
 })
 var upload = multer({ storage : storage});
 // var upload =multer();
-router.post("/avatar/store", upload.single("proFile"), function(req, res, next) {
+router.post("/avatar/store", upload.single("avatar"), function(req, res, next) {
     var token = req.body.token || req.query.token;
     console.log("token in image:"+token);
     if(!token) {
@@ -60,7 +60,7 @@ router.post("/avatar/store", upload.single("proFile"), function(req, res, next) 
     }
     
 })
-router.post("/avatar/user", upload.single("proFile"), function(req, res, next) {
+router.post("/avatar/user", upload.single("avatar"), function(req, res, next) {
     var token = req.body.token || req.query.token;
     console.log("token in image:"+token);
     if(!token) {
