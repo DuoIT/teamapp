@@ -38,9 +38,6 @@ function updateProfileById(id, data, fn_result) {
     })
 }
 
-function GetProfileUserById(id, fn_result) {
-
-}
 //-----------------MODULE EXPORTS----------------------
 module.exports = {
     getProfileUserById: getProfileUserById,
