@@ -47,7 +47,7 @@ router.post("/avatar/store", upload.single("avatar"), function(req, res, next) {
                                 if(!result) {
                                     deleteImage(req);
                                     res.status(500).json({data:{success:false}});}
-                                else return res.status(200).json({data:{success:true}});
+                                else return res.status(200).json({data:{success:true, result : {url : avatar_url}}});
                             });
                         }
                         else {
@@ -86,7 +86,7 @@ router.post("/avatar/user", upload.single("avatar"), function(req, res, next) {
                                 if(!result) {
                                     deleteImage(req);
                                     res.status(500).json({data:{success:false}});}
-                                else return res.status(200).json({data:{success:true}});
+                                else return res.status(200).json({data:{success:true, result : {url : avatar_url}}});
                             });
                         }
                         else {
@@ -100,12 +100,6 @@ router.post("/avatar/user", upload.single("avatar"), function(req, res, next) {
     
     
 })
-function deleteImage(req) {
-    fs.unlink(path.join(__dirname, "../../", "public/imgs/avatar/"+req.file.filename), function(err) {
-        if(err) console.log("loiunlinkimg");
-        else console.log("success");
-    });
-}
 router.get("/avatar", function(req, res) {
     var filename = req.query.id || req.body.id;
     res.contentType('image/jpeg');
@@ -122,6 +116,12 @@ router.get("/monan", function(req, res) {
     data = fs.readFileSync(director + filename);
     res.send(data);
 })
+function deleteImage(req) {
+    fs.unlink(path.join(__dirname, "../../", "public/imgs/avatar/"+req.file.filename), function(err) {
+        if(err) console.log("loiunlinkimg");
+        else console.log("success");
+    });
+}
 //------------upload image--avatar----------------
 
 // var upload = multer({ storage : storage});
