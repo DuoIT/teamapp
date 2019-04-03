@@ -2,9 +2,20 @@ const express = require("express");
 const config = require("config");
 const body_parser = require("body-parser");
 const session = require("express-session");
+// const fileUpload = require("express-fileupload");
 
 var app = express();
 //accept localhost
+app.use(body_parser.json({limit: '50mb'}));
+app.use(body_parser.urlencoded({
+    limit: '50mb',
+    extended: true,
+    parameterLimit:50000,
+  }));
+// app.use(fileUpload({
+//     useTempFiles : true,
+//     tempFileDir : '/upload/'
+// }));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
