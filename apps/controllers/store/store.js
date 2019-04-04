@@ -120,6 +120,10 @@ router.get("/testdate", function(req, res) {
     console.log(date.getDay());
     console.log(date.getMonth());
 })
+
+router.get("/avatar", function(req, res) {
+    res.render(path.join(__dirname, "../../", "/views/uploadimage"));
+})
 //------------------EXPORT MODULE------------------
 module.exports = router;
 

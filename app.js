@@ -1,8 +1,6 @@
 const express = require("express");
 const config = require("config");
 const body_parser = require("body-parser");
-const session = require("express-session");
-// const fileUpload = require("express-fileupload");
 
 var app = express();
 //accept localhost
@@ -12,10 +10,6 @@ app.use(body_parser.urlencoded({
     extended: true,
     parameterLimit:50000,
   }));
-// app.use(fileUpload({
-//     useTempFiles : true,
-//     tempFileDir : '/upload/'
-// }));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -25,14 +19,7 @@ app.use(function(req, res, next) {
 
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended:false}));
-//express-session
-app.set("trust proxy", 1);
-app.set(session({
-    secret: config.get("session.secret"), 
-    cookie: { 
-        maxAge: 60000 
-    }
-}));
+
 //config path views
 app.set("views", __dirname + "/apps/views");
 app.set("view engine", "ejs");

@@ -11,7 +11,6 @@ const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"
 
 var router = express.Router();
 
-//---------------------check role-------------------
 router.use(function(req, res, next) {
     var token = req.body.token || req.query.token;
     console.log("token in image:"+token);
@@ -25,7 +24,7 @@ router.use(function(req, res, next) {
                     if(!result) res.status(403).json({data:{success:false, notification:"token error, not found user"}});
                     else {
                         console.log(result.role.name_role);
-                        if(result.role.name_role == "store" && result.role.licensed == true) {
+                        if(result.role.name_role == "admin" && result.role.licensed == true) {
                             console.log("here");
                             decoded.role = result.role;
                             req.user = decoded;
@@ -38,39 +37,15 @@ router.use(function(req, res, next) {
         })
     }
 });
-//---------API FOR STORE--------------
-function check_Permission(permission, name_permission, id) {
-    for(i = 0; i < permission.length; i++) {
-        if(permission[i].name_per == name_permission) {
-            if(id == 1) {
-                if(permission[i].per_detail.view == true) {
-                    return true;
-                }
-            }else if(id == 2) {
-                if(permission[i].per_detail.create == true) {
-                    return true;
-                }
-            }else if(id == 3) {
-                if(permission[i].per_detail.update == true) {
-                    return true;
-                }
-            }else if(id == 4) {
-                if(permission[i].per_detail.delete == true) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-//-----sanpham-------------
+//----LISTSANPHAM-----
 router.get("/listsanpham", function(req, res) {
-    var user = req.user;
-    var id = user._id;
-    var permission = user.role.permission;
+    // var user = req.user;
+    // var id = user._id;
+    // var permission = user.role.permission;
     //------CHECK PERMISSION-------------
-    if(check_Permission(permission, "monan", 1) == false) return res.status(401).json({data:{success:false, notification:"You can't view monan"}});
-
+    // if(check_Permission(permission, "monan", 1) == false) return res.status(401).json({data:{success:false, notification:"You can't view monan"}});
+    var id = req.body.id || req.query.id;
+    
     data_Monan_From_DB.getMonAnById(id, function(result) {
         if(!result) res.status(500).json({data:{success:false}});
         else res.status(200).json({
@@ -80,14 +55,15 @@ router.get("/listsanpham", function(req, res) {
             }});
     
     });
-})
+});
 router.post("/listsanpham/add", function(req, res) {
-    var user = req.user;
-    var id = user._id;
-    var permission = user.role.permission;
-    console.log(id);
-    //---CHECK PERMISSION-----
-    if(check_Permission(permission, "monan", 2) == false) return res.status(401).json({data:{success:false, notification:"You can't ADD monan"}});
+    // var user = req.user;
+    // var id = user._id;
+    // var permission = user.role.permission;
+    // console.log(id);
+    // //---CHECK PERMISSION-----
+    // if(check_Permission(permission, "monan", 2) == false) return res.status(401).json({data:{success:false, notification:"You can't ADD monan"}});
+    var id = req.body.id || req.query.id;
 
     var sanpham = req.body;
     var danhmuc = sanpham.danhmuc;
@@ -122,12 +98,14 @@ router.post("/listsanpham/add", function(req, res) {
     });
 
 
-})
+});
 router.delete("/listsanpham/delete", function(req, res) {
-    var user = req.user;
-    var id = user._id;
-    var permission = user.role.permission;
-    if(check_Permission(permission, "monan", 4) == false) return res.status(401).json({data:{success:false, notification:"You can't DELETE monan"}});
+    // var user = req.user;
+    // var id = user._id;
+    // var permission = user.role.permission;
+    // if(check_Permission(permission, "monan", 4) == false) return res.status(401).json({data:{success:false, notification:"You can't DELETE monan"}});
+    var id = req.body.id || req.query.id;
+
     var id_monan = req.query.id_monan || req.body.id_monan;
     var danhmuc = req.query.danhmuc || req.body.danhmuc;
 
@@ -144,10 +122,12 @@ router.delete("/listsanpham/delete", function(req, res) {
 })
 router.put("/listsanpham/update", function(req, res) {
     //DEFINE CODDE........
-    var user = req.user;
-    var id = user._id;
-    var permission = user.role.permission;
-    if(check_Permission(permission, "monan", 3) == false) return res.status(401).json({data:{success:false, notification:"You can't EDIT monan"}});
+    // var user = req.user;
+    // var id = user._id;
+    // var permission = user.role.permission;
+    // if(check_Permission(permission, "monan", 3) == false) return res.status(401).json({data:{success:false, notification:"You can't EDIT monan"}});
+    var id = req.body.id || req.query.id;
+
     var id_monan = req.query.id_monan || req.body.id_monan;
     var danhmuc = req.query.danhmuc || req.body.danhmuc;
     var ten = req.query.ten || req.body.ten;
@@ -175,10 +155,11 @@ router.put("/listsanpham/update", function(req, res) {
         if(!result) res.status(500).json({data:{success:false, notification:"unknow error"}});
         else res.status(200).json({data:{success:true, notification:"updated is success"}});
     })
-})
+});
+
 //------profile---------
-router.get("/profile", function(req, res) {
-    var id = req.user._id;
+router.get("/profilestore", function(req, res) {
+    var id = req.body.id || req.query.id;
 
     data_Profile_From_DB.getProfileStoreById(id, function(result) {
         if(!result) res.status(500).json({data:{success:false}});
@@ -189,9 +170,10 @@ router.get("/profile", function(req, res) {
             }})
     })
 });
+
 //EDIT PROFILE-------------------------
-router.put("/profile/update", function(req, res) {
-    var id = req.user._id;
+router.put("/profilestore/update", function(req, res) {
+    var id = req.body.id || req.query.id;
     var user = req.body;
 
     var name_personal = user.name_personal;
@@ -225,10 +207,10 @@ router.put("/profile/update", function(req, res) {
         if(!result) res.status(500).json({data:{success:false}});
         else res.status(200).json({data:{success:true, notification:"updated is success"}});
     })
-})
+});
 //------order--------
 router.get("/listorder", function(req, res) {
-    var id = req.user._id;
+    var id = req.body.id || req.query.id;
 
     data_Order_From_DB.getListOrderById(id, function(result) {
         if(!result) res.status(500).json({data:{success:false}});
@@ -241,7 +223,7 @@ router.get("/listorder", function(req, res) {
 });
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res) {
-    var id = req.user._id;
+    var id = req.body.id || req.query.id;
 
     data_Doanhthu_From_DB.getListDoanhThu(id, function(result) {
         if(!result) res.status(500).json({data:{success:false}});
@@ -252,70 +234,26 @@ router.get("/listdoanhthu", function(req, res) {
             }})
     })
 })
-//--Using to add order into doanhthu to DEMO
-router.post("/addorder", function(req, res) {
-    var id = req.user._id;
-    var order = req.body;
-
-    var giodat = new Date();
-    var tenthanhpho = order.tenthanhpho;
-    var tenquan = order.tenquan;
-    var id_monan = order.id_monan;
-    var ten_monan = order.ten_monan;
-    var soluong = order.soluong;
-    var gia = order.gia;
-
-    var data = {
-        tongtien : soluong * gia,
-        giodat : giodat,
-        diachi : {
-            tenthanhpho : tenthanhpho,
-            tenquan : tenquan
-        },
-        order_detail : [{
-            monan : {
-                ten : ten_monan,
-                id : id_monan
-            },
-            soluong : soluong,
-            gia : gia
-        }]
-    }
-
-    data_Doanhthu_From_DB.addOrderDoanhThuById(id, data, function(result) {
-        if(result) {
-            console.log("result:" + result);
-        }
-        else console.log("khong co ket qua");
+//--------LISTSTORE---------
+router.get("/liststores", function(req, res) {
+    data_User_From_DB.getAllCustomers(function(result) {
+        if(!result) res.status(500).json({data:{success:false}});
+        else res.status(200).json({
+            data:{
+                success : true,
+                result : result
+            }})
     })
 })
-router.get("/listdoanhthu7ngay", function(req, res) {
-    var id = req.user._id;
-    var soNgay = 7;
-    if(!id || id.trim().length == 0) return res.status(400).json({data:{success:false}});
-    data_Doanhthu_From_DB.getListOrderTheoNgayById(id, soNgay, function(result){
+router.get("/listusers", function(req, res) {
+    data_User_From_DB.getAllUsers(function(result) {
         if(!result) res.status(500).json({data:{success:false}});
         else res.status(200).json({
             data:{
                 success : true,
                 result : result
             }})
-    });
+    })
 })
-router.get("/listdoanhthu30ngay", function(req, res) {
-    var id = req.user._id;
-    var soNgay = 30;
-    if(!id || id.trim().length == 0) return res.status(400).json({data:{success:false}});
-    data_Doanhthu_From_DB.getListOrderTheoNgayById(id, soNgay, function(result){
-        if(!result) res.status(500).json({data:{success:false}});
-        else res.status(200).json({
-            data:{
-                success : true,
-                result : result
-            }})
-    });
-})
-
-
 //-----------MODULE EXPORTS -----------
 module.exports = router;
