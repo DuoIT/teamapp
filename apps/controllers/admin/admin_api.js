@@ -245,6 +245,7 @@ router.get("/liststores", function(req, res) {
             }})
     })
 })
+
 router.get("/listusers", function(req, res) {
     data_User_From_DB.getAllUsers(function(result) {
         if(!result) res.status(500).json({data:{success:false}});
