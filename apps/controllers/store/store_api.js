@@ -14,7 +14,7 @@ var router = express.Router();
 //---------------------check role-------------------
 router.use(function(req, res, next) {
     var token = req.body.token || req.query.token;
-    
+    console.log("token in image:"+token);
     if(!token) return res.status(403).json({ notification: "no token" });    
     else {
         jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
@@ -180,7 +180,7 @@ router.put("/listsanpham/update", function(req, res) {
 router.get("/profile", function(req, res) {
     var id = req.user._id;
 
-    data_Profile_From_DB.getProfileUserById(id, function(result) {
+    data_Profile_From_DB.getProfileStoreById(id, function(result) {
         if(!result) res.status(500).json({data:{success:false}});
         else res.status(200).json({
             data:{
@@ -221,7 +221,7 @@ router.put("/profile/update", function(req, res) {
         avarta_url : avarta_url
     }
 
-    data_Profile_From_DB.updateProfileById(id, data,function(result) {
+    data_Profile_From_DB.updateProfileStoreById(id, data,function(result) {
         if(!result) res.status(500).json({data:{success:false}});
         else res.status(200).json({data:{success:true, notification:"updated is success"}});
     })
@@ -315,5 +315,7 @@ router.get("/listdoanhthu30ngay", function(req, res) {
             }})
     });
 })
+
+
 //-----------MODULE EXPORTS -----------
 module.exports = router;
