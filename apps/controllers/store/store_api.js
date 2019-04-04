@@ -63,24 +63,6 @@ function check_Permission(permission, name_permission, id) {
     return false;
 }
 //-----sanpham-------------
-router.get("/listnguoinau", function(req, res) {
-    var user = req.user;
-    var id = user._id;
-    var permission = user.role.permission;
-
-    // check permission
-    //if (check_Permission(permission, "user", 1) == false) return res.status(401).json({ data: { success: false, notification: "You can't view list nguoi nau" } });
-    data_User_From_DB.getAllUsersNguoiNau(id, function(result) {
-        if (!result) res.status(500).json({ data: { success: false } });
-        else res.status(200).json({
-            data: {
-                success: true,
-                result: result,
-            }
-        })
-    });
-})
-
 router.get("/listsanpham", function(req, res) {
     var user = req.user;
     var id = user._id;
