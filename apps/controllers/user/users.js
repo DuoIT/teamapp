@@ -64,6 +64,8 @@ router.post("/signup", function(req, res) {
 
     });
 });
+
+// không check token
 router.get("/liststore", function(req, res) {
     data_User_From_DB.getAllStores(function(result) {
         if (!result) res.status(500).json({ data: { success: false } });
@@ -75,5 +77,6 @@ router.get("/liststore", function(req, res) {
         })
     });
 });
+
 //------------------EXPORT MODULE------------------
 module.exports = router;

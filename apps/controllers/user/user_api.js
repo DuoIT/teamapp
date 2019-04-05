@@ -65,19 +65,19 @@ router.get("/listmonan", function(req, res) {
 
 });
 
-router.get("/liststore", function(req, res) {
-    var user = req.user;
-    var id = user._id;
-    data_User_From_DB.getAllStores(id, function(result) {
-        if (!result) res.status(500).json({ data: { success: false } });
-        else res.status(200).json({
-            data: {
-                success: true,
-                result: result,
-            }
-        })
-    });
-});
+// router.get("/liststore", function(req, res) {
+//     var user = req.user;
+//     var id = user._id;
+//     data_User_From_DB.getAllStores(id, function(result) {
+//         if (!result) res.status(500).json({ data: { success: false } });
+//         else res.status(200).json({
+//             data: {
+//                 success: true,
+//                 result: result,
+//             }
+//         })
+//     });
+// });
 router.post("/addorder", function(req, res) {
 
 });
