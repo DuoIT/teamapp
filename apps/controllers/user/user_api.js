@@ -3,7 +3,7 @@ const path = require("path");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 
-const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user")); //"../models/user"
+const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile")); //"../models/profile"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
@@ -21,7 +21,7 @@ router.use(function(req, res, next) {
                 if (!result) res.status(403).json({ data: { success: false, notification: "token error, not found user" } });
                 else {
                     console.log(result.role.name_role);
-                    if (result.role.name_role == "khachhang" && result.role.licensed == true) {
+                    if (result.role.name_role == "user" && result.role.licensed == true) {
                         console.log("here");
                         decoded.role = result.role;
                         req.user = decoded;
@@ -35,6 +35,31 @@ router.use(function(req, res, next) {
     }
 })
 
+function check_Permission(permission, name_permission, id) {
+    for (i = 0; i < permission.length; i++) {
+        if (permission[i].name_per == name_permission) {
+            if (id == 1) {
+                if (permission[i].per_detail.view == true) {
+                    return true;
+                }
+            } else if (id == 2) {
+                if (permission[i].per_detail.create == true) {
+                    return true;
+                }
+            } else if (id == 3) {
+                if (permission[i].per_detail.update == true) {
+                    return true;
+                }
+            } else if (id == 4) {
+                if (permission[i].per_detail.delete == true) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 // API for users
 router.get("/listmonan", function(req, res) {
 
@@ -43,11 +68,7 @@ router.get("/listmonan", function(req, res) {
 router.get("/liststore", function(req, res) {
     var user = req.user;
     var id = user._id;
-    var permission = user.role.permission;
-
-    // check permission
-    //if (check_Permission(permission, "user", 1) == false) return res.status(401).json({ data: { success: false, notification: "You can't view list nguoi nau" } });
-    data_User_From_DB.getAllUsersNguoiNau(id, function(result) {
+    data_User_From_DB.getAllStores(id, function(result) {
         if (!result) res.status(500).json({ data: { success: false } });
         else res.status(200).json({
             data: {
