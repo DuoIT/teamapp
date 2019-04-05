@@ -36,7 +36,7 @@ function createUser(user, fn_result) {
 }
 function getUserForSignin(username, password, fn_result) {
     getUserByUsername(username, function(result) {
-        if(!result && result.length != 0) {
+        if(result) {
            if(bcrypt.decode_Password(password, result.password)) {
                 result.password = undefined;
                 return fn_result(result);
