@@ -78,6 +78,7 @@ function updateAvatarOfUser(id, avatar_url, fn_result) {
         return fn_result(false);
     });
 }
+
 // function getAllUsersNguoiNau(fn_result) {
 //     if(location_Of_Password_Attr != -1) ATTRIBUTE_NEED_SHOW = ATTRIBUTE_NEED_SHOW.substring(0, location_Of_Password_Attr) 
 //                             + ATTRIBUTE_NEED_SHOW.substring(location_Of_Password_Attr + FIELD_NEED_CHECK.length, ATTRIBUTE_NEED_SHOW.length);
