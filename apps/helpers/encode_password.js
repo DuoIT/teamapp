@@ -9,12 +9,13 @@ function encode_Password(password) {
     var hash = bcrypt.hashSync(password);
     return hash;
 }
+
 function decode_Password(password, hash) {
     var check_Password_For_Login = bcrypt.compareSync(password, hash);
     return check_Password_For_Login;
 }
 
 module.exports = {
-    encode_Password : encode_Password,
-    decode_Password : decode_Password
+    encode_Password: encode_Password,
+    decode_Password: decode_Password
 }
