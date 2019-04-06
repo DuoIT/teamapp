@@ -5,6 +5,19 @@ const data_MonAn_From_Db = require(path.join(__dirname, "../../", "/models/monan
 
 var router = express.Router();
 
+router.use("/api", require("./admin_api"));
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------Not Below-----------------
 router.get("/", function(req, res) {
     //check admin...
     data_Users_From_Db.getAllUsers(function(results) {
