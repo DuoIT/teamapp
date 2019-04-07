@@ -78,5 +78,29 @@ router.get("/liststore", function(req, res) {
     });
 });
 
+router.get("/listfood", function(req, res) {
+    data_User_From_DB.getAllFoods(function(result) {
+        if(!result) res.status(500).json({data: {success: false}});
+        else res.status(200).json({
+            data: {
+                success: true,
+                result: result,
+            }
+        })
+    });
+});
+
+router.get("/listcategoryfoods", function(req, res) {
+    data_User_From_DB.getAllCategoryFoods(function(result) {
+        if (!result) res.status(500).json({data: {success: false}});
+        else res.status(200).json({
+            data: {
+                success: true,
+                result: result,
+            }
+        })
+    });
+});
+
 //------------------EXPORT MODULE------------------
 module.exports = router;
