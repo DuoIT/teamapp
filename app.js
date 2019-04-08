@@ -2,10 +2,12 @@ const express = require("express");
 const config = require("config");
 const body_parser = require("body-parser");
 const session = require("express-session");
+const cors = require('cors');
 // const fileUpload = require("express-fileupload");
 
 var app = express();
 //accept localhost
+app.use(cors());
 app.use(body_parser.json({limit: '50mb'}));
 app.use(body_parser.urlencoded({
     limit: '50mb',
