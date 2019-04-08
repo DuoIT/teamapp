@@ -13,9 +13,9 @@ var router = express.Router();
 
 //---------------------check role-------------------
 router.use(function(req, res, next) {
-    var token = req.body.token || req.query.token;
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
     console.log("token in image:" + token);
-    if (!token) return res.status(403).json({ notification: "no token" });
+    if (!token) return res.status(403).json({ data: { success: false, notification: "no token" } });
     else {
         jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
             if (err) res.status(403).json({ data: { success: false, notification: "token error" } });
