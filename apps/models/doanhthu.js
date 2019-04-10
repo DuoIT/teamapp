@@ -10,7 +10,7 @@ function getListDoanhThu(id, fn_result) {
             for(i = data.doanhthu.order.length - 1; i >= 0; i--) {
                 if(data.doanhthu.order[i].trangthai == false) data.doanhthu.order.splice(i, 1);
             }
-            fn_result(data);
+            fn_result(data.doanhthu);
         }
     })
 }
@@ -49,7 +49,7 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
                 }
             }
             data_old.doanhthu.tongdoanhthu = tongtien;
-            return fn_result(data_old);
+            return fn_result(data_old.doanhthu);
         }
     });
 }

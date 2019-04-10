@@ -8,7 +8,7 @@ function getListOrderById(id, fn_result) {
             var data = {
                 order : result.dichvu.doanhthu.order
             }
-            fn_result(data);
+            fn_result(data.order);
         }
     });
 }

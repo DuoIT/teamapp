@@ -1,11 +1,11 @@
 const mongoose = require("../common/mongoose");
 
-function getAllMonAn(fn_result) {
-    mongoose.model_dichvu.find({"name_per":"nguoinau"}).select("nguoinau.monan").exec(function(err, result) {
-        if(err) return fn_result(false);
-        return fn_result(result);
-    });
-}
+// function getAllMonAn(fn_result) {
+//     mongoose.model_dichvu.find({"name_per":"nguoinau"}).select("nguoinau.monan").exec(function(err, result) {
+//         if(err) return fn_result(false);
+//         return fn_result(result);
+//     });
+// }
 function getMonAnById(id, fn_result) {
     mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if(err) return fn_result(false);
@@ -14,13 +14,13 @@ function getMonAnById(id, fn_result) {
         }
     });
 }
-function getMonAnByName(name, fn_result) {
-    mongoose.model_dichvu.find({"name_per":"nguoinau", "name_per":"nguoinau", "nguoinau.monan.tenmon" : name})
-    .select("nguoinau.monan").exec(function(err, result) {
-        if(err) return fn_result(false);
-        return fn_result(result);
-    });
-}
+// function getMonAnByName(name, fn_result) {
+//     mongoose.model_dichvu.find({"name_per":"nguoinau", "name_per":"nguoinau", "nguoinau.monan.tenmon" : name})
+//     .select("nguoinau.monan").exec(function(err, result) {
+//         if(err) return fn_result(false);
+//         return fn_result(result);
+//     });
+// }
 //-----------ADD MONAN-------------
 function createMonAnOfStore(id, danhmuc, monan, fn_result) {
     mongoose.model_dichvu.findOneAndUpdate({_id : id, "dichvu.danhmuc.ten": danhmuc}, {$push: {"dichvu.danhmuc.$.monan": monan}},
@@ -64,9 +64,9 @@ function updateMonAnById(id, id_monan, danhmuc, data, fn_result) {
 }
 
 module.exports = {
-    getAllMonAn : getAllMonAn,
+    // getAllMonAn : getAllMonAn,
     getMonAnById : getMonAnById,
-    getMonAnByName : getMonAnByName,
+    // getMonAnByName : getMonAnByName,
     createMonAnOfStore : createMonAnOfStore,
     deleteMonAnById : deleteMonAnById,
     updateMonAnById : updateMonAnById
