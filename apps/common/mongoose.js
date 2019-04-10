@@ -84,6 +84,10 @@ var schema_dichvu = mongoose.Schema({
                     tenthanhpho: String,
                     tenquan: String
                 },
+                information: {
+                    ten: String,
+                    id: String
+                },
                 order_detail: [{
                     monan: {
                         ten: String,

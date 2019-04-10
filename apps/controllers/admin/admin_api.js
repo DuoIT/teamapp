@@ -12,24 +12,23 @@ const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password"
 var router = express.Router();
 
 router.use(function(req, res, next) {
-    var token = req.body.token || req.query.token;
+    var token = req.body.token || req.query.token || req.headers['token'];
     console.log("token in image:" + token);
-    if (!token) return res.status(403).json({ notification: "no token" });
+    if (!token) return res.status(403).json({ success: false, notification: "no token" });
     else {
         jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
-            if (err) res.status(403).json({ data: { success: false, notification: "token error" } });
+            if (err) res.status(403).json({ success: false, notification: "token error" });
             else {
                 var id = decoded._id;
                 data_User_From_DB.getUserByIdToCheckRole(id, function(result) {
-                    if (!result) res.status(403).json({ data: { success: false, notification: "token error, not found user" } });
+                    if (!result) res.status(403).json({ success: false, notification: "token error, not found user" });
                     else {
                         console.log(result.role.name_role);
                         if (result.role.name_role == "admin" && result.role.licensed == true) {
-                            console.log("here");
                             decoded.role = result.role;
                             req.user = decoded;
                             next();
-                        } else res.status(401).json({ data: { success: false, notification: "this account can't access" } });
+                        } else res.status(401).json({ success: false, notification: "this account can't access" });
                     }
                 })
             }
@@ -176,8 +175,6 @@ router.get("/profilestore", function(req, res) {
         })
     })
 });
-
-//EDIT PROFILE-------------------------
 router.put("/profilestore", function(req, res) {
     var id = req.body.id || req.query.id;
     var user = req.body;
@@ -218,7 +215,7 @@ router.put("/profilestore", function(req, res) {
     })
 });
 //------order--------
-router.get("/listorder", function(req, res) {
+router.get("/listorderofstore", function(req, res) {
     var id = req.body.id || req.query.id;
 
     data_Order_From_DB.getListOrderById(id, function(result) {
@@ -229,6 +226,19 @@ router.get("/listorder", function(req, res) {
         })
     })
 });
+router.delete("/listorderofstore", function(req, res) {
+    var id = req.body.id || req.query.id;
+    var id_order = req.body.id_order || req.query.id_order;
+
+
+    data_Order_From_DB.deleteOrderOfStoreById(id, id_order, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+})
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res) {
         var id = req.body.id || req.query.id;
@@ -240,8 +250,8 @@ router.get("/listdoanhthu", function(req, res) {
                 result: result
             })
         })
-    })
-    //--------LISTSTORE---------
+})
+//--------User---------
 router.get("/liststores", function(req, res) {
     data_User_From_DB.getAllCustomers(function(result) {
         if (!result) res.status(500).json({ success: false });
@@ -252,7 +262,7 @@ router.get("/liststores", function(req, res) {
     })
 })
 
-router.get("/listusers", function(req, res) {
+router.get("/listcustomers", function(req, res) {
         data_User_From_DB.getAllUsers(function(result) {
             if (!result) res.status(500).json({ success: false });
             else res.status(200).json({
@@ -260,6 +270,20 @@ router.get("/listusers", function(req, res) {
                 result: result
             })
         })
+})
+router.delete("/user", function(req , res) {
+    var id = req.body.id || req.query.id;
+
+    data_User_From_DB.deleteUser(id, function(result) {
+        if (!result) res.status(500).json({ success: false });
+            else res.status(200).json({
+                success: true,
+                result: result
+            })
     })
-    //-----------MODULE EXPORTS -----------
+});
+
+
+
+//-----------MODULE EXPORTS -----------
 module.exports = router;
