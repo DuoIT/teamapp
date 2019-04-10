@@ -239,7 +239,7 @@ router.put("/profile", function(req, res) {
 router.get("/listorder", function(req, res) {
     var id = req.user._id;
 
-    data_Order_From_DB.getListOrderById(id, function(result) {
+    data_Order_From_DB.getListOrderOfStoreById(id, function(result) {
         if (!result) res.status(500).json({ success: false });
         else res.status(200).json({
             success: true,

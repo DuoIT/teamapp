@@ -78,6 +78,12 @@ function updateAvatarOfUser(id, avatar_url, fn_result) {
         return fn_result(false);
     });
 }
+function deleteUser(id, fn_result) {
+    mogoose.model_dichvu.deleteOne({_id : id}, function(err) {
+        if(err) return fn_result(false);
+        return fn_result(true);
+    });
+}
 // function getAllUsersNguoiNau(fn_result) {
 //     if(location_Of_Password_Attr != -1) ATTRIBUTE_NEED_SHOW = ATTRIBUTE_NEED_SHOW.substring(0, location_Of_Password_Attr) 
 //                             + ATTRIBUTE_NEED_SHOW.substring(location_Of_Password_Attr + FIELD_NEED_CHECK.length, ATTRIBUTE_NEED_SHOW.length);
@@ -122,15 +128,7 @@ function updateAvatarOfUser(id, avatar_url, fn_result) {
 //         return fn_result(true);
 //     })
 // }
-// function deleteUser(id, fn_result) {
-//     mogoose.model_dichvu.deleteOne({_id : id}, function(err) {
-//         if(err) {
-//             console.log("error-deleteuser-user.js");
-//             return fn_result(false);
-//         }
-//         return fn_result(true);
-//     });
-// }
+
 
 module.exports = {
     getAllStores: getAllStores,
@@ -145,7 +143,7 @@ module.exports = {
     getUserForSignin: getUserForSignin,
     // updateUser : updateUser,
     //    updateDichVu : updateDichVu,
-    // deleteUser : deleteUser,
+    deleteUser : deleteUser,
     updateAvatarOfStore: updateAvatarOfStore,
     updateAvatarOfUser: updateAvatarOfUser
 }
