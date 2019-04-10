@@ -21,7 +21,8 @@ router.post("/", function(req, res) {
                 success:true,
                 token: jwt.sign({_id : result._id, username: result.username}, config.get("jsonwebtoken.codesecret"), {
                     expiresIn : "3h"
-                })
+                }),
+                role : result.role.name_role
             }
             
         });                             //json return a role value
