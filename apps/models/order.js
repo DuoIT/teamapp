@@ -1,14 +1,14 @@
 const mongoose = require("../common/mongoose");
 
 function getListOrderOfStoreById(id, fn_result) {
-    mongoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu.order").exec(function(err, result) {
-        if(err) fn_result(false);
-        else {
-            var data = {
-                order : result.dichvu.doanhthu.order
+        mongoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu.order").exec(function(err, result) {
+            if(err) fn_result(false);
+            else {
+                var data = {
+                    order : result.dichvu.doanhthu.order
+                }
+                fn_result(data.order);
             }
-            fn_result(data.order);
-        }
     });
 }
 function deleteOrderOfStoreById(id, id_Order, fn_result) {
