@@ -10,6 +10,7 @@ function getMonAnById(id, fn_result) {
     mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if(err) return fn_result(false);
         else {
+            
             fn_result(result.dichvu.danhmuc);
         }
     });
