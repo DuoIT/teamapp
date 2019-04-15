@@ -13,7 +13,13 @@ var router = express.Router();
 
 //---------------------check role-------------------
 router.use(function(req, res, next) {
-    var token = req.body.token || req.query.token || req.headers['token'];
+    var tokenBearer = req.headers['authorization'];
+    var bearer = null;
+    if(typeof tokenBearer !== 'undefined') {
+        tokenBearerSplit = tokenBearer.split(' ');
+        bearer = tokenBearerSplit[1];
+    }
+    var token = req.body.token || req.query.token || bearer;
     console.log("token in image:" + token);
     if (!token) return res.status(403).json({ success: false, notification: "no token" });
     else {
