@@ -10,8 +10,24 @@ function getMonAnById(id, fn_result) {
     mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if(err) return fn_result(false);
         else {
-            
-            fn_result(result.dichvu.danhmuc);
+            var monan = [];
+            danhmuc = result.dichvu.danhmuc;
+            danhmuc.forEach(function(rs_danhmuc) {
+                
+                rs_danhmuc.monan.forEach(function(rs_monan) {
+                    console.log(rs_danhmuc._id)
+                    rs_monan.id_danhmuc = "aaaa";
+                    rs_monan.ten_danhmuc = rs_danhmuc.ten;
+                    rs_monan.mota_danhmuc = rs_danhmuc.mota;
+                    monan.push(rs_monan);
+                });
+                
+            })
+            // monan.forEach((elem) => {
+            //     elem.haha = "ahc";
+            // })
+            console.log(monan);
+            fn_result(monan);
         }
     });
 }
