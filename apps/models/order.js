@@ -4,10 +4,28 @@ function getListOrderOfStoreById(id, fn_result) {
         mongoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu.order").exec(function(err, result) {
             if(err) fn_result(false);
             else {
-                var data = {
-                    order : result.dichvu.doanhthu.order
-                }
-                fn_result(data.order);
+                var order = result.dichvu.doanhthu.order;
+                var rs_Order = [];
+                order.forEach(function(elem_Order) {
+                    var data = {};
+                    data.tenthanhpho = elem_Order.diachi.tenthanhpho;
+                    data.tenquan = elem_Order.diachi.tenquan;
+                    var order_Detail = elem_Order.order_detail;
+                    var ten_SoLuong_Monan = "";
+                    // var soluong_Monan = null;
+                    order_Detail.forEach(function(elem_OrderDetail) {
+                        console.log(elem_OrderDetail.monan.ten)
+                        ten_SoLuong_Monan += elem_OrderDetail.monan.ten +"- "+ elem_OrderDetail.soluong + " phần";
+                        if(elem_OrderDetail !== order_Detail[order_Detail.length - 1]) ten_SoLuong_Monan += ", "; 
+                    })
+                    data.ten_monan = ten_SoLuong_Monan;
+                    data.tongtien = elem_Order.tongtien;
+                    data.trangthai = elem_Order.trangthai;
+                    data._id = elem_Order._id;
+                    data.giodat = elem_Order.giodat;
+                    rs_Order.push(data);
+                })
+                fn_result(rs_Order);
             }
     });
 }

@@ -109,12 +109,10 @@ router.delete("/listsanpham", function(req, res) {
     var id_monan = req.query.id_monan || req.body.id_monan;
     var danhmuc = req.query.danhmuc || req.body.danhmuc;
 
-    if (!id_monan || id_monan.trim().length == 0 || !danhmuc || danhmuc.trim().length == 0)
+    if (!id_monan || id_monan.trim().length == 0)
         return res.status(400).json({ success: false, notification: "input's wrong" });
-    else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
-        return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')" });
 
-    data_Monan_From_DB.deleteMonAnById(id, id_monan, danhmuc, function(result) {
+    data_Monan_From_DB.deleteMonAnById(id, id_monan, function(result) {
         if (!result) res.status(500).json({ success: false, notification: "You can't ADD monanunknown error" });
         else res.status(200).json({ 
             success: true, 

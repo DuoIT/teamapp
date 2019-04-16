@@ -12,21 +12,15 @@ function getMonAnById(id, fn_result) {
         else {
             var monan = [];
             danhmuc = result.dichvu.danhmuc;
-            danhmuc.forEach(function(rs_danhmuc) {
-                
-                rs_danhmuc.monan.forEach(function(rs_monan) {
-                    console.log(rs_danhmuc._id)
-                    rs_monan.id_danhmuc = "aaaa";
-                    rs_monan.ten_danhmuc = rs_danhmuc.ten;
-                    rs_monan.mota_danhmuc = rs_danhmuc.mota;
+            danhmuc.forEach(function(elem_danhmuc) {
+                elem_danhmuc.monan.forEach(function(elem_monan) {
+                    var rs_monan = elem_monan.toObject();
+                    rs_monan.id_danhmuc = elem_danhmuc._id;
+                    rs_monan.ten_danhmuc = elem_danhmuc.ten;
+                    rs_monan.mota_danhmuc = elem_danhmuc.mota;
                     monan.push(rs_monan);
-                });
-                
+                });  
             })
-            // monan.forEach((elem) => {
-            //     elem.haha = "ahc";
-            // })
-            console.log(monan);
             fn_result(monan);
         }
     });
@@ -47,12 +41,24 @@ function createMonAnOfStore(id, danhmuc, monan, fn_result) {
     })
 }
 //-----------DELETE MONAN--------------
-function deleteMonAnById(id, id_monan, danhmuc, fn_result) {
+function deleteMonAnById(id, id_monan, fn_result) {
     //, "dichvu.danhmuc.$.monan._id" : id_monan
-    mongoose.model_dichvu.findOneAndUpdate({_id : id, "dichvu.danhmuc.ten": danhmuc}, {$pull: {"dichvu.danhmuc.$.monan" : {"_id": id_monan}}}
-    , function(err, result) {
-        if(err) fn_result(false);
-        else fn_result(result);
+    mongoose.model_dichvu.findOne({_id : id}, function(err, result) {
+        if(err) return fn_result(false);
+        else if(result){
+             if(result.dichvu) {
+                result.dichvu.danhmuc.forEach(function(elem_danhmuc) {     
+                    if(elem_danhmuc.monan) {
+                        for(i = elem_danhmuc.monan.length - 1; i >= 0; i--) {
+                            if(elem_danhmuc.monan[i]._id == id_monan) elem_danhmuc.monan.splice(i, 1);
+                        }
+                    }
+                })
+                var user = new mongoose.model_dichvu(result);
+                user.save();
+                return fn_result(true);
+            }
+        }
     })
 }
 function updateMonAnById(id, id_monan, danhmuc, data, fn_result) {

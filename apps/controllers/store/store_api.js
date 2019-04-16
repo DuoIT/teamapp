@@ -135,15 +135,12 @@ router.delete("/listsanpham", function(req, res) {
     var id = user._id;
     var permission = user.role.permission;
     if (check_Permission(permission, "monan", 4) == false) return res.status(401).json({success: false, notification: "You can't DELETE monan"});
-    var id_monan = req.query.id_monan || req.body.id_monan;
-    var danhmuc = req.query.danhmuc || req.body.danhmuc;
+    var id_monan = req.query.id || req.body.id;
 
-    if (!id_monan || id_monan.trim().length == 0 || !danhmuc || danhmuc.trim().length == 0)
+    if (!id_monan || id_monan.trim().length == 0)
         return res.status(400).json({success: false, notification: "input's wrong"});
-    else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
-        return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
 
-    data_Monan_From_DB.deleteMonAnById(id, id_monan, danhmuc, function(result) {
+    data_Monan_From_DB.deleteMonAnById(id, id_monan, function(result) {
         if (!result) res.status(500).json({success: false, notification: "You can't ADD monanunknown error"});
         else res.status(200).json({
             success: true, 
