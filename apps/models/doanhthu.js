@@ -4,13 +4,15 @@ function getListDoanhThu(id, fn_result) {
     mogoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu").exec(function(err, result) {
         if(err) fn_result(false);
         else {
+            var doanhthu = result.dichvu.doanhthu;
+            for(i = doanhthu.order.length - 1; i >= 0; i--) {
+                if(doanhthu.order[i].trangthai == false) doanhthu.order.splice(i, 1);
+            }
             var data = {
-                doanhthu : result.dichvu.doanhthu
+                soluongorder: doanhthu.order.length,
+                tongtien: doanhthu.tongdoanhthu
             }
-            for(i = data.doanhthu.order.length - 1; i >= 0; i--) {
-                if(data.doanhthu.order[i].trangthai == false) data.doanhthu.order.splice(i, 1);
-            }
-            fn_result(data.doanhthu);
+            fn_result(data);
         }
     })
 }
@@ -19,9 +21,9 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
     mogoose.model_dichvu.findOne({_id : id}).select("dichvu.doanhthu").exec(function(err, result) {
         if(err) fn_result(false);
         else {
-            var data_old = {
-                doanhthu : result.dichvu.doanhthu
-            }
+            
+            var  doanhthu = result.dichvu.doanhthu;
+            
             var curDate = new Date();
             var getDate =  curDate.getDate();
             var getMonth = curDate.getMonth() + 1;
@@ -40,16 +42,20 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
             }           
             var date = new Date(getFullYear, getMonth - 1 , getDate + 1);
             var tongtien = 0;            
-            for(i = data_old.doanhthu.order.length - 1; i >= 0; i--) {
-                if(data_old.doanhthu.order[i].giodat < date || data_old.doanhthu.order[i].giodat > new Date()
-                || data_old.doanhthu.order[i].trangthai == false) data_old.doanhthu.order.splice(i, 1);
+            for(i = doanhthu.order.length - 1; i >= 0; i--) {
+                if(doanhthu.order[i].giodat < date || doanhthu.order[i].giodat > new Date()
+                || doanhthu.order[i].trangthai == false) doanhthu.order.splice(i, 1);
                 else {
-                    tongtien += data_old.doanhthu.order[i].tongtien;
+                    tongtien += doanhthu.order[i].tongtien;
                     
                 }
             }
-            data_old.doanhthu.tongdoanhthu = tongtien;
-            return fn_result(data_old.doanhthu);
+            doanhthu.tongdoanhthu = tongtien;
+            var data = {
+                soluongorder: doanhthu.order.length,
+                tongtien: doanhthu.tongdoanhthu
+            }
+            fn_result(data);
         }
     });
 }
