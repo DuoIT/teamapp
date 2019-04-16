@@ -119,8 +119,8 @@ var schema_dichvu = mongoose.Schema({
                     }
                 }]
             }]
-        }]
-
+        }],
+        rating: Number
     }
 });
 const model_dichvu = mongoose.model("user", schema_dichvu);
