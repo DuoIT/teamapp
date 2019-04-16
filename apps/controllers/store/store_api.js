@@ -194,7 +194,7 @@ router.get("/profile", function(req, res) {
         if (!result) res.status(500).json({ success: false });
         else res.status(200).json({
             success: true,
-            result: result
+            result: [result]
         })
     })
 });
@@ -256,10 +256,23 @@ router.get("/listdoanhthu", function(req, res) {
 
         data_Doanhthu_From_DB.getListDoanhThu(id, function(result) {
             if (!result) res.status(500).json({ success: false });
-            else res.status(200).json({
-                success: true,
-                result: result              
-            })
+            else {
+                data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 30, function(result1) {
+                    if (!result) res.status(500).json({ success: false });
+                    else {
+                        result.doanhthu30ngay = result1;
+                        data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 7, function(result2) {
+                            if (!result) res.status(500).json({ success: false });
+                            else {
+                                result.doanhthu7ngay = result2;
+                                res.status(200).json({
+                                success: true,
+                                result: result           
+                                 })}
+                        });
+                    }
+                });
+            }
         })
     })
     //--Using to add order into doanhthu to DEMO

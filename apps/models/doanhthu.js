@@ -55,7 +55,7 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
                 soluongorder: doanhthu.order.length,
                 tongtien: doanhthu.tongdoanhthu
             }
-            fn_result(data);
+            return fn_result(data);
         }
     });
 }
