@@ -259,18 +259,21 @@ router.get("/listdoanhthu", function(req, res) {
             else {
                 // rs_result = result.toObject();
                 result.thoigian = "alldays";
+                result._id = "1";
                 doanhthu.push(result);
                 data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 30, function(result1) {
                     if (!result) res.status(500).json({ success: false });
                     else {
                         // rs_result1 = result1.toObject();
                         result1.thoigian = "30days";
+                        result1._id = "2";
                         doanhthu.push(result1);
                         data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 7, function(result2) {
                             if (!result) res.status(500).json({ success: false });
                             else {
                                 // rs_result2 = result2.toObject();
                                 result2.thoigian = "7days";
+                                result2._id = "3";
                                 doanhthu.push(result2);
                                 res.status(200).json({
                                 success: true,
