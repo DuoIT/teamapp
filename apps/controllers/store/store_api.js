@@ -253,21 +253,28 @@ router.get("/listorder", function(req, res) {
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res) {
         var id = req.user._id;
-
+        var doanhthu = [];
         data_Doanhthu_From_DB.getListDoanhThu(id, function(result) {
             if (!result) res.status(500).json({ success: false });
             else {
+                // rs_result = result.toObject();
+                result.thoigian = "alldays";
+                doanhthu.push(result);
                 data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 30, function(result1) {
                     if (!result) res.status(500).json({ success: false });
                     else {
-                        result.doanhthu30ngay = result1;
+                        // rs_result1 = result1.toObject();
+                        result1.thoigian = "30days";
+                        doanhthu.push(result1);
                         data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 7, function(result2) {
                             if (!result) res.status(500).json({ success: false });
                             else {
-                                result.doanhthu7ngay = result2;
+                                // rs_result2 = result2.toObject();
+                                result2.thoigian = "7days";
+                                doanhthu.push(result2);
                                 res.status(200).json({
                                 success: true,
-                                result: result           
+                                result: doanhthu           
                                  })}
                         });
                     }

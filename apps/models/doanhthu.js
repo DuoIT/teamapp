@@ -8,9 +8,23 @@ function getListDoanhThu(id, fn_result) {
             for(i = doanhthu.order.length - 1; i >= 0; i--) {
                 if(doanhthu.order[i].trangthai == false) doanhthu.order.splice(i, 1);
             }
+            
+            orders = doanhthu.order;
+            var order_Detail_String = "";
+            var thutu_Order = 1;
+            orders.forEach(function(elem_Order) {
+                order_Detail_String += "Order " +thutu_Order + "- "; 
+                order_Detail_String += "tongtien: " + elem_Order.tongtien + ", ";
+                elem_Order.order_detail.forEach(function(elem_OrderDetail) {
+                    order_Detail_String += elem_OrderDetail.monan.ten +"_"+ elem_OrderDetail.soluong + " phần";
+                    if(elem_OrderDetail !== elem_Order.order_detail[elem_Order.order_detail.length - 1]) order_Detail_String += ", "; 
+                })
+                thutu_Order++;
+            });
             var data = {
                 soluongorder: doanhthu.order.length,
-                tongtien: doanhthu.tongdoanhthu
+                tongtien: doanhthu.tongdoanhthu,
+                order_detail: order_Detail_String
             }
             fn_result(data);
         }
@@ -51,9 +65,24 @@ function getListOrderTheoNgayById(id, soNgay, fn_result) {
                 }
             }
             doanhthu.tongdoanhthu = tongtien;
+
+            orders = doanhthu.order;
+            var order_Detail_String = "";
+            var thutu_Order = 1;
+            orders.forEach(function(elem_Order) {
+                order_Detail_String += "Order " +thutu_Order + "- "; 
+                order_Detail_String += "tongtien: " + elem_Order.tongtien + ", ";
+                elem_Order.order_detail.forEach(function(elem_OrderDetail) {
+                    order_Detail_String += elem_OrderDetail.monan.ten +"_"+ elem_OrderDetail.soluong + " phần";
+                    if(elem_OrderDetail !== elem_Order.order_detail[elem_Order.order_detail.length - 1]) order_Detail_String += ", "; 
+                })
+                thutu_Order++;
+            });
+
             var data = {
                 soluongorder: doanhthu.order.length,
-                tongtien: doanhthu.tongdoanhthu
+                tongtien: doanhthu.tongdoanhthu,
+                order_detail: order_Detail_String
             }
             return fn_result(data);
         }
