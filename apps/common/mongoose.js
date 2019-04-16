@@ -28,7 +28,6 @@ var schema_dichvu = mongoose.Schema({
         danhgia: [{
             comment: String,
             star: Number,
-            //? id_monan
             monan: {
                 id: String,
                 ten: String,
@@ -42,19 +41,17 @@ var schema_dichvu = mongoose.Schema({
                 avatar_url: String,
                 id: String
             },
-            trangthai: Boolean,
+            trangthai: String,
             dichvu: {
                 ten: String,
                 avatar_url: String,
                 id: String
             },
-            //id_diachi
             diachi: {
                 tenthanhpho: String,
                 tenquan: String
             },
             order_detail: [{
-                //id_monan : String,
                 monan: {
                     ten: String,
                     id: String
@@ -72,6 +69,7 @@ var schema_dichvu = mongoose.Schema({
             tenduong: String,
             zipcode: Number
         },
+        rating: Number,
         mota: String,
         avatar_url: String,
         doanhthu: {
@@ -79,7 +77,7 @@ var schema_dichvu = mongoose.Schema({
             order: [{
                 tongtien: Number,
                 giodat: Date,
-                //id_diachi
+                trangthai: String,
                 diachi: {
                     tenthanhpho: String,
                     tenquan: String
@@ -111,7 +109,6 @@ var schema_dichvu = mongoose.Schema({
                 danhgia: [{
                     comment: String,
                     star: Number,
-                    //?? id_user
                     nguoimua: {
                         id: String,
                         name: String,
