@@ -68,7 +68,19 @@ function check_Permission(permission, name_permission, id) {
     }
     return false;
 }
+//xem-them-sua-xoa
 //-----sanpham-------------
+router.get("/listsanpham", function(req, res, next) {
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+
+    var id_Monan = req.body.id || req.query.id;
+    if(!id_Monan || id_Monan.trim().length == 0) return next();
+    if (check_Permission(permission, "monan", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
+
+
+})
 router.get("/listsanpham", function(req, res) {
     var user = req.user;
     var id = user._id;
@@ -97,7 +109,7 @@ router.post("/listsanpham", function(req, res) {
     var danhmuc = sanpham.danhmuc;
     var ten = sanpham.ten;
     var mota = sanpham.mota;
-    var hinhanh_url = null;
+    var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;
@@ -110,7 +122,6 @@ router.post("/listsanpham", function(req, res) {
 
     if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
         return res.status(400).json({success: false, notification: "input's wrong"});
-
     var data = {
         ten: ten,
         mota: mota,
