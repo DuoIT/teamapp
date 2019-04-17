@@ -232,33 +232,47 @@ router.get("/profile", function(req, res) {
 //EDIT PROFILE-------------------------
 router.put("/profile", function(req, res) {
         var id = req.user._id;
-        var user = req.body;
+        var profile = req.body;
 
-        var name_personal = user.name_personal;
-        var address = user.address;
-        var name_store = user.name_store;
-        var phonenumber = user.phonenumber;
-        var tenthanhpho = user.tenthanhpho;
-        var tenquan = user.tenquan;
-        var tenduong = user.tenduong;
-        var mota = user.mota;
-        var avarta_url = null;
+        var name_personal = profile.name_personal;
+        var address_personal = profile.address_personal;
+        var phonenumber_personal = profile.phonenumber_personal;
+        var avarta_url_personal = null;
 
-        if (!phonenumber || phonenumber.trim().length == 0 ||
-            !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0 ||
-            !name_store || name_store.trim().length == 0)
+        var name_store = profile.name_store;
+        var phonenumber_store = profile.phonenumber_store;
+        var tenthanhpho_store = profile.tenthanhpho_store;
+        var tenquan_store = profile.tenquan_store;
+        var tenduong_store = profile.tenduong_store;
+        var mota_store = profile.mota_store;
+        var avarta_url_store = null;
+        console.log(name_personal +"/"+
+            address_personal +"/"+
+            phonenumber_personal +"/"+
+            name_store +"/"+
+            phonenumber_store +"/"+
+            tenthanhpho_store +"/"+
+            tenquan_store +"/"+
+            tenduong_store +"/"+
+            mota_store)
+        if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
+            !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
+            !name_personal || name_personal.trim().length == 0 ||
+            !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length == 0)
             return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
 
         var data = {
             name_personal: name_personal,
-            address: address,
+            address_personal: address_personal,
+            phonenumber_personal: phonenumber_personal,
+            avarta_url_personal: avarta_url_personal,
             name_store: name_store,
-            phonenumber: phonenumber,
-            tenthanhpho: tenthanhpho,
-            tenquan: tenquan,
-            tenduong: tenduong,
-            mota: mota,
-            avarta_url: avarta_url
+            phonenumber_store: phonenumber_store,
+            tenthanhpho_store: tenthanhpho_store,
+            tenquan_store: tenquan_store,
+            tenduong_store: tenduong_store,
+            mota_store: mota_store,
+            avarta_url_store: avarta_url_store
         }
 
         data_Profile_From_DB.updateProfileStoreById(id, data, function(result) {

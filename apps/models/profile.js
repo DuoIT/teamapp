@@ -18,16 +18,17 @@ function updateProfileStoreById(id, data, fn_result) {
         if (err) return fn_result(false);
         if (!result) return fn_result(false);
         result.information.name = data.name_personal;
-        result.information.address = data.address;
-        result.information.phonenumber = data.phonenumber;
-        result.information.avarta_url = data.avarta_url;
+        result.information.address = data.address_personal;
+        result.information.phonenumber = data.phonenumber_personal;
+        if(data.avarta_url_personal) result.information.avarta_url = data.avarta_url_personal;
 
         result.dichvu.ten = data.name_store;
-        result.dichvu.mota = data.mota;
-        result.dichvu.avarta_url = data.avarta_url;
-        result.dichvu.diachi.tenthanhpho = data.tenthanhpho;
-        result.dichvu.diachi.tenquan = data.tenquan;
-        result.dichvu.diachi.tenduong = data.tenduong;
+        result.dichvu.mota = data.mota_store;
+        result.dichvu.phonenumber = data.phonenumber_store;
+        if(data.avarta_url_store) result.dichvu.avarta_url = data.avarta_url_store;
+        result.dichvu.diachi.tenthanhpho = data.tenthanhpho_store;
+        result.dichvu.diachi.tenquan = data.tenquan_store;
+        result.dichvu.diachi.tenduong = data.tenduong_store;
 
         var user = new mogoose.model_dichvu(result);
         user.save(function(err, result) {
