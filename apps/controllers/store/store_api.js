@@ -79,7 +79,13 @@ router.get("/listsanpham", function(req, res, next) {
     if(!id_Monan || id_Monan.trim().length == 0) return next();
     if (check_Permission(permission, "monan", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
 
-
+    data_Monan_From_DB.getMonAnById(id, id_Monan, function(result) {
+        if(!result) res.status(500).json({success: false});
+        else res.status(200).json({
+            success: true,
+            result: result
+        });
+    })
 })
 router.get("/listsanpham", function(req, res) {
     var user = req.user;
@@ -88,7 +94,7 @@ router.get("/listsanpham", function(req, res) {
     //------CHECK PERMISSION-------------
     if (check_Permission(permission, "monan", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
 
-    data_Monan_From_DB.getMonAnById(id, function(result) {
+    data_Monan_From_DB.getListMonAnById(id, function(result) {
         if (!result) res.status(500).json({success: false});
         else res.status(200).json({
             success: true,
