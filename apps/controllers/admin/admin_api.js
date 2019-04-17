@@ -44,7 +44,7 @@ router.get("/listsanpham", function(req, res) {
     // if(check_Permission(permission, "monan", 1) == false) return res.status(401).json({data:{success:false, notification:"You can't view monan"}});
     var id = req.body.id || req.query.id;
 
-    data_Monan_From_DB.getMonAnById(id, function(result) {
+    data_Monan_From_DB.getListMonAnById(id, function(result) {
         if (!result) res.status(500).json({ success: false } );
         else res.status(200).json({
             success: true,

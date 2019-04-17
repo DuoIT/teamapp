@@ -55,11 +55,10 @@ router.post("/signup", function(req, res) {
         }
     }
     data_User_From_DB.getUserByUsername(username, function(result) {
-        if (result.length != 0) res.status(400).json({ notification: "username is exist" }); //status 400 for same username
+        if (result) return res.status(401).json({ data: { success: false, notification: "username was exist" } });//status 400 for same username
         else data_User_From_DB.createUser(data_Of_DichVu, function(result) {
-            if (result)
-                res.status(200).json({ _id: result._id });
-            else res.status(500).json({ notification: "server error" }); //status 500 for no know erroe
+            if (result) return res.status(200).json({ data: { success: true } });
+            else res.status(500).json({ data: { success: false } }); //status 500 for no know erroe
         });
 
     });

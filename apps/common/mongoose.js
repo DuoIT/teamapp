@@ -72,6 +72,7 @@ var schema_dichvu = mongoose.Schema({
         rating: Number,
         mota: String,
         avatar_url: String,
+        phonenumber: String,
         doanhthu: {
             tongdoanhthu: Number,
             order: [{

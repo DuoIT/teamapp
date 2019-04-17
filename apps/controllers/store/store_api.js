@@ -68,7 +68,25 @@ function check_Permission(permission, name_permission, id) {
     }
     return false;
 }
+//xem-them-sua-xoa
 //-----sanpham-------------
+router.get("/listsanpham", function(req, res, next) {
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+
+    var id_Monan = req.body.id || req.query.id;
+    if(!id_Monan || id_Monan.trim().length == 0) return next();
+    if (check_Permission(permission, "monan", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
+
+    data_Monan_From_DB.getMonAnById(id, id_Monan, function(result) {
+        if(!result) res.status(500).json({success: false});
+        else res.status(200).json({
+            success: true,
+            result: result
+        });
+    })
+})
 router.get("/listsanpham", function(req, res) {
     var user = req.user;
     var id = user._id;
@@ -76,7 +94,7 @@ router.get("/listsanpham", function(req, res) {
     //------CHECK PERMISSION-------------
     if (check_Permission(permission, "monan", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
 
-    data_Monan_From_DB.getMonAnById(id, function(result) {
+    data_Monan_From_DB.getListMonAnById(id, function(result) {
         if (!result) res.status(500).json({success: false});
         else res.status(200).json({
             success: true,
@@ -97,7 +115,7 @@ router.post("/listsanpham", function(req, res) {
     var danhmuc = sanpham.danhmuc;
     var ten = sanpham.ten;
     var mota = sanpham.mota;
-    var hinhanh_url = null;
+    var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;
@@ -110,7 +128,6 @@ router.post("/listsanpham", function(req, res) {
 
     if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
         return res.status(400).json({success: false, notification: "input's wrong"});
-
     var data = {
         ten: ten,
         mota: mota,
@@ -155,7 +172,7 @@ router.put("/listsanpham", function(req, res) {
         var id = user._id;
         var permission = user.role.permission;
         if (check_Permission(permission, "monan", 3) == false) return res.status(401).json({ success: false, notification: "You can't EDIT monan"});
-        var id_monan = req.query.id_monan || req.body.id_monan;
+        var id_monan = req.query.id || req.body.id;
         var danhmuc = req.query.danhmuc || req.body.danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
@@ -187,8 +204,11 @@ router.put("/listsanpham", function(req, res) {
         })
     })
     //------profile---------
-router.get("/profile", function(req, res) {
+router.get("/profile", function(req, res, next) {
     var id = req.user._id;
+    
+    var id_Profile = req.body.id || req.query.id;
+    if(!id_Profile || id_Profile.trim().length == 0) return next();
 
     data_Profile_From_DB.getProfileStoreById(id, function(result) {
         if (!result) res.status(500).json({ success: false });
@@ -197,37 +217,62 @@ router.get("/profile", function(req, res) {
             result: result
         })
     })
+});    
+router.get("/profile", function(req, res) {
+    var id = req.user._id;
+    
+    data_Profile_From_DB.getProfileStoreById(id, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: [result]
+        })
+    })
 });
 //EDIT PROFILE-------------------------
 router.put("/profile", function(req, res) {
         var id = req.user._id;
-        var user = req.body;
+        var profile = req.body;
 
-        var name_personal = user.name_personal;
-        var address = user.address;
-        var name_store = user.name_store;
-        var phonenumber = user.phonenumber;
-        var tenthanhpho = user.tenthanhpho;
-        var tenquan = user.tenquan;
-        var tenduong = user.tenduong;
-        var mota = user.mota;
-        var avarta_url = null;
+        var name_personal = profile.name_personal;
+        var address_personal = profile.address_personal;
+        var phonenumber_personal = profile.phonenumber_personal;
+        var avarta_url_personal = null;
 
-        if (!phonenumber || phonenumber.trim().length == 0 ||
-            !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0 ||
-            !name_store || name_store.trim().length == 0)
+        var name_store = profile.name_store;
+        var phonenumber_store = profile.phonenumber_store;
+        var tenthanhpho_store = profile.tenthanhpho_store;
+        var tenquan_store = profile.tenquan_store;
+        var tenduong_store = profile.tenduong_store;
+        var mota_store = profile.mota_store;
+        var avarta_url_store = null;
+        console.log(name_personal +"/"+
+            address_personal +"/"+
+            phonenumber_personal +"/"+
+            name_store +"/"+
+            phonenumber_store +"/"+
+            tenthanhpho_store +"/"+
+            tenquan_store +"/"+
+            tenduong_store +"/"+
+            mota_store)
+        if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
+            !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
+            !name_personal || name_personal.trim().length == 0 ||
+            !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length == 0)
             return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
 
         var data = {
             name_personal: name_personal,
-            address: address,
+            address_personal: address_personal,
+            phonenumber_personal: phonenumber_personal,
+            avarta_url_personal: avarta_url_personal,
             name_store: name_store,
-            phonenumber: phonenumber,
-            tenthanhpho: tenthanhpho,
-            tenquan: tenquan,
-            tenduong: tenduong,
-            mota: mota,
-            avarta_url: avarta_url
+            phonenumber_store: phonenumber_store,
+            tenthanhpho_store: tenthanhpho_store,
+            tenquan_store: tenquan_store,
+            tenduong_store: tenduong_store,
+            mota_store: mota_store,
+            avarta_url_store: avarta_url_store
         }
 
         data_Profile_From_DB.updateProfileStoreById(id, data, function(result) {
@@ -239,6 +284,20 @@ router.put("/profile", function(req, res) {
         })
     })
     //------order--------
+router.get("/listorder", function(req, res, next) {
+    var id = req.user._id;
+
+    var id_Order = req.body.id || req.query.id;
+    if(!id_Order || id_Order.trim().length == 0) return next();
+
+    data_Order_From_DB.getOrderById(id, id_Order, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+});
 router.get("/listorder", function(req, res) {
     var id = req.user._id;
 
@@ -253,13 +312,36 @@ router.get("/listorder", function(req, res) {
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res) {
         var id = req.user._id;
-
+        var doanhthu = [];
         data_Doanhthu_From_DB.getListDoanhThu(id, function(result) {
             if (!result) res.status(500).json({ success: false });
-            else res.status(200).json({
-                success: true,
-                result: result              
-            })
+            else {
+                // rs_result = result.toObject();
+                result.thoigian = "alldays";
+                result._id = "1";
+                doanhthu.push(result);
+                data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 30, function(result1) {
+                    if (!result) res.status(500).json({ success: false });
+                    else {
+                        // rs_result1 = result1.toObject();
+                        result1.thoigian = "30days";
+                        result1._id = "2";
+                        doanhthu.push(result1);
+                        data_Doanhthu_From_DB.getListOrderTheoNgayById(id, 7, function(result2) {
+                            if (!result) res.status(500).json({ success: false });
+                            else {
+                                // rs_result2 = result2.toObject();
+                                result2.thoigian = "7days";
+                                result2._id = "3";
+                                doanhthu.push(result2);
+                                res.status(200).json({
+                                success: true,
+                                result: doanhthu           
+                                 })}
+                        });
+                    }
+                });
+            }
         })
     })
     //--Using to add order into doanhthu to DEMO

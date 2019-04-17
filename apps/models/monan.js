@@ -6,7 +6,29 @@ const mongoose = require("../common/mongoose");
 //         return fn_result(result);
 //     });
 // }
-function getMonAnById(id, fn_result) {
+function getMonAnById(id, id_Monan, fn_result) {
+    mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
+        if(err) return fn_result(false);
+        else {
+            var monan = null;
+            danhmuc = result.dichvu.danhmuc;
+            danhmuc.forEach(function(elem_danhmuc) {
+                elem_danhmuc.monan.forEach(function(elem_monan) {
+                    if(elem_monan._id == id_Monan) {
+                        var rs_monan = elem_monan.toObject();
+                        rs_monan.id_danhmuc = elem_danhmuc._id;
+                        rs_monan.ten_danhmuc = elem_danhmuc.ten;
+                        rs_monan.mota_danhmuc = elem_danhmuc.mota;
+                        monan = rs_monan;
+                        return;
+                    }
+                });  
+            })
+            fn_result(monan);
+        }
+    });
+}
+function getListMonAnById(id, fn_result) {
     mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if(err) return fn_result(false);
         else {
@@ -89,6 +111,7 @@ function updateMonAnById(id, id_monan, danhmuc, data, fn_result) {
 module.exports = {
     // getAllMonAn : getAllMonAn,
     getMonAnById : getMonAnById,
+    getListMonAnById : getListMonAnById,
     // getMonAnByName : getMonAnByName,
     createMonAnOfStore : createMonAnOfStore,
     deleteMonAnById : deleteMonAnById,
