@@ -204,7 +204,7 @@ router.put("/listsanpham", function(req, res) {
         })
     })
     //------profile---------
-router.get("/profile", function(req, res) {
+router.get("/profile", function(req, res, next) {
     var id = req.user._id;
     
     var id_Profile = req.body.id || req.query.id;
@@ -270,7 +270,7 @@ router.put("/profile", function(req, res) {
         })
     })
     //------order--------
-router.get("/listorder", function(req, res) {
+router.get("/listorder", function(req, res, next) {
     var id = req.user._id;
 
     var id_Order = req.body.id || req.query.id;
