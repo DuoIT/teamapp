@@ -87,18 +87,27 @@ function updateMonAnById(id, id_monan, danhmuc, data, fn_result) {
     mongoose.model_dichvu.findOne({_id : id}).exec(function(err, result) {
         if(err) return fn_result(false);
         if(result.dichvu) {
-            result.dichvu.danhmuc.forEach(function(danhmuc) {     
-                if(danhmuc.monan) {
-                    danhmuc.monan.forEach(function(monan) {
-                        if(monan && monan._id == id_monan) {
-                            monan.ten = data.ten;
-                            monan.mota = data.mota;
-                            monan.hinhanh_url = data.hinhanh_url;
-                            monan.gia = data.gia;
-                            monan.soluong = data.soluong;
-                        }
-                    })        
-                }
+            result.dichvu.danhmuc.forEach(function(elem_danhmuc) {     
+                    if(elem_danhmuc.monan) {
+                        elem_danhmuc.monan.forEach(function(elem_monan) {
+                            if(elem_monan && elem_monan._id == id_monan) {
+                                if(elem_danhmuc.ten == danhmuc) {
+                                    elem_monan.ten = data.ten;
+                                    elem_monan.mota = data.mota;
+                                    if(data.hinhanh_url) elem_monan.hinhanh_url = data.hinhanh_url;
+                                    elem_monan.gia = data.gia;
+                                    elem_monan.soluong = data.soluong;
+                                }
+                                // }else {
+                                //     for(i = 0; i < result.dichvu.danhmuc.length; i++) {
+                                //         if(result.dichvu.danhmuc[i].ten == danhmuc) {
+
+                                //         }
+                                //     }
+                                // }
+                            }
+                        })        
+                    }
             })
             var user = new mongoose.model_dichvu(result);
             user.save();
