@@ -172,7 +172,7 @@ router.put("/listsanpham", function(req, res) {
         var id = user._id;
         var permission = user.role.permission;
         if (check_Permission(permission, "monan", 3) == false) return res.status(401).json({ success: false, notification: "You can't EDIT monan"});
-        var id_monan = req.query.id_monan || req.body.id_monan;
+        var id_monan = req.query.id || req.body.id;
         var danhmuc = req.query.danhmuc || req.body.danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
@@ -206,7 +206,21 @@ router.put("/listsanpham", function(req, res) {
     //------profile---------
 router.get("/profile", function(req, res) {
     var id = req.user._id;
+    
+    var id_Profile = req.body.id || req.query.id;
+    if(!id_Profile || id_Profile.trim().length == 0) return next();
 
+    data_Profile_From_DB.getProfileStoreById(id, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+});    
+router.get("/profile", function(req, res) {
+    var id = req.user._id;
+    
     data_Profile_From_DB.getProfileStoreById(id, function(result) {
         if (!result) res.status(500).json({ success: false });
         else res.status(200).json({
@@ -256,6 +270,20 @@ router.put("/profile", function(req, res) {
         })
     })
     //------order--------
+router.get("/listorder", function(req, res) {
+    var id = req.user._id;
+
+    var id_Order = req.body.id || req.query.id;
+    if(!id_Order || id_Order.trim().length == 0) return next();
+
+    data_Order_From_DB.getOrderById(id, id_Order, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+});
 router.get("/listorder", function(req, res) {
     var id = req.user._id;
 
