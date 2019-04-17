@@ -234,17 +234,17 @@ router.put("/profile/:ignore", function(req, res) {
         var id = req.user._id;
         var profile = req.body;
 
-        var name_personal = profile.name_personal;
-        var address_personal = profile.address_personal;
-        var phonenumber_personal = profile.phonenumber_personal;
+        var name_personal = profile.information.name;
+        var address_personal = profile.information.address;
+        var phonenumber_personal = profile.information.phonenumber;
         var avarta_url_personal = null;
 
-        var name_store = profile.name_store;
-        var phonenumber_store = profile.phonenumber_store;
-        var tenthanhpho_store = profile.tenthanhpho_store;
-        var tenquan_store = profile.tenquan_store;
-        var tenduong_store = profile.tenduong_store;
-        var mota_store = profile.mota_store;
+        var name_store = profile.dichvu.ten;
+        var phonenumber_store = profile.dichvu.phonenumber;
+        var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
+        var tenquan_store = profile.dichvu.diachi.tenquan;
+        var tenduong_store = profile.dichvu.diachi.tenduong;
+        var mota_store = profile.dichvu.mota;
         var avarta_url_store = null;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
