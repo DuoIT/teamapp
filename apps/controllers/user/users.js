@@ -78,39 +78,20 @@ router.get("/liststore", function(req, res) {
     });
 });
 
-// router.get("/listfood", function(req, res) {
-//     var user = req.user;
-//     var id = user._id;
-//     console.log(id);
-//     var id_monan = req.query.id_monan || req.body.id_monan;
-//     var danhmuc = req.query.danhmuc || req.body.danhmuc;
-
-//     data_User_From_DB.getAllFoods(id, function(result) {
-//         if(!result) res.status(500).json({data: {success: false}});
-//         else res.status(200).json({
-//             data: {
-//                 success: true,
-//                 result: result,
-//             }
-//         });
-//     });
-// })
-
 router.get("/listfood", function (req, res) {
-     var id = req.query.monan || req.body.monan;
-    //var id = req.user._id;
-    data_User_From_DB.getAllFoods(id, function (result) {
+    var id = req.query.id_dv || req.body.id_dv;
+    data_User_From_DB.getFoodByStoreId(id, function (result) {
         if (!result) res.status(500).json({ success: false });
         else res.status(200).json({
             success: true,
             result: result
         })
-
     })
 });
 
 router.get("/listcategoryfoods", function(req, res) {
-    data_User_From_DB.getAllCategoryFoods(function(result) {
+    var id = req.query.id_dv || req.body.id_dv;
+    data_User_From_DB.getAllCategoryFoods(id, function(result) {
         if (!result) res.status(500).json({data: {success: false}});
         else res.status(200).json({
             data: {
