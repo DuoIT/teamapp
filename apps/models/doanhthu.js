@@ -35,36 +35,30 @@ function getDoanhThuById(id, id_Order, fn_result) {
             }           
             var date = new Date(getFullYear, getMonth - 1 , getDate + 1);
             var tongtien = 0;            
-            for(i = doanhthu.order.length - 1; i >= 0; i--) {
-                if(doanhthu.order[i].giodat < date || doanhthu.order[i].giodat > new Date()
-                || doanhthu.order[i].trangthai == false) doanhthu.order.splice(i, 1);
+            mogoose.model_order.find({_id: {"$in": doanhthu.order}, giodat: {"$gt": date}, trangthai:"dagiao"}, function(err, orders) {
+                if(err) fn_result(false)
                 else {
-                    tongtien += doanhthu.order[i].tongtien;
-                    
+                    var rs_Order = [];
+                    orders.forEach(function(elem_Order) {
+                        var data = {};
+                        data.tenthanhpho = elem_Order.diachi.tenthanhpho;
+                        data.tenquan = elem_Order.diachi.tenquan;
+                        var order_Detail = elem_Order.order_detail;
+                        var ten_SoLuong_Monan = "";
+                        order_Detail.forEach(function(elem_OrderDetail) {
+                            ten_SoLuong_Monan += elem_OrderDetail.monan.ten +"- "+ elem_OrderDetail.soluong + " phần";
+                            if(elem_OrderDetail !== order_Detail[order_Detail.length - 1]) ten_SoLuong_Monan += ", "; 
+                        })
+                        data.ten_monan = ten_SoLuong_Monan;
+                        data.tongtien = elem_Order.tongtien;
+                        data.trangthai = elem_Order.trangthai;
+                        data._id = elem_Order._id;
+                        data.giodat = elem_Order.giodat;
+                        rs_Order.push(data);
+                    })
+                    return fn_result(rs_Order);
                 }
-            }
-            doanhthu.tongdoanhthu = tongtien;
-
-            orders = doanhthu.order;
-            var rs_Order = [];
-            orders.forEach(function(elem_Order) {
-                var data = {};
-                data.tenthanhpho = elem_Order.diachi.tenthanhpho;
-                data.tenquan = elem_Order.diachi.tenquan;
-                var order_Detail = elem_Order.order_detail;
-                var ten_SoLuong_Monan = "";
-                order_Detail.forEach(function(elem_OrderDetail) {
-                    ten_SoLuong_Monan += elem_OrderDetail.monan.ten +"- "+ elem_OrderDetail.soluong + " phần";
-                    if(elem_OrderDetail !== order_Detail[order_Detail.length - 1]) ten_SoLuong_Monan += ", "; 
-                })
-                data.ten_monan = ten_SoLuong_Monan;
-                data.tongtien = elem_Order.tongtien;
-                data.trangthai = elem_Order.trangthai;
-                data._id = elem_Order._id;
-                data.giodat = elem_Order.giodat;
-                rs_Order.push(data);
             })
-            return fn_result(rs_Order);
         }
     });
 }
