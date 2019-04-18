@@ -4,15 +4,21 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
-const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile")); //"../models/profile"
+const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profileUsersModel")); //"../models/profile"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
 
 //---------------Check role----------------
 router.use(function(req, res, next) {
-    var token = req.body.token || req.query.token;
+    var tokenBearer = req.headers['authorization'];
+    var bearer = null;
+    if (typeof tokenBearer !== 'undefined') {
+        tokenBearerSplit = tokenBearer.split(' ');
+        bearer = tokenBearerSplit[1];
+    }
 
+    var token = req.body.token || req.query.token || bearer;
     if (!token) res.status(403).json({ notification: "no token" });
     else {
         jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
@@ -61,37 +67,43 @@ function check_Permission(permission, name_permission, id) {
 }
 
 // API for users
-router.get("/listmonan", function(req, res) {
 
-});
-
-// router.get("/liststore", function(req, res) {
-//     var user = req.user;
-//     var id = user._id;
-//     data_User_From_DB.getAllStores(id, function(result) {
-//         if (!result) res.status(500).json({ data: { success: false } });
-//         else res.status(200).json({
-//             data: {
-//                 success: true,
-//                 result: result,
-//             }
-//         })
-//     });
-// });
-router.post("/addorder", function(req, res) {
-
-});
-router.get("/listdanhmuc", function(req, res) {
-
-});
-
-//profile for user
-router.get("/profileUser", function(req, res) {
+router.get("/profile", function(req, res) {
     var id = req.user._id;
+
+    data_Profile_From_DB.getProfileUserById(id, function (result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
 });
 
-router.put("/profileUser/updateUser", function(req, res) {
+router.put("/profile", function(req, res) {
+    var id = req.user._id;
+    var profile = req.body;
 
+    var name_per = profile.information.name;
+    var address_per = profile.information.address;
+    var avatar_url_per = profile.information.avatar_url;
+
+    if (!name_per || name_per.trim().length == 0 || !address_per || address_per.trim().length == 0) {
+        return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
+    }
+    var data = {
+        name_per : name_per,
+        address_per : address_per,
+        avatar_url_per : avatar_url_per
+    }
+
+    data_Profile_From_DB.updateProfileUserById(id, data, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        }) 
+    })
 });
 
 //-----------MODULE EXPORTS -----------
