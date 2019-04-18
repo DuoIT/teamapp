@@ -18,10 +18,22 @@ function getAllStores(fn_result) {
 }
 
 function getFoodByStoreId(id, fn_result) {
-    var ATTRIBUTE_NEED_SHOW = "dichvu.danhmuc dichvu.danhmuc.monan dichvu.danhmuc.monan.ten dichvu.danhmuc.monan.mota dichvu.danhmuc.monan.hinhanh_url dichvu.danhmuc.monan.gia dichvu.danhmuc.monan.soluong dichvu.danhmuc.monan.trungbinhsao dichvu.danhmuc.monan.danhgia";
-    mongoose.model_dichvu.findOne({_id : id}).select(ATTRIBUTE_NEED_SHOW).exec((err, result) => {
+    mongoose.model_dichvu.findOne({ "_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if (err) fn_result(false);
-        return fn_result(result);
+        else {
+            var monan = [];
+            danhmuc = result.dichvu.danhmuc;
+            danhmuc.forEach(function (elem_danhmuc) {
+                elem_danhmuc.monan.forEach(function (elem_monan) {
+                    var rs_monan = elem_monan.toObject();
+                    rs_monan.id_danhmuc = elem_danhmuc._id;
+                    rs_monan.ten_danhmuc = elem_danhmuc.ten;
+                    rs_monan.mota_danhmuc = elem_danhmuc.mota;
+                    monan.push(rs_monan);
+                });
+            })
+            fn_result(monan);
+        }
     })
 }
 
