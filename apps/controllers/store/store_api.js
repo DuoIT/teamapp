@@ -236,7 +236,7 @@ router.put("/profile/:ignore", function(req, res) {
         var name_personal = profile.information.name;
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
-        var avarta_url_personal = profile.information.avatar_url;
+        var avatar_url_personal = profile.information.avatar_url;
 
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
@@ -244,25 +244,25 @@ router.put("/profile/:ignore", function(req, res) {
         var tenquan_store = profile.dichvu.diachi.tenquan;
         var tenduong_store = profile.dichvu.diachi.tenduong;
         var mota_store = profile.dichvu.mota;
-        var avarta_url_store = profile.dichvu.avatar_url;
+        var avatar_url_store = profile.dichvu.avatar_url;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
             !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length == 0)
             return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
-
+        
         var data = {
             name_personal: name_personal,
             address_personal: address_personal,
             phonenumber_personal: phonenumber_personal,
-            avarta_url_personal: avarta_url_personal,
+            avatar_url_personal: avatar_url_personal,
             name_store: name_store,
             phonenumber_store: phonenumber_store,
             tenthanhpho_store: tenthanhpho_store,
             tenquan_store: tenquan_store,
             tenduong_store: tenduong_store,
             mota_store: mota_store,
-            avarta_url_store: avarta_url_store
+            avatar_url_store: avatar_url_store
         }
 
         data_Profile_From_DB.updateProfileStoreById(id, data, function(result) {
