@@ -33,33 +33,7 @@ var schema_dichvu = mongoose.Schema({
                 ten: String,
             }
         }],
-        order: [{
-            tongtien: Number,
-            giodat: Date,
-            dichvu: {
-                ten: String,
-                avatar_url: String,
-                id: String
-            },
-            trangthai: String,
-            dichvu: {
-                ten: String,
-                avatar_url: String,
-                id: String
-            },
-            diachi: {
-                tenthanhpho: String,
-                tenquan: String
-            },
-            order_detail: [{
-                monan: {
-                    ten: String,
-                    id: String
-                },
-                soluong: Number,
-                gia: Number
-            }]
-        }],
+        order: [String]
     },
     dichvu: {
         ten: String,
@@ -75,27 +49,7 @@ var schema_dichvu = mongoose.Schema({
         phonenumber: String,
         doanhthu: {
             tongdoanhthu: Number,
-            order: [{
-                tongtien: Number,
-                giodat: Date,
-                trangthai: String,
-                diachi: {
-                    tenthanhpho: String,
-                    tenquan: String
-                },
-                information: {
-                    ten: String,
-                    id: String
-                },
-                order_detail: [{
-                    monan: {
-                        ten: String,
-                        id: String
-                    },
-                    soluong: Number,
-                    gia: Number
-                }]
-            }]
+            order: [String]
         },
         danhmuc: [{
             ten: String,
@@ -147,7 +101,8 @@ var schema_order = mongoose.Schema({
 })
 var schema_checkout = mongoose.Schema({
         id_monan: String,
-        id_dichvu: String
+        id_dichvu: String,
+        soluong: Number
 })
 const model_dichvu = mongoose.model("user", schema_dichvu);
 const model_order = mongoose.model("orders", schema_order);

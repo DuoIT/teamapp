@@ -360,10 +360,14 @@ router.post("/addorder", function(req, res) {
     var ten_monan = order.ten_monan;
     var soluong = order.soluong;
     var gia = order.gia;
-
+    var ten_information = order.ten_information;
+    var id_information = order.id_information;
+    var ten_dichvu = order.ten_dichvu;
+    var id_dichvu = order.id_dichvu;
     var data = {
         tongtien: soluong * gia,
         giodat: giodat,
+        trangthai: "chuagiao",
         diachi: {
             tenthanhpho: tenthanhpho,
             tenquan: tenquan
@@ -375,15 +379,35 @@ router.post("/addorder", function(req, res) {
             },
             soluong: soluong,
             gia: gia
-        }]
+        }],
+        information: {
+            ten: ten_information,
+            id: id_information
+        },
+        dichvu: {
+            ten: ten_dichvu,
+            id: id_dichvu
+        },
     }
 
-    data_Doanhthu_From_DB.addOrderDoanhThuById(id, data, function(result) {
+    data_Doanhthu_From_DB.addOrderDoanhThuById(data, function(result) {
         if (result) {
             console.log("result:" + result);
         } else console.log("khong co ket qua");
     })
 })
+//test
+router.get("/hahaorder", function(req, res) {
+    var id = req.user._id;
+
+    data_Doanhthu_From_DB.getAllOrderDoanhThu(id, function(result) {
+        if(result) res.status(200).json({
+            success: true,
+            result: result           
+        })
+    })
+})
+//
 router.get("/listdoanhthu7ngay", function(req, res) {
     var id = req.user._id;
     var soNgay = 7;
