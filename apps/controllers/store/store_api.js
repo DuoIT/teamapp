@@ -121,8 +121,8 @@ router.post("/listsanpham", function(req, res) {
     var trungbinhsao = 0;
     //CHECK INPUT VALID
     if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
-    else if (danhmuc.trim() != "cơm" && danhmuc.trim() != "thức ăn" && danhmuc.trim() != "canh")
-        return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('cơm','canh','thức ăn')"});
+    else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
+        return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
 
     if (!sanpham) return res.status(400).json({success: false, notification: "input's wrong"});
 
@@ -180,8 +180,8 @@ router.put("/listsanpham/:ignore", function(req, res) {
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
         if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
-        else if (danhmuc.trim() != "cơm" && danhmuc.trim() != "thức ăn" && danhmuc.trim() != "canh")
-            return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('cơm','canh','thức ăn')"});
+        else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
+            return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
 
         if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
             return res.status(400).json({ success: false, notification: "input's wrong" });
