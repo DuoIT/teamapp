@@ -236,7 +236,7 @@ router.put("/profile/:ignore", function(req, res) {
         var name_personal = profile.information.name;
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
-        var avarta_url_personal = null;
+        var avarta_url_personal = profile.information.avatar_url;
 
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
@@ -244,7 +244,7 @@ router.put("/profile/:ignore", function(req, res) {
         var tenquan_store = profile.dichvu.diachi.tenquan;
         var tenduong_store = profile.dichvu.diachi.tenduong;
         var mota_store = profile.dichvu.mota;
-        var avarta_url_store = null;
+        var avarta_url_store = profile.dichvu.avatar_url;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
