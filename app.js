@@ -25,8 +25,8 @@ app.use(function(req, res, next) {
 });
 //body-parser
 
-app.use(body_parser.json());
-app.use(body_parser.urlencoded({extended:false}));
+// app.use(body_parser.json());
+// app.use(body_parser.urlencoded({extended:false}));
 //express-session
 app.set("trust proxy", 1);
 app.set(session({

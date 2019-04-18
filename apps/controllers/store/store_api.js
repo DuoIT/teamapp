@@ -166,20 +166,19 @@ router.delete("/listsanpham", function(req, res) {
     })
 
 })
-router.put("/listsanpham", function(req, res) {
+router.put("/listsanpham/:ignore", function(req, res) {
         //DEFINE CODDE........
         var user = req.user;
         var id = user._id;
         var permission = user.role.permission;
         if (check_Permission(permission, "monan", 3) == false) return res.status(401).json({ success: false, notification: "You can't EDIT monan"});
-        var id_monan = req.query.id || req.body.id;
-        var danhmuc = req.query.danhmuc || req.body.danhmuc;
+        var id_monan =req.body.id ||  req.query.id;
+        var danhmuc = req.query.ten_danhmuc || req.body.ten_danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
-        var hinhanh_url = null;
+        var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;;
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
-
         if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
         else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
             return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
@@ -230,49 +229,40 @@ router.get("/profile", function(req, res) {
     })
 });
 //EDIT PROFILE-------------------------
-router.put("/profile", function(req, res) {
+router.put("/profile/:ignore", function(req, res) {
         var id = req.user._id;
         var profile = req.body;
 
-        var name_personal = profile.name_personal;
-        var address_personal = profile.address_personal;
-        var phonenumber_personal = profile.phonenumber_personal;
-        var avarta_url_personal = null;
+        var name_personal = profile.information.name;
+        var address_personal = profile.information.address;
+        var phonenumber_personal = profile.information.phonenumber;
+        var avatar_url_personal = profile.information.avatar_url;
 
-        var name_store = profile.name_store;
-        var phonenumber_store = profile.phonenumber_store;
-        var tenthanhpho_store = profile.tenthanhpho_store;
-        var tenquan_store = profile.tenquan_store;
-        var tenduong_store = profile.tenduong_store;
-        var mota_store = profile.mota_store;
-        var avarta_url_store = null;
-        console.log(name_personal +"/"+
-            address_personal +"/"+
-            phonenumber_personal +"/"+
-            name_store +"/"+
-            phonenumber_store +"/"+
-            tenthanhpho_store +"/"+
-            tenquan_store +"/"+
-            tenduong_store +"/"+
-            mota_store)
+        var name_store = profile.dichvu.ten;
+        var phonenumber_store = profile.dichvu.phonenumber;
+        var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
+        var tenquan_store = profile.dichvu.diachi.tenquan;
+        var tenduong_store = profile.dichvu.diachi.tenduong;
+        var mota_store = profile.dichvu.mota;
+        var avatar_url_store = profile.dichvu.avatar_url;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
             !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length == 0)
             return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
-
+        
         var data = {
             name_personal: name_personal,
             address_personal: address_personal,
             phonenumber_personal: phonenumber_personal,
-            avarta_url_personal: avarta_url_personal,
+            avatar_url_personal: avatar_url_personal,
             name_store: name_store,
             phonenumber_store: phonenumber_store,
             tenthanhpho_store: tenthanhpho_store,
             tenquan_store: tenquan_store,
             tenduong_store: tenduong_store,
             mota_store: mota_store,
-            avarta_url_store: avarta_url_store
+            avatar_url_store: avatar_url_store
         }
 
         data_Profile_From_DB.updateProfileStoreById(id, data, function(result) {
@@ -310,6 +300,20 @@ router.get("/listorder", function(req, res) {
     })
 });
 //--------doanhthu---------
+router.get("/listdoanhthu", function(req, res, next) {
+    var id = req.user._id;
+
+    var id_Doanhthu = req.query.id;
+    if(!id_Doanhthu) return next();
+
+    data_Doanhthu_From_DB.getDoanhThuById(id, id_Doanhthu, function(result) {
+        if(!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+})
 router.get("/listdoanhthu", function(req, res) {
         var id = req.user._id;
         var doanhthu = [];

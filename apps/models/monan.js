@@ -1,11 +1,5 @@
 const mongoose = require("../common/mongoose");
 
-// function getAllMonAn(fn_result) {
-//     mongoose.model_dichvu.find({"name_per":"nguoinau"}).select("nguoinau.monan").exec(function(err, result) {
-//         if(err) return fn_result(false);
-//         return fn_result(result);
-//     });
-// }
 function getMonAnById(id, id_Monan, fn_result) {
     mongoose.model_dichvu.findOne({"_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if(err) return fn_result(false);
@@ -47,13 +41,6 @@ function getListMonAnById(id, fn_result) {
         }
     });
 }
-// function getMonAnByName(name, fn_result) {
-//     mongoose.model_dichvu.find({"name_per":"nguoinau", "name_per":"nguoinau", "nguoinau.monan.tenmon" : name})
-//     .select("nguoinau.monan").exec(function(err, result) {
-//         if(err) return fn_result(false);
-//         return fn_result(result);
-//     });
-// }
 //-----------ADD MONAN-------------
 function createMonAnOfStore(id, danhmuc, monan, fn_result) {
     mongoose.model_dichvu.findOneAndUpdate({_id : id, "dichvu.danhmuc.ten": danhmuc}, {$push: {"dichvu.danhmuc.$.monan": monan}},
@@ -87,18 +74,30 @@ function updateMonAnById(id, id_monan, danhmuc, data, fn_result) {
     mongoose.model_dichvu.findOne({_id : id}).exec(function(err, result) {
         if(err) return fn_result(false);
         if(result.dichvu) {
-            result.dichvu.danhmuc.forEach(function(danhmuc) {     
-                if(danhmuc.monan) {
-                    danhmuc.monan.forEach(function(monan) {
-                        if(monan && monan._id == id_monan) {
-                            monan.ten = data.ten;
-                            monan.mota = data.mota;
-                            monan.hinhanh_url = data.hinhanh_url;
-                            monan.gia = data.gia;
-                            monan.soluong = data.soluong;
-                        }
-                    })        
-                }
+            result.dichvu.danhmuc.forEach(function(elem_danhmuc) {     
+                    if(elem_danhmuc.monan) {
+                        monans = elem_danhmuc.monan;
+                        for(i = 0; i < monans.length; i++) {
+                            if(monans[i]._id == id_monan) {
+                                monans[i].ten = data.ten;
+                                monans[i].mota = data.mota;
+                                if(data.hinhanh_url) monans[i].hinhanh_url = data.hinhanh_url;
+                                monans[i].gia = data.gia;
+                                monans[i].soluong = data.soluong;
+
+                                if(elem_danhmuc.ten != danhmuc) {
+                                    for(j = 0; j < result.dichvu.danhmuc.length; j++) {
+                                        if(result.dichvu.danhmuc[j].ten == danhmuc) {
+                                            result.dichvu.danhmuc[j].monan.push(monans[i]);
+                                            break;
+                                        }
+                                    }
+                                    elem_danhmuc.monan.splice(i, 1);
+                                }
+
+                            }
+                        }  
+                    }
             })
             var user = new mongoose.model_dichvu(result);
             user.save();
@@ -109,10 +108,8 @@ function updateMonAnById(id, id_monan, danhmuc, data, fn_result) {
 }
 
 module.exports = {
-    // getAllMonAn : getAllMonAn,
     getMonAnById : getMonAnById,
     getListMonAnById : getListMonAnById,
-    // getMonAnByName : getMonAnByName,
     createMonAnOfStore : createMonAnOfStore,
     deleteMonAnById : deleteMonAnById,
     updateMonAnById : updateMonAnById
