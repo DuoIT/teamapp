@@ -45,13 +45,13 @@ function getAllCategoryFoods(id, fn_result) {
     })
 }
 function getUserByUsername(username, fn_result) {
-    mogoose.model_dichvu.findOne({ username: username }).exec((err, result) => {
+    mongoose.model_dichvu.findOne({ username: username }).exec((err, result) => {
         if (err) return fn_result(false);
         return fn_result(result);
     });
 }
 function createUser(user, fn_result) {
-    mogoose.model_dichvu.create(user, (err, result) => {
+    mongoose.model_dichvu.create(user, (err, result) => {
         if (err) console.log(err);
         return fn_result(result);
     })
