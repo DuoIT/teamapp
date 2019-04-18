@@ -166,20 +166,26 @@ router.delete("/listsanpham", function(req, res) {
     })
 
 })
-router.put("/listsanpham/:ignore", function(req, res) {
+router.put("/listsanpham", function(req, res) {
         //DEFINE CODDE........
         var user = req.user;
         var id = user._id;
         var permission = user.role.permission;
         if (check_Permission(permission, "monan", 3) == false) return res.status(401).json({ success: false, notification: "You can't EDIT monan"});
-        var id_monan = req.query.id || req.body.id;
+        var id_monan =req.body.id ||  req.query.id;
         var danhmuc = req.query.ten_danhmuc || req.body.ten_danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
         var hinhanh_url = null;
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
-
+        console.log("ignore:"+JSON.stringify(req.body));
+        console.log(id_monan +"/"+
+            danhmuc+"/"+
+            ten+"/"+
+            mota+"/"+
+            gia+"/"+
+            soluong)
         if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
         else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
             return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
@@ -307,7 +313,13 @@ router.get("/listdoanhthu", function(req, res, next) {
     var id_Doanhthu = req.query.id;
     if(!id_Doanhthu) return next();
 
-
+    data_Doanhthu_From_DB.getDoanhThuById(id, id_Doanhthu, function(result) {
+        if(!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
 })
 router.get("/listdoanhthu", function(req, res) {
         var id = req.user._id;
