@@ -80,8 +80,30 @@ router.get("/profile", function(req, res) {
     })
 });
 
-router.put("/profile/updateUser", function(req, res) {
-    
+router.put("/profile", function(req, res) {
+    var id = req.user._id;
+    var profile = req.body;
+
+    var name_per = profile.information.name;
+    var address_per = profile.information.address;
+    var avatar_url_per = profile.information.avatar_url;
+
+    if (!name_per || name_per.trim().length == 0 || !address_per || address_per.trim().length == 0) {
+        return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
+    }
+    var data = {
+        name_per : name_per,
+        address_per : address_per,
+        avatar_url_per : avatar_url_per
+    }
+
+    data_Profile_From_DB.updateProfileUserById(id, data, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        }) 
+    })
 });
 
 //-----------MODULE EXPORTS -----------

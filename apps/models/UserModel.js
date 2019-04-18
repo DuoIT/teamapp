@@ -18,7 +18,7 @@ function getAllStores(fn_result) {
 }
 
 function getFoodByStoreId(id, fn_result) {
-    var ATTRIBUTE_NEED_SHOW = "dichvu.danhmuc danhmuc.monan monan.ten monan.mota monan.hinhanh_url monan.gia monan.soluong monan.trungbinhsao monan.danhgia";
+    var ATTRIBUTE_NEED_SHOW = "dichvu.danhmuc dichvu.danhmuc.monan dichvu.danhmuc.monan.ten dichvu.danhmuc.monan.mota dichvu.danhmuc.monan.hinhanh_url dichvu.danhmuc.monan.gia dichvu.danhmuc.monan.soluong dichvu.danhmuc.monan.trungbinhsao dichvu.danhmuc.monan.danhgia";
     mongoose.model_dichvu.findOne({_id : id}).select(ATTRIBUTE_NEED_SHOW).exec((err, result) => {
         if (err) fn_result(false);
         return fn_result(result);
@@ -26,7 +26,7 @@ function getFoodByStoreId(id, fn_result) {
 }
 
 function getAllCategoryFoods(id, fn_result) {
-    var ATTRIBUTE_NEED_SHOW  = "dichvu.danhmuc danhmuc.ten danhmuc.mota danhmuc.monan monan.ten";
+    var ATTRIBUTE_NEED_SHOW = "dichvu.danhmuc dichvu.danhmuc.ten dichvu.danhmuc.mota";
     mongoose.model_dichvu.findOne({ _id: id }).select(ATTRIBUTE_NEED_SHOW).exec((err, results) => {
         if (err) fn_result(false);
         return fn_result(results);

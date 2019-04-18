@@ -118,7 +118,6 @@ var schema_dichvu = mongoose.Schema({
                 }]
             }]
         }],
-        rating: Number
     }
 });
 var schema_order = mongoose.Schema({
