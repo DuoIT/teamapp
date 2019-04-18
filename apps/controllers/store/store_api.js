@@ -166,7 +166,7 @@ router.delete("/listsanpham", function(req, res) {
     })
 
 })
-router.put("/listsanpham", function(req, res) {
+router.put("/listsanpham/:ignore", function(req, res) {
         //DEFINE CODDE........
         var user = req.user;
         var id = user._id;
@@ -176,16 +176,9 @@ router.put("/listsanpham", function(req, res) {
         var danhmuc = req.query.ten_danhmuc || req.body.ten_danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
-        var hinhanh_url = null;
+        var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;;
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
-        console.log("ignore:"+JSON.stringify(req.body));
-        console.log(id_monan +"/"+
-            danhmuc+"/"+
-            ten+"/"+
-            mota+"/"+
-            gia+"/"+
-            soluong)
         if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
         else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
             return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
