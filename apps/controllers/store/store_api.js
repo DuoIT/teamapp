@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const multer = require("multer");
+const fs = require("fs");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user")); //"../models/user"
 const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/monan")); //"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile")); //"../models/profile"
@@ -103,31 +105,52 @@ router.get("/listsanpham", function(req, res) {
 
     });
 })
-router.post("/listsanpham", function(req, res) {
+var storage_Monan = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './public/imgs/monan');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().getTime() + "_" + file.originalname);
+    }
+})
+var upload_Monan = multer({ storage: storage_Monan });
+router.post("/listsanpham", upload_Monan.single('monan_img'),function(req, res) {
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
+    var name_dictionary = "monan";
     console.log(id);
     //---CHECK PERMISSION-----
-    if (check_Permission(permission, "monan", 2) == false) return res.status(401).json({success: false, notification: "You can't ADD monan"});
+    if (check_Permission(permission, "monan", 2) == false) {
+        deleteImage(req);
+        return res.status(401).json({success: false, notification: "You can't ADD monan"});}
 
     var sanpham = req.body;
     var danhmuc = sanpham.danhmuc;
     var ten = sanpham.ten;
     var mota = sanpham.mota;
     var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
+    if(req.file) hinhanh_url = req.headers.host + "/images/monan?id=" + req.file.filename;
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;
     //CHECK INPUT VALID
-    if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
-    else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
-        return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});
+    if (!danhmuc || danhmuc.trim().length == 0) {
+        if(req.file) deleteImage(req);
+        return res.status(400).json({success: false, notification: "input's wrong"});}
+    else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh"){
+        if(req.file) deleteImage(req);   
+        return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});}
 
-    if (!sanpham) return res.status(400).json({success: false, notification: "input's wrong"});
+    if (!sanpham) {
+        if(req.file) deleteImage(req);
+        return res.status(400).json({success: false, notification: "input's wrong"});}
 
     if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
-        return res.status(400).json({success: false, notification: "input's wrong"});
+        {
+            if(req.file) deleteImage(req, name_dictionary);
+            return res.status(400).json({success: false, notification: "input's wrong"});
+        }
     var data = {
         ten: ten,
         mota: mota,
@@ -138,7 +161,9 @@ router.post("/listsanpham", function(req, res) {
     }
 
     data_Monan_From_DB.createMonAnOfStore(id, danhmuc, data, function(result) {
-        if (!result) res.status(500).json({success: false, notification: "unknown error"});
+        if (!result) {
+            if(req.file) deleteImage(req);
+            res.status(500).json({success: false, notification: "unknown error"});}
         else res.status(200).json({
             success: true, 
             notification: "created is success" 
@@ -229,15 +254,23 @@ router.get("/profile", function(req, res) {
     })
 });
 //EDIT PROFILE-------------------------
-router.put("/profile/:ignore", function(req, res) {
+var storage_Profile = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './public/imgs/avatar');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().getTime() + "_" + file.originalname);
+    }
+})
+var upload_Profile = multer({ storage: storage_Profile });
+router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res) {
         var id = req.user._id;
         var profile = req.body;
-
         var name_personal = profile.information.name;
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
         var avatar_url_personal = profile.information.avatar_url;
-
+        if(req.files[0]) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.files[0].filename;
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
         var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
@@ -245,11 +278,15 @@ router.put("/profile/:ignore", function(req, res) {
         var tenduong_store = profile.dichvu.diachi.tenduong;
         var mota_store = profile.dichvu.mota;
         var avatar_url_store = profile.dichvu.avatar_url;
+        if(req.files[1]) avatar_url_store = req.headers.host + "/images/avatar?id=" + req.files[1].filename;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
             !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length == 0)
-            return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
+            {
+                if(req.files) deleteImageAvatar(req);
+                return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
+            }
         
         var data = {
             name_personal: name_personal,
@@ -266,7 +303,9 @@ router.put("/profile/:ignore", function(req, res) {
         }
 
         data_Profile_From_DB.updateProfileStoreById(id, data, function(result) {
-            if (!result) res.status(500).json({ success: false } );
+            if (!result) {
+                if(req.files) deleteImageAvatar(req)
+                res.status(500).json({ success: false } );}
             else res.status(200).json({ 
                 success: true, 
                 notification: "updated is success" 
@@ -432,7 +471,27 @@ router.get("/listdoanhthu30ngay", function(req, res) {
         })
     });
 })
-
+function deleteImage(req) {
+    fs.unlink(path.join(__dirname, "../../../", "public/imgs/monan/" + req.file.filename), function(err) {
+        if (err) {
+            console.log(err);
+        }
+        else console.log("delete img is success");
+    });
+}
+function deleteImageAvatar(req) {
+    if(req.files) {
+        req.files.forEach(function(elem_Img) {
+            fs.unlink(path.join(__dirname, "../../../", "public/imgs/avatar/" + elem_Img.filename), function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                else console.log("delete img is success");
+            });
+        })
+    }
+    else res.status(500).json({success: false, notification: "unknown error"});
+}
 
 //-----------MODULE EXPORTS -----------
 module.exports = router;
