@@ -51,24 +51,19 @@ router.get("/listsanpham", function(req, res) {
 
     });
 });
-router.delete("/listsanpham", function(req, res) {
-    // var user = req.user;
-    // var id = user._id;
-    // var permission = user.role.permission;
-    // if(check_Permission(permission, "monan", 4) == false) return res.status(401).json({data:{success:false, notification:"You can't DELETE monan"}});
-    // var id = req.body.id_dichvu || req.query.id_dichvu;
-    // var id_monan = req.query.id_monan || req.body.id_monan;
+router.delete("/listsanpham/:id", function(req, res) {
+    var id_monan = req.query.id || req.body.id || req.params["id"];
 
-    // if (!id_monan || id_monan.trim().length == 0)
-    //     return res.status(400).json({ success: false, notification: "input's wrong" });
+    if (!id_monan || id_monan.trim().length == 0)
+        return res.status(400).json({ success: false, notification: "input's wrong" });
 
-    // data_Monan_From_DB.deleteMonAnById(id, id_monan, function(result) {
-    //     if (!result) res.status(500).json({ success: false, notification: "You can't ADD monanunknown error" });
-    //     else res.status(200).json({ 
-    //         success: true, 
-    //         notification: "delete is success" 
-    //     });
-    // })
+    data_Monan_From_DB.deleteMonAnById(id_monan, function(result) {
+        if (!result) res.status(500).json({ success: false, notification: "You can't ADD monanunknown error" });
+        else res.status(200).json({ 
+            success: true, 
+            notification: "delete is success" 
+        });
+    })
 
 })
 //--------doanhthu---------
