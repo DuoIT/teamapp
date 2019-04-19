@@ -34,6 +34,7 @@ function getListMonAnById(id, fn_result) {
                     rs_monan.id_danhmuc = elem_danhmuc._id;
                     rs_monan.ten_danhmuc = elem_danhmuc.ten;
                     rs_monan.mota_danhmuc = elem_danhmuc.mota;
+                    rs_monan.id_dichvu = result._id;
                     monan.push(rs_monan);
                 });  
             })

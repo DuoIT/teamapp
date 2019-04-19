@@ -11,5 +11,6 @@
     },
     "jsonwebtoken" : {
         "codesecret" : "secret"
-    }
+    },
+    "defaultpassword":"123456"
 }

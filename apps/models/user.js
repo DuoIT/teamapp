@@ -2,22 +2,6 @@ const mogoose = require("../common/mongoose");
 //bcrypt
 const bcrypt = require("../helpers/encode_password");
 
-function getAllStores(fn_result) {
-    var ATTRIBUTE_NEED_SHOW = "username role.licensed role.name_role dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url";
-    mogoose.model_dichvu.find({ "role.name_role": "store" }).select(ATTRIBUTE_NEED_SHOW).exec((err, results) => {
-        if (err) fn_result(false);
-        return fn_result(results);
-    })
-}
-
-function getAllCustomers(fn_result) {
-    var ATTRIBUTE_NEED_SHOW = "username role.licensed role.name_role information";
-    mogoose.model_dichvu.find({ "role.name_role": "user" }).select(ATTRIBUTE_NEED_SHOW).exec((err, results) => {
-        if (err) fn_result(false);
-        return fn_result(results);
-    })
-}
-
 function getUserByUsername(username, fn_result) {
     mogoose.model_dichvu.findOne({ username: username }).exec((err, result) => {
         if (err) return fn_result(false);
@@ -78,12 +62,7 @@ function updateAvatarOfUser(id, avatar_url, fn_result) {
         return fn_result(false);
     });
 }
-function deleteUser(id, fn_result) {
-    mogoose.model_dichvu.deleteOne({_id : id}, function(err) {
-        if(err) return fn_result(false);
-        return fn_result(true);
-    });
-}
+
 // function getAllUsersNguoiNau(fn_result) {
 //     if(location_Of_Password_Attr != -1) ATTRIBUTE_NEED_SHOW = ATTRIBUTE_NEED_SHOW.substring(0, location_Of_Password_Attr) 
 //                             + ATTRIBUTE_NEED_SHOW.substring(location_Of_Password_Attr + FIELD_NEED_CHECK.length, ATTRIBUTE_NEED_SHOW.length);
@@ -131,8 +110,6 @@ function deleteUser(id, fn_result) {
 
 
 module.exports = {
-    getAllStores: getAllStores,
-    getAllCustomers: getAllCustomers,
     // getAllUsersKhachHang : getAllUsersKhachHang,
     // getAllUsersNguoiNau : getAllUsersNguoiNau,
     getUserByUsername: getUserByUsername,
@@ -143,7 +120,6 @@ module.exports = {
     getUserForSignin: getUserForSignin,
     // updateUser : updateUser,
     //    updateDichVu : updateDichVu,
-    deleteUser : deleteUser,
     updateAvatarOfStore: updateAvatarOfStore,
     updateAvatarOfUser: updateAvatarOfUser
 }
