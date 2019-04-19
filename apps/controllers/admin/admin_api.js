@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const multer = require("multer");
+const fs = require("fs");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/adminUser")); //"../models/user"
 const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/adminMonan")); //"../models/user"
 const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/order")); //"../models/order"
@@ -238,7 +240,16 @@ router.post("/users", function(req, res) {
 
     });
 });
-router.put("/users/:id", function(req, res) {
+var storage_Profile = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './public/imgs/avatar');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().getTime() + "_" + file.originalname);
+    }
+})
+var upload_Profile = multer({ storage: storage_Profile });
+router.put("/users/:id", upload_Profile.single("avatar"),function(req, res) {
     var id = req.query.id || req.body.id || req.params["id"];
     console.log(id);
     var profile = req.body;
@@ -247,11 +258,14 @@ router.put("/users/:id", function(req, res) {
     var address_personal = profile.address;
     var phonenumber_personal = profile.phonenumber;
     var avatar_url_personal = profile.avatar_url;
+    if(req.file) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.file.filename;
     var name_role = profile.name_role.trim(); 
     
     if (!name_personal || name_personal.trim().length == 0 || !name_role || name_role.length == 0 || !address_personal || address_personal.length == 0 ||
          !phonenumber_personal || phonenumber_personal.trim().length == 0)
-        return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
+        {
+            if(req.file) deleteImage(req);
+            return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });}
     
     var data = {
         name_personal: name_personal,
@@ -262,13 +276,22 @@ router.put("/users/:id", function(req, res) {
     }
 
     data_User_From_DB.updateProfileUserById(id, data, function(result) {
-        if (!result) res.status(500).json({ success: false } );
+        if (!result) {
+            if(req.file) deleteImage(req);
+            res.status(500).json({ success: false } );}
         else res.status(200).json({ 
             success: true, 
             notification: "updated is success" 
         });
     })
 })
-
+function deleteImage(req) {
+    fs.unlink(path.join(__dirname, "../../../", "public/imgs/avatar/" + req.file.filename), function(err) {
+        if (err) {
+            console.log(err);
+        }
+        else console.log("delete img is success");
+    });
+}
 //-----------MODULE EXPORTS -----------
 module.exports = router;
