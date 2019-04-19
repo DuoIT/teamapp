@@ -12,11 +12,19 @@ router.post("/signup", function(req, res) {
     console.log("into signup of users");
     var user = req.body;
     var username = user.username;
-    var encode_Password = bcrypt.encode_Password(user.password);
+    //var encode_Password = bcrypt.encode_Password(user.password);
+    var password = user.password;
 
     var name = user.name;
     var address = user.address;
     var phonenumber = user.phonenumber;
+    var avatar_url_user = user.avatar_url;
+    // CHECK Input Valid
+    if (!username || username.trim().lenght == 0 || !password || password.trim().lenght == 0 || !name || name.trim().lenght == 0 || 
+    !address || address.trim().lenght || !phonenumber || address.trim().lenght == 0) 
+        return res.status(400).json({ data: { success: false, notification: "ban phai nhap day du thong tin" }});
+    //ENCODE PASSWORD
+    var encode_Password = bcrypt.encode_Password(password);
     //have to edit schema for new DB
     var data_Of_DichVu = {
         username: username,
@@ -47,11 +55,11 @@ router.post("/signup", function(req, res) {
                 }
             ]
         },
-        infomation: {
+        information: {
             name: name,
             address: address,
             phonenumber: phonenumber,
-            avatar_url: null,
+            avatar_url: avatar_url_user,
         }
     }
     data_User_From_DB.getUserByUsername(username, function(result) {
