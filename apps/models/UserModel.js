@@ -38,10 +38,19 @@ function getFoodByStoreId(id, fn_result) {
 }
 
 function getAllCategoryFoods(id, fn_result) {
-    var ATTRIBUTE_NEED_SHOW = "dichvu.danhmuc dichvu.danhmuc.ten dichvu.danhmuc.mota";
-    mongoose.model_dichvu.findOne({ _id: id }).select(ATTRIBUTE_NEED_SHOW).exec((err, results) => {
+    mongoose.model_dichvu.findOne({ "_id" : id }).select("dichvu.danhmuc").exec((err, result) => {
         if (err) fn_result(false);
-        return fn_result(results);
+        //return fn_result(result);
+        else {
+            var danhmuc = [];
+            dichvu = result.dichvu.danhmuc;
+            dichvu.forEach(function (elem_danhmuc) {
+                var rs_danhmuc = elem_danhmuc.toObject();
+                rs_danhmuc.monan = undefined;
+                danhmuc.push(rs_danhmuc);
+            })
+            fn_result(danhmuc);
+        }  
     })
 }
 function getUserByUsername(username, fn_result) {
