@@ -174,7 +174,7 @@ router.post("/users", function(req, res) {
                     }
                 ]
             },
-            infomation: {
+            information: {
                 name: name,
                 address: address,
                 phonenumber: phonenumber,
@@ -219,7 +219,7 @@ router.post("/users", function(req, res) {
                     }
                 ]
             },
-            infomation: {
+            information: {
                 name: name,
                 address: address,
                 phonenumber: phonenumber,
