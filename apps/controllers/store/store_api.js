@@ -270,7 +270,7 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
         var avatar_url_personal = profile.information.avatar_url;
-        if(req.files && req.files.length >= 2) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.files[0].filename;
+        if(req.files && req.files.length >= 1) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.files[0].filename;
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
         var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
