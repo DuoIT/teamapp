@@ -11,7 +11,7 @@ function getAllUsers(fn_result) {
                 store._id = elem_Store._id;
                 store.username = elem_Store.username;
                 store.name_role = elem_Store.role.name_role;
-                store.ten = elem_Store.infomation.name;
+                store.ten = elem_Store.information.name;
                 store.diachi = elem_Store.information.address;
                 store.phonenumber = elem_Store.information.phonenumber;
                 rs_Users.push(store);
