@@ -79,8 +79,8 @@ router.get("/listdoanhthu", function(req, res) {
         })
 })
 //--------User---------
-router.get("/users", function(req, res, next) {
-    var id = req.query.id || req.body.id;
+router.get("/users/:id", function(req, res, next) {
+    var id = req.query.id || req.body.id || req.params["id"];
     if(!id) return next();
     console.log(id);
 
@@ -101,8 +101,8 @@ router.get("/users", function(req, res) {
             })
         })
 })
-router.delete("/users", function(req , res) {
-    var id = req.body.id || req.query.id;
+router.delete("/users/:id", function(req , res) {
+    var id = req.body.id || req.query.id || req.params["id"];
     if(!id) return res.status(401).json({ success: false, notification:"HAVE NO ID!" });
     data_User_From_DB.deleteUser(id, function(result) {
         if (!result) res.status(500).json({ success: false });
