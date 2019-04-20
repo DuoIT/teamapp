@@ -1,7 +1,7 @@
 const mogoose = require("../common/mongoose");
 
 function getAllUsers(fn_result) {
-    var ATTRIBUTE_NEED_SHOW = "username role.name_role dichvu.ten dichvu.diachi dichvu.phonenumber";
+    var ATTRIBUTE_NEED_SHOW = "username information role.name_role dichvu.ten dichvu.diachi dichvu.phonenumber";
     mogoose.model_dichvu.find({ "role.name_role": "store" }).select(ATTRIBUTE_NEED_SHOW).exec((err, stores) => {
         if (err) fn_result(false);
         else {
