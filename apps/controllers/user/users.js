@@ -85,6 +85,18 @@ router.get("/liststore", function(req, res) {
     });
 });
 
+router.get("/detailstore", function(req, res) {
+    var id = req.query.idstore || req.body.idstore;
+
+    data_User_From_DB.getDetailStoreById(id, function (result) {
+        if (!result) res.status(500).json({success: false});
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+});
+
 router.get("/listfood", function (req, res) {
     var id = req.query.id_dv || req.body.id_dv;
     data_User_From_DB.getFoodByStoreId(id, function (result) {

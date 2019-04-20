@@ -17,6 +17,17 @@ function getAllStores(fn_result) {
     })
 }
 
+function getDetailStoreById(id, fn_result) {
+    mongoose.model_dichvu.findOne({ _id : id}).select("dichvu").exec(function(err, result) {
+        if (err) fn_result(false);
+        else {
+            result.dichvu.doanhthu = undefined;
+            result.dichvu.danhmuc = undefined;
+            fn_result(result);
+        }
+    })
+}
+
 function getFoodByStoreId(id, fn_result) {
     mongoose.model_dichvu.findOne({ "_id" : id}).select("dichvu.danhmuc").exec(function(err, result) {
         if (err) fn_result(false);
@@ -71,5 +82,7 @@ module.exports = {
     getFoodByStoreId: getFoodByStoreId,
     getAllCategoryFoods: getAllCategoryFoods,
     getUserByUsername: getUserByUsername,
-    createUser: createUser
+    createUser: createUser,
+    getDetailStoreById: getDetailStoreById
+
 }
