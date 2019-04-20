@@ -270,7 +270,7 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
         var avatar_url_personal = profile.information.avatar_url;
-        if(req.files[0]) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.files[0].filename;
+        if(req.files && req.files.length >= 2) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.files[0].filename;
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
         var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
@@ -278,7 +278,7 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var tenduong_store = profile.dichvu.diachi.tenduong;
         var mota_store = profile.dichvu.mota;
         var avatar_url_store = profile.dichvu.avatar_url;
-        if(req.files[1]) avatar_url_store = req.headers.host + "/images/avatar?id=" + req.files[1].filename;
+        if(req.files && req.files.length >= 2) avatar_url_store = req.headers.host + "/images/avatar?id=" + req.files[1].filename;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||

@@ -25,7 +25,7 @@ function getListMonAnById(fn_result) {
     });
 }
 function deleteMonAnById(id_Monan, fn_result) {
-    mongoose.model_dichvu.find({"role.name_role":"store"}).select("dichvu.danhmuc").exec(function(err, result) {
+    mongoose.model_dichvu.find({"role.name_role":"store"}).exec(function(err, result) {
         if(err) return fn_result(false);
         else {
             var found_user = null;
