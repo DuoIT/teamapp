@@ -130,7 +130,7 @@ router.post("/listsanpham", upload_Monan.single('monan_img'),function(req, res) 
     var ten = sanpham.ten;
     var mota = sanpham.mota;
     var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
-    if(profile.information.avatar_url) hinhanh_url = profile.information.avatar_url;
+    if(sanpham.hinhanh_url) hinhanh_url = sanpham.hinhanh_url;
     if(req.file) hinhanh_url = req.headers.host + "/images/monan?id=" + req.file.filename;
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
