@@ -114,7 +114,7 @@ var storage_Monan = multer.diskStorage({
     }
 })
 var upload_Monan = multer({ storage: storage_Monan });
-router.post("/listsanpham", upload_Monan.single('monan_img'),function(req, res) {
+router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
@@ -131,7 +131,7 @@ router.post("/listsanpham", upload_Monan.single('monan_img'),function(req, res) 
     var mota = sanpham.mota;
     var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
     if(sanpham.hinhanh_url) hinhanh_url = sanpham.hinhanh_url;
-    if(req.file) hinhanh_url = req.headers.host + "/images/monan?id=" + req.file.filename;
+    if(req.files) hinhanh_url = req.headers.host + "/images/monan?id=" + req.files[0].filename;
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;
