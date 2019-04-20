@@ -137,19 +137,19 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
     var trungbinhsao = 0;
     //CHECK INPUT VALID
     if (!danhmuc || danhmuc.trim().length == 0) {
-        if(req.file) deleteImage(req);
+        if(req.files) deleteImage(req);
         return res.status(400).json({success: false, notification: "input's wrong"});}
     else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh"){
-        if(req.file) deleteImage(req);   
+        if(req.files) deleteImage(req);   
         return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});}
 
     if (!sanpham) {
-        if(req.file) deleteImage(req);
+        if(req.files) deleteImage(req);
         return res.status(400).json({success: false, notification: "input's wrong"});}
 
     if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
         {
-            if(req.file) deleteImage(req, name_dictionary);
+            if(req.files) deleteImage(req, name_dictionary);
             return res.status(400).json({success: false, notification: "input's wrong"});
         }
     var data = {
@@ -163,7 +163,7 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
 
     data_Monan_From_DB.createMonAnOfStore(id, danhmuc, data, function(result) {
         if (!result) {
-            if(req.file) deleteImage(req);
+            if(req.files) deleteImage(req);
             res.status(500).json({success: false, notification: "unknown error"});}
         else res.status(200).json({
             success: true, 
@@ -483,7 +483,7 @@ router.get("/listdoanhthu30ngay", function(req, res) {
     });
 })
 function deleteImage(req) {
-    fs.unlink(path.join(__dirname, "../../../", "public/imgs/monan/" + req.file.filename), function(err) {
+    fs.unlink(path.join(__dirname, "../../../", "public/imgs/monan/" + req.files[0].filename), function(err) {
         if (err) {
             console.log(err);
         }
