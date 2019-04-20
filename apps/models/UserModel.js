@@ -33,6 +33,7 @@ function getFoodByStoreId(id, fn_result) {
         if (err) fn_result(false);
         else {
             var monan = [];
+            if (!result.dichvu) return fn_result(false);          
             danhmuc = result.dichvu.danhmuc;
             danhmuc.forEach(function (elem_danhmuc) {
                 elem_danhmuc.monan.forEach(function (elem_monan) {
