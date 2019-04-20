@@ -16,7 +16,7 @@ function getAllUsers(fn_result) {
                 store.phonenumber = elem_Store.information.phonenumber;
                 rs_Users.push(store);
             })
-            var ATTRIBUTE_NEED_SHOW_CUSTOMER = "username role.name_role information.phonenumber information.ten information.address";
+            var ATTRIBUTE_NEED_SHOW_CUSTOMER = "username role.name_role information.phonenumber information.name information.address";
             mogoose.model_dichvu.find({ "role.name_role": "user" }).select(ATTRIBUTE_NEED_SHOW_CUSTOMER).exec((err, customers) => {
                 if (err) fn_result(false);
                 else {
