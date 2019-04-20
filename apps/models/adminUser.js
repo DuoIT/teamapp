@@ -11,9 +11,9 @@ function getAllUsers(fn_result) {
                 store._id = elem_Store._id;
                 store.username = elem_Store.username;
                 store.name_role = elem_Store.role.name_role;
-                store.ten = elem_Store.dichvu.ten;
-                store.diachi = elem_Store.dichvu.diachi.tenthanhpho +", "+ elem_Store.dichvu.diachi.tenquan +", "+ elem_Store.dichvu.diachi.tenduong;
-                store.phonenumber = elem_Store.dichvu.phonenumber;
+                store.ten = elem_Store.infomation.name;
+                store.diachi = elem_Store.information.address;
+                store.phonenumber = elem_Store.information.phonenumber;
                 rs_Users.push(store);
             })
             var ATTRIBUTE_NEED_SHOW_CUSTOMER = "username role.name_role information.phonenumber information.ten information.address";
