@@ -75,7 +75,7 @@ router.post("/signup", function(req, res) {
                 }
             ]
         },
-        infomation: {
+        information: {
             name: name_personal,
             address: address,
             phonenumber: phonenumber,
