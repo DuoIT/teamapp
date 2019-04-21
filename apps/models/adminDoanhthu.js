@@ -7,6 +7,7 @@ function getListDoanhThu(fn_result) {
             var listdoanhthu = [];
             result.forEach(function(elem_result) {
                 var doanhthu = elem_result.dichvu.doanhthu;
+                if(!doanhthu || !doanhthu.order || doanhthu.order.length ==0) return;
                 mogoose.model_order.find({_id: {"$in": doanhthu.order}, trangthai:"dagiao"}, function(err, orders) {
                     if(err) fn_result(false);
                     else {               
