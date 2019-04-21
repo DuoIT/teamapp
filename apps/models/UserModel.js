@@ -6,7 +6,7 @@ function getUserByIdToCheckRole(id, fn_result) {
     mongoose.model_dichvu.findOne({ _id: id }).select("role").exec((err, result) => {
         if (err) return fn_result(false);
         return fn_result(result);
-    });
+    })
 }
 
 function getAllStores(fn_result) {
@@ -65,6 +65,14 @@ function getAllCategoryFoods(id, fn_result) {
         }  
     })
 }
+
+function getFoodbyCate(id, fn_result) {
+    mongoose.model_dichvu.findOne({ _id : id_danhmuc }).select("dichvu.danhmuc").exec(function(err, result) {
+        if (err) return fn_result(false);
+        return fn_result(result);
+    })
+    
+}
 function getUserByUsername(username, fn_result) {
     mongoose.model_dichvu.findOne({ username: username }).exec((err, result) => {
         if (err) return fn_result(false);
@@ -84,6 +92,7 @@ module.exports = {
     getAllCategoryFoods: getAllCategoryFoods,
     getUserByUsername: getUserByUsername,
     createUser: createUser,
-    getDetailStoreById: getDetailStoreById
+    getDetailStoreById: getDetailStoreById,
+    getFoodbyCate: getFoodbyCate
 
 }

@@ -72,10 +72,12 @@ router.get("/profile", function(req, res) {
     var id = req.user._id;
 
     data_Profile_From_DB.getProfileUserById(id, function (result) {
-        if (!result) res.status(500).json({ success: false });
+        if (!result) res.status(500).json({ data: { success: false } });
         else res.status(200).json({
-            success: true,
-            result: result
+            data: {
+                success: true,
+                result: result
+            }
         })
     })
 });
@@ -98,10 +100,12 @@ router.put("/profile", function(req, res) {
     }
 
     data_Profile_From_DB.updateProfileUserById(id, data, function(result) {
-        if (!result) res.status(500).json({ success: false });
+        if (!result) res.status(500).json({ data: { success: false } });
         else res.status(200).json({
-            success: true,
-            result: result
+            data: {
+                success: true,
+                result: result
+            }
         }) 
     })
 });
