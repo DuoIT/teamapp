@@ -97,6 +97,16 @@ function createUser(user, fn_result) {
         return fn_result(result);
     })
 }
+function getListStoreOfQuan(zipcode, fn_result) {
+    var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating";
+    mongoose.model_dichvu.find({ "role.name_role": "store", "dichvu.diachi.zipcode": zipcode }).select(ATTRIBUTE_NEED_SHOW).exec((err, results) => {
+        if (err) {
+            console.log(err);
+            fn_result(false);
+        }
+        else fn_result(results);    
+    })
+}
 module.exports = {
     getUserByIdToCheckRole: getUserByIdToCheckRole,
     getAllStores: getAllStores,
@@ -105,6 +115,7 @@ module.exports = {
     getUserByUsername: getUserByUsername,
     createUser: createUser,
     getDetailStoreById: getDetailStoreById,
-    getFoodbyCate: getFoodbyCate
+    getFoodbyCate: getFoodbyCate,
+    getListStoreOfQuan: getListStoreOfQuan
 
 }

@@ -26,6 +26,7 @@ router.post("/signup", function(req, res) {
     var tenquan = user.tenquan;
     var tenduong = user.tenduong;
     var mota = user.mota;
+    var zipcode = user.zipcode;
     var avatar_default_url = req.headers.host + "/images/avatar?id=avatar_default.jpg";
     var dichvu_default_url = req.headers.host + "/images/avatar?id=dichvu_default.jpg";
     //CHECK INPUT VALID
@@ -86,7 +87,8 @@ router.post("/signup", function(req, res) {
             diachi: {
                 tenthanhpho: tenthanhpho,
                 tenquan: tenquan,
-                tenduong: tenduong
+                tenduong: tenduong,
+                zipcode: zipcode
             },
             mota: mota,
             avatar_url: dichvu_default_url,

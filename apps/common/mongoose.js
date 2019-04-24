@@ -104,9 +104,70 @@ var schema_checkout = mongoose.Schema({
         id_dichvu: String,
         soluong: Number
 })
+var schema_diachi = mongoose.Schema({
+    "tenthanhpho":String,
+	"zipcode":Number,
+	"quan":[{
+        "tenquan":String,
+        "zipcode":Number
+    }]
+});
 const model_dichvu = mongoose.model("user", schema_dichvu);
 const model_order = mongoose.model("orders", schema_order);
 const model_checkout = mongoose.model("checkout", schema_checkout);
+const model_diachi = mongoose.model("diachi", schema_diachi);
+// model_diachi.create({
+//     "tenthanhpho": "HO CHI MINH",
+//     "zipcode" : 70000,
+//     "quan": [{
+//         "tenquan": "QUAN 1",
+//         "zipcode": 71000
+//     },
+//     {
+//         "tenquan": "QUAN 2",
+//         "zipcode": 71100
+//     },
+//     {
+//         "tenquan": "QUAN 3",
+//         "zipcode": 72400
+//     },
+//     {
+//         "tenquan": "QUAN 4",
+//         "zipcode": 72800
+//     },
+//     {
+//         "tenquan": "QUAN 5",
+//         "zipcode": 72700
+//     },
+//     {
+//         "tenquan": "QUAN 6",
+//         "zipcode": 73100
+//     },
+//     {
+//         "tenquan": "QUAN 7",
+//         "zipcode": 72900
+//     },
+//     {
+//         "tenquan": "QUAN 8",
+//         "zipcode": 73000
+//     },
+//     {
+//         "tenquan": "QUAN 9",
+//         "zipcode": 73000
+//     },
+//     {
+//         "tenquan": "QUAN 10",
+//         "zipcode": 72500
+//     },
+//     {
+//         "tenquan": "QUAN 11",
+//         "zipcode": 72600
+//     },
+//     {
+//         "tenquan": "QUAN 12",
+//         "zipcode": 71500
+//     }]
+// })
 // model_order.create({
 //     tongtien: 30000,
 //     giodat: new Date(),
@@ -143,5 +204,6 @@ const model_checkout = mongoose.model("checkout", schema_checkout);
 module.exports = {
     model_dichvu: model_dichvu,
     model_order: model_order,
-    model_checkout: model_checkout
+    model_checkout: model_checkout,
+    model_diachi: model_diachi
 };
