@@ -90,6 +90,7 @@ router.delete("/listsanpham/:id", function(req, res) {
 })
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res) {
+    console.log("abc");
         data_Doanhthu_From_DB.getListDoanhThu(function(result) {
             if (!result) res.status(500).json({ success: false });
             else res.status(200).json({
