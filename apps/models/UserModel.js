@@ -66,12 +66,24 @@ function getAllCategoryFoods(id, fn_result) {
     })
 }
 
-function getFoodbyCate(id, fn_result) {
-    mongoose.model_dichvu.findOne({ _id : id_danhmuc }).select("dichvu.danhmuc").exec(function(err, result) {
-        if (err) return fn_result(false);
-        return fn_result(result);
+function getFoodbyCate(nameCate, fn_result) {
+    mongoose.model_dichvu.find({ "role.name_role": "store" }).select("dichvu").exec(function(err, result) {
+        if (err) fn_result(false);
+        else {
+            var monan = [];
+            result.forEach(function(elem_user) {
+                elem_user.dichvu.danhmuc.forEach(function (elem_danhmuc) {
+                    if (nameCate == elem_danhmuc.ten) {
+                        elem_danhmuc.monan.forEach(function (elem_monan) {
+                            //var rs_monan = elem_monan.toObject();
+                            monan.push(elem_monan);
+                        })
+                    }
+                })
+            })            
+            fn_result(monan);
+        }
     })
-    
 }
 function getUserByUsername(username, fn_result) {
     mongoose.model_dichvu.findOne({ username: username }).exec((err, result) => {

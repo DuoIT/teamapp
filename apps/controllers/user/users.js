@@ -126,8 +126,8 @@ router.get("/listcategoryfoods", function(req, res) {
 });
 
 router.get("/listfoodbycategory", function(req, res) {
-    var id = req.query.id_cate || req.body.id_cate;
-    data_User_From_DB.getFoodbyCate(id, function(result) {
+    var nameCate = req.query.nameCate || req.body.nameCate;
+    data_User_From_DB.getFoodbyCate(nameCate, function(result) {
         if (!result) res.status(500).json({ data: {success: false} });
         else res.status(200).json({
             data: {
