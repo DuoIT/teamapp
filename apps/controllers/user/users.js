@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
+const data_Diachi_From_DB = require(path.join(__dirname, "../../", "/models/diachiUsersModel")); //"../models/user"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
@@ -137,6 +138,59 @@ router.get("/listfoodbycategory", function(req, res) {
         })
     })
 });
+//list thanh pho
+router.get("/listthanhpho", function(req, res) {
+    data_Diachi_From_DB.getListThanhPho(function(result) {
+        if(!result) res.status(500).json({ data: {success: false} });
+        else res.status(200).json({
+            data: {
+                success: true,
+                result: result
+            }
+        })
+    })
+})
+router.get("/listquan", function(req, res) {
+    var zipcode_quan = req.query.zipcode || req.body.zipcode;
+    if(!zipcode_quan) res.status(400).json({ data: {success: false} });
+    data_Diachi_From_DB.getListQuan(zipcode_quan, function(result) {
+        if(!result) res.status(500).json({ data: {success: false} });
+        else res.status(200).json({
+            data: {
+                success: true,
+                result: result
+            }
+        })
+    })
+})
+var stores = [];
+router.get("/liststoreofquan", function(req, res) {
+    var zipcode_quan = req.query.zipcode || req.body.zipcode;
+    var page = req.query.page || req.body.page;
 
+    data_User_From_DB.getListStoreOfQuan(zipcode_quan, function(result) {
+        if(!result) res.status(500).json({success: false});
+        else {
+            var fiveStore = [];
+            if(stores.length == 0 || page == 1) stores = result;
+            if(stores) {
+                var index = 0;
+                if(stores.length >= page*5){
+                    for(i = (page - 1) *5; i < page *5; i++) {
+                        fiveStore.push(stores[i]);
+                    }
+                }else {
+                    for(i = (page - 1) *5; i < stores.length; i++) {
+                        fiveStore.push(stores[i]);
+                    }
+                }
+            }
+            res.status(200).json({
+                    success: true,
+                    result: fiveStore
+            })
+        }
+    })
+})
 //------------------EXPORT MODULE------------------
 module.exports = router;
