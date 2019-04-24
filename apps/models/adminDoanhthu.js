@@ -7,10 +7,9 @@ function getListDoanhThu(fn_result) {
             var listdoanhthu = [];
             result.forEach(function(elem_result) {
                 var doanhthu = elem_result.dichvu.doanhthu;
-                if(!doanhthu || !doanhthu.order || doanhthu.order.length ==0) return;
                 mogoose.model_order.find({_id: {"$in": doanhthu.order}, trangthai:"dagiao"}, function(err, orders) {
                     if(err) fn_result(false);
-                    else {               
+                    else {        
                         tongtien = 0;
                         if(doanhthu.tongdoanhthu != undefined) tongtien = doanhthu.tongdoanhthu;                       
                         var data = {
@@ -20,7 +19,7 @@ function getListDoanhThu(fn_result) {
                             tongtien: tongtien
                         }
                         listdoanhthu.push(data);
-                        if(elem_result == result[result.length - 1]) fn_result(listdoanhthu);
+                        if(elem_result === result[result.length - 1]) fn_result(listdoanhthu);
                     }
                     
                 })

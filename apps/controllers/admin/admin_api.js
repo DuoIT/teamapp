@@ -6,8 +6,8 @@ const multer = require("multer");
 const fs = require("fs");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/adminUser")); //"../models/user"
 const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/adminMonan")); //"../models/user"
-const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/order")); //"../models/order"
 const data_Doanhthu_From_DB = require(path.join(__dirname, "../../", "/models/adminDoanhthu")); //"../models/order"
+const data_Comment_From_DB = require(path.join(__dirname, "../../", "/models/adminComment")); //"../models/order"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
@@ -42,6 +42,26 @@ router.use(function(req, res, next) {
         })
     }
 });
+//-------listcomment------------
+router.get("/listcomments", function(req, res) {
+    data_Comment_From_DB.getListComments(function(result) {
+        if(!result) res.status(500).json({ success: false } );
+        else res.status(200).json({
+            success: true,
+            result: result
+        });
+    })
+})
+router.delete("/listcomments/:id", function(req, res) {
+    var id_Comment = req.query.id || req.body.id || req.params["id"];
+    data_Comment_From_DB.deleteComment(id_Comment ,function(result) {
+        if(!result) res.status(500).json({ success: false } );
+        else res.status(200).json({
+            success: true,
+            result: result
+        });
+    })
+})
 //----LISTSANPHAM-----thieu delete
 router.get("/listsanpham", function(req, res) {
     data_Monan_From_DB.getListMonAnById(function(result) {
@@ -70,6 +90,7 @@ router.delete("/listsanpham/:id", function(req, res) {
 })
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res) {
+    console.log("abc");
         data_Doanhthu_From_DB.getListDoanhThu(function(result) {
             if (!result) res.status(500).json({ success: false });
             else res.status(200).json({
