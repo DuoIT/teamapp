@@ -9,6 +9,7 @@ const data_Monan_From_DB = require(path.join(__dirname, "../../", "/models/monan
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profile")); //"../models/profile"
 const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/order")); //"../models/order"
 const data_Doanhthu_From_DB = require(path.join(__dirname, "../../", "/models/doanhthu")); //"../models/order"
+const data_Comment_From_DB = require(path.join(__dirname, "../../", "/models/comment")); //"../models/order"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
@@ -71,6 +72,21 @@ function check_Permission(permission, name_permission, id) {
     return false;
 }
 //xem-them-sua-xoa
+//listcomment
+router.get("/listcomments", function(req, res) {
+    var user = req.user;
+    var id = user._id;
+    var permission = user.role.permission;
+    //------CHECK PERMISSION-------------
+    if (check_Permission(permission, "comment", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
+    data_Comment_From_DB.getListCommentsById(id, function(result) {
+        if(!result) res.status(500).json({ success: false } );
+        else res.status(200).json({
+            success: true,  
+            result: result
+        });
+    })
+})
 //-----sanpham-------------
 router.get("/listsanpham", function(req, res, next) {
     var user = req.user;
