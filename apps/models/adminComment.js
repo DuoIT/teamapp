@@ -13,10 +13,11 @@ function getListComments(fn_result){
                         elem_monan.danhgia.forEach(function(elem_danhgia) {
                             var comment = {};
                             comment._id = elem_danhgia._id;
+                            comment.ten_nguoimua = elem_danhgia.nguoimua.name;
+                            comment.ten_monan = elem_monan.ten;
+                            comment.ten_dichvu = elem_store.dichvu.ten;
                             comment.comment  = elem_danhgia.comment;
                             comment.star = elem_danhgia.star;
-                            comment.id_nguoimua = elem_danhgia.nguoimua.id;
-                            comment.ten_nguoimua = elem_danhgia.nguoimua.name;
                             comments.push(comment);
                         })
                     })
