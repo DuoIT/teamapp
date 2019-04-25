@@ -19,7 +19,7 @@ router.post("/", function(req, res) {
         else res.status(200).json({
             data:{
                 success:true,
-                token: jwt.sign({_id : result._id, username: result.username}, config.get("jsonwebtoken.codesecret"), {
+                token: jwt.sign({_id : result._id, username: result.username, ten: result.information.name}, config.get("jsonwebtoken.codesecret"), {
                     expiresIn : "3h"
                 }),
                 role : result.role.name_role

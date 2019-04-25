@@ -78,26 +78,25 @@ var schema_order = mongoose.Schema({
         tongtien: Number,
         giodat: Date,
         trangthai: String,
-        diachi: {
-            tenthanhpho: String,
-            tenquan: String
-        },
+        address: String,
         information: {
             ten: String,
             id: String
         },
-        dichvu: {
+        dichvu: [{
             ten: String,
             id: String
-        },
+        }],
         order_detail: [{
             monan: {
                 ten: String,
                 id: String
             },
+            tongtien: Number,
             soluong: Number,
             gia: Number
-        }]
+        }],
+        lienket: [String]
 })
 var schema_checkout = mongoose.Schema({
         id_monan: String,
