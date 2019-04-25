@@ -74,18 +74,63 @@ router.post("/signup", function(req, res) {
 });
 
 // không check token
+var stores = [];    
+router.get("/liststore", function(req, res, next) {
+    var zipcode_quan = req.query.zipcode || req.body.zipcode;
+    var page = req.query.page || req.body.page;
+    if(!page || page.trim().lenght == 0) return res.status(400).json({ data: { success: false } });
+    if(!zipcode_quan || zipcode_quan == "") return next();
+    data_User_From_DB.getListStoreOfQuan(zipcode_quan, function(result) {
+        if(!result) res.status(500).json({success: false});
+        else {
+            var fiveStore = [];
+            if(stores.length == 0 || page == 1) stores = result;
+            if(stores) {
+                var index = 0;
+                if(stores.length >= page*5){
+                    for(i = (page - 1) *5; i < page *5; i++) {
+                        fiveStore.push(stores[i]);
+                    }
+                }else {
+                    for(i = (page - 1) *5; i < stores.length; i++) {
+                        fiveStore.push(stores[i]);
+                    }
+                }
+            }
+            res.status(200).json({
+                    success: true,
+                    result: fiveStore
+            })
+        }
+    })
+})
 router.get("/liststore", function(req, res) {
+    var page = req.query.page || req.body.page;
+    if(!page || page.trim().lenght == 0) return res.status(400).json({ data: { success: false } });
     data_User_From_DB.getAllStores(function(result) {
         if (!result) res.status(500).json({ data: { success: false } });
-        else res.status(200).json({
-            data: {
-                success: true,
-                result: result,
+        else {
+            var fiveStore = [];
+            if(stores.length == 0 || page == 1) stores = result;
+            if(stores) {
+                var index = 0;
+                if(stores.length >= page*5){
+                    for(i = (page - 1) *5; i < page *5; i++) {
+                        fiveStore.push(stores[i]);
+                    }
+                }else {
+                    for(i = (page - 1) *5; i < stores.length; i++) {
+                        fiveStore.push(stores[i]);
+                    }
+                }
             }
-        })
+            res.status(200).json({
+                success: true,
+                result: fiveStore,
+            })
+        }
     });
 });
-
 router.get("/detailstore", function(req, res) {
     var id = req.query.idstore || req.body.idstore;
 
@@ -161,35 +206,6 @@ router.get("/listquan", function(req, res) {
                 result: result
             }
         })
-    })
-})
-var stores = [];
-router.get("/liststoreofquan", function(req, res) {
-    var zipcode_quan = req.query.zipcode || req.body.zipcode;
-    var page = req.query.page || req.body.page;
-
-    data_User_From_DB.getListStoreOfQuan(zipcode_quan, function(result) {
-        if(!result) res.status(500).json({success: false});
-        else {
-            var fiveStore = [];
-            if(stores.length == 0 || page == 1) stores = result;
-            if(stores) {
-                var index = 0;
-                if(stores.length >= page*5){
-                    for(i = (page - 1) *5; i < page *5; i++) {
-                        fiveStore.push(stores[i]);
-                    }
-                }else {
-                    for(i = (page - 1) *5; i < stores.length; i++) {
-                        fiveStore.push(stores[i]);
-                    }
-                }
-            }
-            res.status(200).json({
-                    success: true,
-                    result: fiveStore
-            })
-        }
     })
 })
 

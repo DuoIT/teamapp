@@ -5,10 +5,10 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
     Checkout = CheckoutAll.monan;
     if(typeof Checkout == 'object') {
         var orders = [];
-        Checkout.forEach(function(elem_Checkout){
-            mongoose.model_dichvu.find({"role.name_role": "store"}).exec(function(err, stores) {
-                if(err) fn_result(false);
-                else { 
+        mongoose.model_dichvu.find({"role.name_role": "store"}).exec(function(err, stores) {
+            if(err) fn_result(false);
+            else { 
+                Checkout.forEach(function(elem_Checkout){
                     var trangThaiSameStore = false;  
                     stores.forEach(function(elem_Store) {
                         elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
@@ -16,6 +16,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                 if(elem_Monan._id == elem_Checkout.id_monan) {
                                     var order = {};
                                     if(orders.length == 0) {
+                                        order.tongtien = elem_Checkout.soluong * elem_Monan.gia;
                                         order.giodat = new Date();
                                         order.trangthai = "chuagiao";
                                         order.address = CheckoutAll.diachi;
@@ -54,6 +55,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         index++;
                                     })
                                     if(trangThaiSameStore == false) {
+                                        order.tongtien = elem_Checkout.soluong * elem_Monan.gia;
                                         order.giodat = new Date();
                                         order.trangthai = "chuagiao";
                                         order.address = CheckoutAll.diachi;
@@ -75,6 +77,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                             id: elem_Store._id
                                         }]
                                         orders.push(order);
+                                        
                                     }else {
                                         var detail_Order = {
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
@@ -86,9 +89,10 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                             gia: elem_Monan.gia
                                         };
                                         orders[index].order_detail.push(detail_Order);
+                                        orders[index].tongtien = orders[index].tongtien + detail_Order.tongtien;
                                         trangThaiSameStore = false;
                                     }                                                          
-                                    if(elem_Checkout === Checkout[Checkout.length - 1]) {
+                                    if(elem_Checkout === Checkout[Checkout.length - 1]) {       
                                         createOrdersOfCheckout(orders, user, function(result) {
                                             if(!result) fn_result(false);
                                             else fn_result(true);
@@ -98,11 +102,9 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                             })
                         })
                     })
-                    
-                }
-            })
-        });
-        
+                }); 
+            }
+        })           
     }else fn_result(false);
 }
 function createOrdersOfCheckout(orders, user, fn_result) {
@@ -143,7 +145,6 @@ function createOrdersOfCheckout(orders, user, fn_result) {
 }
 function addOrderForStore(orders, fn_result) {
     var id_Orders = [];
-    console.log(orders.length);
     orders.forEach(function(elem_Order) {
         mongoose.model_order.create(elem_Order, function(err, result) {
             if(err) return fn_result(false);
