@@ -147,7 +147,7 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
     var mota = sanpham.mota;
     var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
     if(sanpham.hinhanh_url) hinhanh_url = sanpham.hinhanh_url;
-    if(req.files) hinhanh_url = req.headers.host + "/images/monan?id=" + req.files[0].filename;
+    if(req.files && req.files.length != 0 && req.files[0]) hinhanh_url = req.headers.host + "/images/monan?id=" + req.files[0].filename;
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;

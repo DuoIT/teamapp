@@ -15,6 +15,7 @@ function getListMonAnById(fn_result) {
                             rs_monan.ten_danhmuc = elem_danhmuc.ten;
                             rs_monan.mota_danhmuc = elem_danhmuc.mota;
                             rs_monan.id_dichvu = elem_result._id;
+                            rs_monan.ten_dichvu = elem_result.dichvu.ten;
                             monan.push(rs_monan);
                         });  
                     })
