@@ -192,5 +192,6 @@ router.get("/liststoreofquan", function(req, res) {
         }
     })
 })
+
 //------------------EXPORT MODULE------------------
 module.exports = router;
