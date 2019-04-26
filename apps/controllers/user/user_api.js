@@ -20,25 +20,29 @@ router.use(function(req, res, next) {
     }
 
     var token = req.body.token || req.query.token || bearer;
-    if (!token) res.status(403).json({ notification: "no token" });
-    else {
-        jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
-            var id = decoded._id;
-            data_User_From_DB.getUserByIdToCheckRole(id, function(result) {
-                if (!result) res.status(403).json({ data: { success: false, notification: "token error, not found user" } });
-                else {
-                    console.log(result.role.name_role);
-                    if (result.role.name_role == "user" && result.role.licensed == true) {
-                        console.log("here");
-                        decoded.role = result.role;
-                        req.user = decoded;
-                        next();
-                    } else {
-                        res.status(401).json({ data: { success: false, notification: "this account can't access" } });
+    try {
+        if (!token) res.status(403).json({ notification: "no token" });
+        else {
+            jwt.verify(token, config.get("jsonwebtoken.codesecret"), function(err, decoded) {
+                var id = decoded._id;
+                data_User_From_DB.getUserByIdToCheckRole(id, function(result) {
+                    if (!result) res.status(403).json({ data: { success: false, notification: "token error, not found user" } });
+                    else {
+                        console.log(result.role.name_role);
+                        if (result.role.name_role == "user" && result.role.licensed == true) {
+                            console.log("here");
+                            decoded.role = result.role;
+                            req.user = decoded;
+                            next();
+                        } else {
+                            res.status(401).json({ data: { success: false, notification: "this account can't access" } });
+                        }
                     }
-                }
+                })
             })
-        })
+        }
+    } catch (error) {
+        return res.status(401).json({ data: { success: false, notification: "token error, not found user" } });
     }
 })
 
@@ -116,6 +120,17 @@ router.post("/checkout", function(req, res) {
     if(!checkout || !checkout.diachi ||checkout.diachi.trim().length == 0) 
     return res.status(400).json({ success: false, notification: "Nhap thieu!" });
     data_Order_From_DB.addCheckoutToOrders(user, checkout, function(result) {
+        if(!result) res.status(500).json({ data: { success: false } });
+        else res.status(200).json({
+                success: true,
+                result: result
+        }) 
+    })
+})
+router.get("/listorder", function(req, res) {
+    var user = req.user;
+    var id = user._id;
+    data_Order_From_DB.getListOrder(id, function(result) {
         if(!result) res.status(500).json({ data: { success: false } });
         else res.status(200).json({
                 success: true,

@@ -201,6 +201,42 @@ function addOrderForStore(orders, fn_result) {
         }
     })
 }
+function getListOrder(id, fn_result) {
+    mongoose.model_dichvu.findOne({_id : id}).select("information.order").exec(function(err, result) {
+        if(err) fn_result(false);
+        else {
+            mongoose.model_order.find({_id: {"$in": result.information.order}})
+            .select("_id giodat trangthai address order_detail dichvu tongtien").exec(function(err, orders){
+                if(err) fn_result(false);
+                else {
+                    // var rs_Order = [];
+                    // orders.forEach(function(elem_Order) {
+                    //     var data = {};
+                    //     data.address = elem_Order.address;
+                    //     var order_Detail = elem_Order.order_detail;
+                    //     var ten_SoLuong_Monan = "";
+                    //     // var soluong_Monan = null;
+                    //     order_Detail.forEach(function(elem_OrderDetail) {
+                    //         console.log(elem_OrderDetail.monan.ten)
+                    //         ten_SoLuong_Monan += elem_OrderDetail.monan.ten +"- "+ elem_OrderDetail.soluong + " phần";
+                    //         if(elem_OrderDetail !== order_Detail[order_Detail.length - 1]) ten_SoLuong_Monan += ", "; 
+                    //     })
+                    //     data.ten_monan = ten_SoLuong_Monan;
+                    //     data.tongtien = elem_Order.tongtien;
+                    //     data.trangthai = elem_Order.trangthai;
+                    //     data._id = elem_Order._id;
+                    //     data.giodat = elem_Order.giodat;
+                    //     rs_Order.push(data);
+                    // })
+                    fn_result(orders);
+                }
+            })
+            
+            
+        }
+    });
+}
 module.exports = {
-    addCheckoutToOrders: addCheckoutToOrders
+    addCheckoutToOrders: addCheckoutToOrders,
+    getListOrder: getListOrder
 }
