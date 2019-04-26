@@ -81,11 +81,13 @@ var schema_order = mongoose.Schema({
         address: String,
         information: {
             ten: String,
-            id: String
+            id: String,
+            phonenumber: Number
         },
         dichvu: [{
             ten: String,
-            id: String
+            id: String,
+            phonenumber: Number
         }],
         order_detail: [{
             monan: {
