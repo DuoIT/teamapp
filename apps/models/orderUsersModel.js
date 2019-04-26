@@ -32,8 +32,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         order.order_detail = [{
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
                                             monan:{
-                                                ten: elem_Monan._id,
-                                                id: elem_Monan.ten
+                                                ten: elem_Monan.ten,
+                                                id: elem_Monan._id
                                             },
                                             soluong: elem_Checkout.soluong,
                                             gia: elem_Monan.gia

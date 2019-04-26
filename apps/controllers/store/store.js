@@ -32,7 +32,7 @@ router.post("/signup", function(req, res) {
     //CHECK INPUT VALID
     if (!username || username.trim().length == 0 || !password || password.trim().length == 0 || !phonenumber || phonenumber.trim().length == 0 ||
         !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0 ||
-        !name_store || name_store.trim().length == 0)
+        !name_store || name_store.trim().length == 0 || !zipcode || zipcode.trim().length == 0)
         return res.status(400).json({ data: { success: false, notification: "ban phai nhap day du thong tin" } });
     //ENCODE PASSWORD
     var encode_Password = bcrypt.encode_Password(password);
@@ -89,6 +89,9 @@ router.post("/signup", function(req, res) {
                 tenquan: tenquan,
                 tenduong: tenduong,
                 zipcode: zipcode
+            },
+            doanhthu:{
+                tongdoanhthu: 0
             },
             mota: mota,
             avatar_url: dichvu_default_url,

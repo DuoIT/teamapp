@@ -4,6 +4,7 @@ function getOrderById(id, id_Order, fn_result){
     mongoose.model_order.findOne({_id: id_Order}).exec(function(err, result) {
         if(err) fn_result(false);
         else {
+            try{
             var data = {};
             data.address = result.address;
             var order_Detail = result.order_detail;
@@ -20,6 +21,9 @@ function getOrderById(id, id_Order, fn_result){
             data._id = result._id;
             data.giodat = result.giodat;
             fn_result(data);
+            }catch(error){
+                fn_result(false);
+            }
         }
     })
 }
@@ -83,7 +87,7 @@ function deleteOrderOfStoreById(id, id_Order, fn_result) {
 
                 });
                 
-            }
+            }else fn_result(false);
         }
     })
     
