@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Diachi_From_DB = require(path.join(__dirname, "../../", "/models/diachiUsersModel")); //"../models/user"
+const data_Comment_From_DB = require(path.join(__dirname, "../../", "/models/commentUsersModel"));
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
@@ -197,7 +198,7 @@ router.get("/listthanhpho", function(req, res) {
 })
 router.get("/listquan", function(req, res) {
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
-    if(!zipcode_quan) res.status(400).json({ data: {success: false} });
+    if(!zipcode_quan) return res.status(400).json({ data: {success: false} });
     data_Diachi_From_DB.getListQuan(zipcode_quan, function(result) {
         if(!result) res.status(500).json({ data: {success: false} });
         else res.status(200).json({
@@ -208,6 +209,19 @@ router.get("/listquan", function(req, res) {
         })
     })
 })
+router.get("/listcomment", function(req, res) {
+    var id_monan = req.query.id || req.body.id;
+    if(!id_monan) return res.status(400).json({ data: {success: false} });
 
+    data_Comment_From_DB.getListCommentOfMonan(id_monan, function(result) {
+        if(!result) res.status(500).json({ data: {success: false} });
+        else res.status(200).json({
+            data: {
+                success: true,
+                result: result
+            }
+        })
+    })
+})
 //------------------EXPORT MODULE------------------
 module.exports = router;
