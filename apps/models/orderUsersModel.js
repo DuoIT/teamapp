@@ -7,7 +7,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
         var orders = [];
         mongoose.model_dichvu.find({"role.name_role": "store"}).exec(function(err, stores) {
             if(err) fn_result(false);
-            else { 
+            else {
+                try{
                 Checkout.forEach(function(elem_Checkout){
                     var trangThaiSameStore = false;  
                     stores.forEach(function(elem_Store) {
@@ -16,6 +17,14 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                 if(elem_Monan._id == elem_Checkout.id_monan) {
                                     var order = {};
                                     if(orders.length == 0) {
+                                        var phonenumber = user.phonenumber;
+                                        var ten = user.ten;
+                                        try {
+                                            if(CheckoutAll.phonenumber) phonenumber = CheckoutAll.phonenumber;
+                                           if(CheckoutAll.ten) ten = CheckoutAll.ten;
+                                        } catch (error) {
+                                            
+                                        }
                                         order.tongtien = elem_Checkout.soluong * elem_Monan.gia;
                                         order.giodat = new Date();
                                         order.trangthai = "chuagiao";
@@ -30,8 +39,9 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                             gia: elem_Monan.gia
                                         }]
                                         order.information = {
-                                            ten: user.ten,
-                                            id: user._id
+                                            ten: ten,
+                                            id: user._id,
+                                            phonenumber: phonenumber
                                         }
                                         order.dichvu = [{
                                             ten: elem_Store.dichvu.ten,
@@ -55,6 +65,14 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         index++;
                                     })
                                     if(trangThaiSameStore == false) {
+                                        var phonenumber = user.phonenumber;
+                                        var ten = user.ten;
+                                        try {
+                                            if(CheckoutAll.phonenumber) phonenumber = CheckoutAll.phonenumber;
+                                         if(CheckoutAll.ten) ten = CheckoutAll.ten;
+                                        } catch (error) {
+                                            
+                                        }               
                                         order.tongtien = elem_Checkout.soluong * elem_Monan.gia;
                                         order.giodat = new Date();
                                         order.trangthai = "chuagiao";
@@ -69,8 +87,9 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                             gia: elem_Monan.gia
                                         }]
                                         order.information = {
-                                            ten: user.ten,
-                                            id: user._id
+                                            ten: ten,
+                                            id: user._id,
+                                            phonenumber: phonenumber
                                         }
                                         order.dichvu = [{
                                             ten: elem_Store.dichvu.ten,
@@ -103,6 +122,9 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                         })
                     })
                 }); 
+                }catch(error){
+                    fn_result(false);
+                }
             }
         })           
     }else fn_result(false);
@@ -112,14 +134,23 @@ function createOrdersOfCheckout(orders, user, fn_result) {
         if(!result) fn_result(false);
         else {
             if(result.length != 0) {
+                try{
+                var phonenumber = user.phonenumber;
+                var ten = user.ten;
+                try {
+                    if(orders[0].information.phonenumber) phonenumber = orders[0].information.phonenumber;
+                    if(orders[0].information.ten) ten = orders[0].information.ten;          
+                } catch (error) {
+                }      
                 var order = {};
                 order.giodat = new Date();
                 order.trangthai = "chuagiao";
                 order.address = orders[0].address;
                 order.order_detail = [];
                 order.information = {
-                    ten: user.ten,
-                    id: user._id
+                    ten: ten,
+                    id: user._id,
+                    phonenumber: phonenumber
                 };
                 order.dichvu = [];
                 var tongtien = 0;
@@ -143,6 +174,9 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                         }
                     });
                 })
+                }catch(error){
+                    fn_result(false);
+                }
             }
         }
     })
