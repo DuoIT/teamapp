@@ -41,8 +41,7 @@ function getDoanhThuById(id, id_Order, fn_result) {
                     var rs_Order = [];
                     orders.forEach(function(elem_Order) {
                         var data = {};
-                        data.tenthanhpho = elem_Order.diachi.tenthanhpho;
-                        data.tenquan = elem_Order.diachi.tenquan;
+                        data.address = elem_Order.address;
                         var order_Detail = elem_Order.order_detail;
                         var ten_SoLuong_Monan = "";
                         order_Detail.forEach(function(elem_OrderDetail) {
@@ -74,8 +73,7 @@ function getAllOrderDoanhThu(id, fn_result) {
                     var rs_Order = [];
                     orders.forEach(function(elem_Order) {
                         var data = {};
-                        data.tenthanhpho = elem_Order.diachi.tenthanhpho;
-                        data.tenquan = elem_Order.diachi.tenquan;
+                        data.address = elem_Order.address;
                         var order_Detail = elem_Order.order_detail;
                         var ten_SoLuong_Monan = "";
                         order_Detail.forEach(function(elem_OrderDetail) {

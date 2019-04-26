@@ -113,9 +113,8 @@ router.put("/profile", function(req, res) {
 router.post("/checkout", function(req, res) {
     var checkout = req.body;
     var user = req.user;
-    if(!checkout || !checkout.diachi || checkout.diachi.trim().length == 0) 
-    return res.status(400).json({ success: false, notification: "checkout is empty!" });
-    
+    if(!checkout || !checkout.diachi ||checkout.diachi.trim().length == 0) 
+    return res.status(400).json({ success: false, notification: "Nhap thieu!" });
     data_Order_From_DB.addCheckoutToOrders(user, checkout, function(result) {
         if(!result) res.status(500).json({ data: { success: false } });
         else res.status(200).json({

@@ -20,8 +20,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         var phonenumber = user.phonenumber;
                                         var ten = user.ten;
                                         try {
-                                            if(CheckoutAll.phonenumber) phonenumber = CheckoutAll.phonenumber;
-                                           if(CheckoutAll.ten) ten = CheckoutAll.ten;
+                                            if(CheckoutAll.phonenumber && CheckoutAll.phonenumber.trim().length != 0) phonenumber = CheckoutAll.phonenumber;
+                                            if(CheckoutAll.ten && CheckoutAll.ten.trim().length != 0) ten = CheckoutAll.ten;
                                         } catch (error) {
                                             
                                         }
@@ -45,7 +45,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         }
                                         order.dichvu = [{
                                             ten: elem_Store.dichvu.ten,
-                                            id: elem_Store._id
+                                            id: elem_Store._id,
+                                            phonenumber: elem_Store.dichvu.phonenumber
                                         }]
                                         orders.push(order);
                                         if(elem_Checkout === Checkout[Checkout.length - 1]) {
@@ -68,8 +69,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         var phonenumber = user.phonenumber;
                                         var ten = user.ten;
                                         try {
-                                            if(CheckoutAll.phonenumber) phonenumber = CheckoutAll.phonenumber;
-                                         if(CheckoutAll.ten) ten = CheckoutAll.ten;
+                                            if(CheckoutAll.phonenumber && CheckoutAll.phonenumber.trim().length != 0) phonenumber = CheckoutAll.phonenumber;
+                                            if(CheckoutAll.ten && CheckoutAll.ten.trim().length != 0) ten = CheckoutAll.ten;
                                         } catch (error) {
                                             
                                         }               
@@ -93,7 +94,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         }
                                         order.dichvu = [{
                                             ten: elem_Store.dichvu.ten,
-                                            id: elem_Store._id
+                                            id: elem_Store._id,
+                                            phonenumber: elem_Store.dichvu.phonenumber
                                         }]
                                         orders.push(order);
                                         
@@ -142,6 +144,7 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                     if(orders[0].information.ten) ten = orders[0].information.ten;          
                 } catch (error) {
                 }      
+                console.log(phonenumber);
                 var order = {};
                 order.giodat = new Date();
                 order.trangthai = "chuagiao";
