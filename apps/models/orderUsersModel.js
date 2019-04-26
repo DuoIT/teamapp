@@ -115,12 +115,14 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                 var order = {};
                 order.giodat = new Date();
                 order.trangthai = "chuagiao";
+                order.address = orders[0].address;
                 order.order_detail = [];
                 order.information = {
                     ten: user.ten,
                     id: user._id
                 };
                 order.dichvu = [];
+                var tongtien = 0;
                 orders.forEach(function(elem_Order) {
                     elem_Order.order_detail.forEach(function(elem_OD) {
                         order.order_detail.push(elem_OD);
@@ -128,7 +130,9 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                     elem_Order.dichvu.forEach(function(elem_DV) {
                         order.dichvu.push(elem_DV);
                     })
+                    tongtien += elem_Order.tongtien;
                 })
+                order.tongtien = tongtien;
                 order.lienket = result;
                 mongoose.model_order.create(order, function(err, result_Order){
                     mongoose.model_dichvu.findOneAndUpdate({_id: user._id}, {$push: {"information.order": result_Order._id}},
@@ -145,21 +149,15 @@ function createOrdersOfCheckout(orders, user, fn_result) {
 }
 function addOrderForStore(orders, fn_result) {
     var id_Orders = [];
-    orders.forEach(function(elem_Order) {
-        mongoose.model_order.create(elem_Order, function(err, result) {
-            if(err) return fn_result(false);
-            else {
-                mongoose.model_dichvu.findOneAndUpdate({_id: elem_Order.dichvu[0].id}, {$push: {"dichvu.doanhthu.order": result._id}},
-                {safe: true, upsert: true, new : true}, function(err, result_1) {
-                    if(err) fn_result(false);
-                    else {
-                        id_Orders.push(String(result._id));
-                        if(elem_Order == orders[orders.length - 1]) fn_result(id_Orders);
-                    }
-                });
-            }
-        })
-    })
+    mongoose.model_order.collection.insert(orders, function(err, result) {
+        if(err) fn_result(false);
+        else {
+            result.ops.forEach(function(elem_Order) {
+                id_Orders.push(String(elem_Order._id));
+            });
+            fn_result(id_Orders);
+        }
+    })   
 }
 module.exports = {
     addCheckoutToOrders: addCheckoutToOrders
