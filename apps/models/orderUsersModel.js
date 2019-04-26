@@ -153,11 +153,16 @@ function addOrderForStore(orders, fn_result) {
         if(err) fn_result(false);
         else {
             result.ops.forEach(function(elem_Order) {
+                mongoose.model_dichvu.findOneAndUpdate({_id: elem_Order.dichvu[0].id}, {$push: {"dichvu.doanhthu.order": elem_Order._id}},
+                {safe: true, upsert: true, new : true}, function(err, result_1) {
+                    if(err) fn_result(false);
+                });
+            
                 id_Orders.push(String(elem_Order._id));
             });
             fn_result(id_Orders);
         }
-    })   
+    })
 }
 module.exports = {
     addCheckoutToOrders: addCheckoutToOrders
