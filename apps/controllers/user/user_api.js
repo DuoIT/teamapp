@@ -6,6 +6,7 @@ const config = require("config");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profileUsersModel")); //"../models/profile"
 const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/orderUsersModel")); //"../models/profile"
+const data_Comment_From_DB = require(path.join(__dirname, "../../", "/models/commentUsersModel"));
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
 var router = express.Router();
@@ -135,6 +136,34 @@ router.get("/listorder", function(req, res) {
         else res.status(200).json({
                 success: true,
                 result: result
+        }) 
+    })
+})
+router.post("/listcomment", function(req, res) {
+    var id = req.user._id;
+    var ten = req.user.ten;
+    var avatar_url = req.user.avatar_url;
+    var query = req.body;
+    var id_monan = query.id;
+    var content = query.content;
+    var rating = query.rating;
+    if(!rating) rating = 0;
+    if(!content) content = "";
+    if(!id_monan || id_monan.trim().length == 0)  return res.status(400).json({ data: { success: false, notification:"Nhap thieu id mon an!" } });
+    var data = {
+        comment: content,
+        star: rating,
+        nguoimua: {
+            id: id,
+            name: ten,
+            avatar_url: avatar_url
+        }
+    }
+    data_Comment_From_DB.addCommentForUser(id_monan, data, function(result) {
+        if(!result) res.status(500).json({ data: { success: false} });
+        else  res.status(200).json({
+            success: true,
+            result: result
         }) 
     })
 })

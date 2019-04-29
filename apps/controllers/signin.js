@@ -19,7 +19,8 @@ router.post("/", function(req, res) {
         else res.status(200).json({
             data:{
                 success:true,
-                token: jwt.sign({_id : result._id, username: result.username, ten: result.information.name, phonenumber: result.information.phonenumber}, 
+                token: jwt.sign({_id : result._id, username: result.username, ten: result.information.name, 
+                    phonenumber: result.information.phonenumber, avatar_url: result.information.avatar_url}, 
                     config.get("jsonwebtoken.codesecret"), {
                     expiresIn : "3h"
                 }),
