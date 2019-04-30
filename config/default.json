@@ -13,5 +13,8 @@
         "codesecret" : "secret"
     },
     "defaultpassword":"123456",
-    "danhmuc": ["com", "thucan", "canh"]
+    "danhmuc": ["com", "thucan", "canh"],
+    "default_type_search": "food",
+    "typesearch":["food", "store"],
+    "paginate": 5
 }
