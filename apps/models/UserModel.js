@@ -102,7 +102,8 @@ function getAllFoods(fn_result){
     })
 }
 //search
-function searchByType(type, zipcode_quan, content, fn_result) {
+var elementsForSearch = [];
+function searchByType(type, zipcode_quan, page, content, fn_result) {
     var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating dichvu.danhmuc";
     var query = null;
     if(!zipcode_quan || zipcode_quan.trim().lenght == 0) 
@@ -112,22 +113,50 @@ function searchByType(type, zipcode_quan, content, fn_result) {
     query.select(ATTRIBUTE_NEED_SHOW).exec(function(err, stores) {
         if(err) fn_result(false);
         else {
-            var rs_Store = [];
-            var rs_Monan = [];
-            stores.forEach(function(elem_Store) {
-                if(type == config.get("typesearch")[1]) {
-                    if(elem_Store.dichvu.ten.search(content) != -1) rs_Store.push(elem_Store);
-                }
-                else if(type == config.get("typesearch")[0]) {
-                    elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
-                        elem_Danhmuc.monan.forEach(function(elem_Monan) {
-                            if(elem_Monan.ten.search(content) != -1) rs_Monan.push(elem_Monan);
+            if(page == 1 || elementsForSearch.length == 0) {
+                stores.forEach(function(elem_Store) {
+                    if(type == config.get("typesearch")[1]) {
+                        if(elem_Store.dichvu.ten.search(content) != -1) elementsForSearch.push(elem_Store);
+                    }
+                    else if(type == config.get("typesearch")[0]) {
+                        elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
+                            elem_Danhmuc.monan.forEach(function(elem_Monan) {
+                                if(elem_Monan.ten.search(content) != -1) elementsForSearch.push(elem_Monan);
+                            })
                         })
-                    })
+                    }
+                })
+            }
+            if(type == config.get("typesearch")[1]) {
+                var fiveStore = [];
+                if(elementsForSearch) {
+                    if(elementsForSearch.length >= page* config.get("paginate")){
+                        for(i = (page - 1) *config.get("paginate"); i < page *config.get("paginate"); i++) {
+                            fiveStore.push(elementsForSearch[i]);
+                        }
+                    }else {
+                        for(i = (page - 1) *config.get("paginate"); i < elementsForSearch.length; i++) {
+                            fiveStore.push(elementsForSearch[i]);
+                        }
+                    }
+                }                
+                return fn_result(fiveStore)
+            };
+            if(type == config.get("typesearch")[0]) {
+                var fiveFoods = [];
+                if(elementsForSearch) {
+                    if(elementsForSearch.length >= page* config.get("paginate")){
+                        for(i = (page - 1) *config.get("paginate"); i < page *config.get("paginate"); i++) {
+                            fiveFoods.push(elementsForSearch[i]);
+                        }
+                    }else {
+                        for(i = (page - 1) *config.get("paginate"); i < elementsForSearch.length; i++) {
+                            fiveFoods.push(elementsForSearch[i]);
+                        }
+                    }
                 }
-            })
-            if(type == config.get("typesearch")[1]) return fn_result(rs_Store);
-            if(type == config.get("typesearch")[0]) return fn_result(rs_Monan);
+                return fn_result(fiveFoods);
+            }
         }
     })
 }
