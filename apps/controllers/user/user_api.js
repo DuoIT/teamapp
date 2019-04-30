@@ -131,8 +131,12 @@ router.post("/checkout", function(req, res) {
 router.get("/listorder", function(req, res) {
     var user = req.user;
     var id = user._id;
-    data_Order_From_DB.getListOrder(id, function(result) {
-        if(!result) res.status(500).json({ data: { success: false } });
+
+    var page = req.query.page || req.body.page;
+    if(!page || isNaN(page)) return res.status(400).json({success: false})
+
+    data_Order_From_DB.getListOrder(id, page, function(result) {
+        if(!result) res.status(500).json({ success: false });
         else res.status(200).json({
                 success: true,
                 result: result

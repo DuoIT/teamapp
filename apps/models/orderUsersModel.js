@@ -1,5 +1,5 @@
 const mongoose = require("../common/mongoose");
-
+const config = require("config");
 function addCheckoutToOrders(user, CheckoutAll, fn_result){
     if(!CheckoutAll || typeof CheckoutAll != 'object') return fn_result(false);
     Checkout = CheckoutAll.monan;
@@ -201,7 +201,8 @@ function addOrderForStore(orders, fn_result) {
         }
     })
 }
-function getListOrder(id, fn_result) {
+var listOrder = [];
+function getListOrder(id, page, fn_result) {
     mongoose.model_dichvu.findOne({_id : id}).select("information.order").exec(function(err, result) {
         if(err) fn_result(false);
         else {
@@ -228,7 +229,20 @@ function getListOrder(id, fn_result) {
                     //     data.giodat = elem_Order.giodat;
                     //     rs_Order.push(data);
                     // })
-                    fn_result(orders);
+                    var fiveOrders = [];
+                    if(page == 1 || listOrder.length == 0) listOrder = orders;
+                    if(listOrder) {
+                        if(listOrder.length >= page* config.get("paginate")){
+                            for(i = (page - 1) *config.get("paginate"); i < page *config.get("paginate"); i++) {
+                                fiveOrders.push(listOrder[i]);
+                            }
+                        }else {
+                            for(i = (page - 1) *config.get("paginate"); i < listOrder.length; i++) {
+                                fiveOrders.push(listOrder[i]);
+                            }
+                        }
+                    }
+                    fn_result(fiveOrders);
                 }
             })
             
