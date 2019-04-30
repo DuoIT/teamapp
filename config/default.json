@@ -12,5 +12,6 @@
     "jsonwebtoken" : {
         "codesecret" : "secret"
     },
-    "defaultpassword":"123456"
+    "defaultpassword":"123456",
+    "danhmuc": ["com", "thucan", "canh"]
 }

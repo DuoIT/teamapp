@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const config = require("config");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Diachi_From_DB = require(path.join(__dirname, "../../", "/models/diachiUsersModel")); //"../models/user"
 const data_Comment_From_DB = require(path.join(__dirname, "../../", "/models/commentUsersModel"));
@@ -87,7 +88,6 @@ router.get("/liststore", function(req, res, next) {
             var fiveStore = [];
             if(stores.length == 0 || page == 1) stores = result;
             if(stores) {
-                var index = 0;
                 if(stores.length >= page*5){
                     for(i = (page - 1) *5; i < page *5; i++) {
                         fiveStore.push(stores[i]);
@@ -171,17 +171,72 @@ router.get("/listcategoryfoods", function(req, res) {
         })
     })
 });
+var food = [];
+router.get("/listfoodcate", function(req, res, next) {
+    var nameCate = req.query.namecate || req.body.namecate;
+    var page = req.query.page || req.body.page;
+    if(!nameCate || nameCate.trim().lenght == 0) return next();
+    if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
+    //check namecate phat giong quy dinh.
+    var kiemTraNameCate = false;
+    config.get("danhmuc").forEach(function(elem_Danhmuc) {
+        if(elem_Danhmuc == nameCate) kiemTraNameCate = true;
+    })
+    if(kiemTraNameCate == false) return res.status(400).json({success: false, notification:"nameCate phai giong quy dinh!"});
 
-router.get("/listfoodbycategory", function(req, res) {
-    var nameCate = req.query.nameCate || req.body.nameCate;
     data_User_From_DB.getFoodbyCate(nameCate, function(result) {
         if (!result) res.status(500).json({ data: {success: false} });
-        else res.status(200).json({
-            data: {
-                success: true,
-                result: result
+        else{
+            var fiveFoods = [];
+            if(food.length == 0 || page == 1) food = result;
+            if(food) {
+                if(food.length >= page*5){
+                    for(i = (page - 1) *5; i < page *5; i++) {
+                        fiveFoods.push(food[i]);
+                    }
+                }else {
+                    for(i = (page - 1) *5; i < food.length; i++) {
+                        fiveFoods.push(food[i]);
+                    }
+                }
             }
-        })
+            res.status(200).json({
+                data: {
+                    success: true,
+                    result: fiveFoods
+                }
+            })
+        }     
+    })
+});
+router.get("/listfoodcate", function(req, res) {
+    var nameCate = req.query.namecate || req.body.namecate;
+    var page = req.query.page || req.body.page;
+    if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
+    console.log(nameCate);
+    data_User_From_DB.getAllFoods(function(result) {
+        if (!result) res.status(500).json({ data: {success: false} });
+        else {
+            var fiveFoods = [];
+            if(food.length == 0 || page == 1) food = result;
+            if(food) {
+                if(food.length >= page*5){
+                    for(i = (page - 1) *5; i < page *5; i++) {
+                        fiveFoods.push(food[i]);
+                    }
+                }else {
+                    for(i = (page - 1) *5; i < food.length; i++) {
+                        fiveFoods.push(food[i]);
+                    }
+                }
+            }
+            res.status(200).json({
+                data: {
+                    success: true,
+                    result: fiveFoods
+                }
+            })
+        }
     })
 });
 //list thanh pho
