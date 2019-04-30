@@ -310,7 +310,7 @@ router.get("/listcomment", function(req, res) {
 router.get("/search", function(req, res) {
     var type = req.query.type || req.body.type;
     var content = req.query.content || req.body.content;
-
+    var zipcode_quan = req.query.zipcode || req.body.zipcode;
     if(!type || type.trim().lenght == 0) type = config.get("default_type_search");
     if(!content || content.trim().lenght == 0) return res.status(400).json({success: false, notification:"noi dung tim kiem trong!"});
     var kiem_Tra_Type = false;
@@ -319,7 +319,7 @@ router.get("/search", function(req, res) {
     });
     if(!kiem_Tra_Type) return res.status(400).json({success: false, notification:"type phai dung kieu quy dinh!"});
 
-    data_User_From_DB.searchByType(type, content, function(result) {
+    data_User_From_DB.searchByType(type, zipcode_quan, content, function(result) {
         if(!result) res.status(500).json({success: false });
         else res.status(200).json({
             success: true,

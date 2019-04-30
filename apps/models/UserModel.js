@@ -102,9 +102,14 @@ function getAllFoods(fn_result){
     })
 }
 //search
-function searchByType(type, content, fn_result) {
+function searchByType(type, zipcode_quan, content, fn_result) {
     var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating dichvu.danhmuc";
-    mongoose.model_dichvu.find({"role.name_role": "store"}).select(ATTRIBUTE_NEED_SHOW).exec(function(err, stores) {
+    var query = null;
+    if(!zipcode_quan || zipcode_quan.trim().lenght == 0) 
+    query = mongoose.model_dichvu.find({"role.name_role": "store"});
+    else query = mongoose.model_dichvu.find({"role.name_role": "store", "dichvu.diachi.zipcode": zipcode_quan});
+
+    query.select(ATTRIBUTE_NEED_SHOW).exec(function(err, stores) {
         if(err) fn_result(false);
         else {
             var rs_Store = [];
