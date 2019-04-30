@@ -67,8 +67,8 @@ function getAllCategoryFoods(id, fn_result) {
     })
 }
 
-function getFoodbyCate(nameCate, fn_result) {
-    mongoose.model_dichvu.find({ "role.name_role": "store" }).select("dichvu").exec(function(err, result) {
+function getFoodbyCate(id, nameCate, fn_result) {
+    mongoose.model_dichvu.find({_id: id, "role.name_role": "store" }).select("dichvu").exec(function(err, result) {
         if (err) fn_result(false);
         else {
             var monan = [];
