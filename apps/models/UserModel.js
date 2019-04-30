@@ -1,4 +1,5 @@
 const mongoose = require("../common/mongoose");
+const config = require("config");
 //bcrypt
 const bcrypt = require("../helpers/encode_password");
 
@@ -100,6 +101,31 @@ function getAllFoods(fn_result){
         }
     })
 }
+//search
+function searchByType(type, content, fn_result) {
+    var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating dichvu.danhmuc";
+    mongoose.model_dichvu.find({"role.name_role": "store"}).select(ATTRIBUTE_NEED_SHOW).exec(function(err, stores) {
+        if(err) fn_result(false);
+        else {
+            var rs_Store = [];
+            var rs_Monan = [];
+            stores.forEach(function(elem_Store) {
+                if(type == config.get("typesearch")[1]) {
+                    if(elem_Store.dichvu.ten.search(content) != -1) rs_Store.push(elem_Store);
+                }
+                else if(type == config.get("typesearch")[0]) {
+                    elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
+                        elem_Danhmuc.monan.forEach(function(elem_Monan) {
+                            if(elem_Monan.ten.search(content) != -1) rs_Monan.push(elem_Monan);
+                        })
+                    })
+                }
+            })
+            if(type == config.get("typesearch")[1]) return fn_result(rs_Store);
+            if(type == config.get("typesearch")[0]) return fn_result(rs_Monan);
+        }
+    })
+}
 function getUserByUsername(username, fn_result) {
     mongoose.model_dichvu.findOne({ username: username }).exec((err, result) => {
         if (err) return fn_result(false);
@@ -122,6 +148,26 @@ function getListStoreOfQuan(zipcode, fn_result) {
         else fn_result(results);    
     })
 }
+//phan trang store v2
+function getListStoreOfQuanV2(zipcode, page, fn_result) {
+    var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating";
+    var query = null;
+
+    if(zipcode && zipcode.trim().lenght != 0)
+    query = mongoose.model_dichvu.find({"role.name_role": "store", "dichvu.diachi.zipcode": zipcode});
+    else query = mongoose.model_dichvu.find({"role.name_role": "store"});
+
+    query.select(ATTRIBUTE_NEED_SHOW)
+    .limit(config.get("paginate"))
+    .skip(config.get("paginate")* page)
+    .exec(function(err, stores) {
+        if(err) fn_result(false);
+        else if(stores) {
+            fn_result(stores);
+        }else fn_result(false);
+    })
+}
+//
 module.exports = {
     getUserByIdToCheckRole: getUserByIdToCheckRole,
     getAllStores: getAllStores,
@@ -132,5 +178,7 @@ module.exports = {
     getDetailStoreById: getDetailStoreById,
     getFoodbyCate: getFoodbyCate,
     getListStoreOfQuan: getListStoreOfQuan,
-    getAllFoods: getAllFoods
+    getListStoreOfQuanV2: getListStoreOfQuanV2,
+    getAllFoods: getAllFoods,
+    searchByType: searchByType
 }
