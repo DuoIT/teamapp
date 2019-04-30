@@ -75,10 +75,25 @@ function getFoodbyCate(nameCate, fn_result) {
                 elem_user.dichvu.danhmuc.forEach(function (elem_danhmuc) {
                     if (nameCate == elem_danhmuc.ten) {
                         elem_danhmuc.monan.forEach(function (elem_monan) {
-                            //var rs_monan = elem_monan.toObject();
                             monan.push(elem_monan);
                         })
                     }
+                })
+            })            
+            fn_result(monan);
+        }
+    })
+}
+function getAllFoods(fn_result){
+    mongoose.model_dichvu.find({ "role.name_role": "store" }).select("dichvu.danhmuc").exec(function(err, stores) {
+        if (err) fn_result(false);
+        else {
+            var monan = [];
+            stores.forEach(function(elem_Store) {
+                elem_Store.dichvu.danhmuc.forEach(function (elem_Danhmuc) {
+                        elem_Danhmuc.monan.forEach(function (elem_monan) {
+                            monan.push(elem_monan);
+                        })
                 })
             })            
             fn_result(monan);
@@ -116,6 +131,6 @@ module.exports = {
     createUser: createUser,
     getDetailStoreById: getDetailStoreById,
     getFoodbyCate: getFoodbyCate,
-    getListStoreOfQuan: getListStoreOfQuan
-
+    getListStoreOfQuan: getListStoreOfQuan,
+    getAllFoods: getAllFoods
 }
