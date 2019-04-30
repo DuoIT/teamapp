@@ -297,9 +297,10 @@ router.get("/listquan", function(req, res) {
 })
 router.get("/listcomment", function(req, res) {
     var id_monan = req.query.id || req.body.id;
-    if(!id_monan) return res.status(400).json({success: false});
+    var page = req.query.page || req.body.page;
+    if(!id_monan || !page || isNaN(page) || page.trim().lenght == 0) return res.status(400).json({success: false});
 
-    data_Comment_From_DB.getListCommentOfMonan(id_monan, function(result) {
+    data_Comment_From_DB.getListCommentOfMonan(id_monan, page, function(result) {
         if(!result) res.status(500).json({success: false });
         else res.status(200).json({
                 success: true,

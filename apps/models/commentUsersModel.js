@@ -1,6 +1,7 @@
 const mongoose = require("../common/mongoose");
-
-function getListCommentOfMonan(id_Monan, fn_Result) {
+const config = require("config");
+var comments = [];
+function getListCommentOfMonan(id_Monan, page, fn_Result) {
     mongoose.model_dichvu.find({"role.name_role": "store"}).select("dichvu.danhmuc").exec(function(err, stores) {
         if(err) return fn_Result(false);
         if(stores && stores.length != 0 ){
@@ -10,7 +11,20 @@ function getListCommentOfMonan(id_Monan, fn_Result) {
                     elem_Danhmuc.monan.forEach(function(elem_Monan) {
                         if(elem_Monan._id == id_Monan) {
                             trangThaiBoQua = true;
-                            return fn_Result(elem_Monan.danhgia);
+                            if(comments.length == 0 || page == 1) comments = elem_Monan.danhgia;
+                            var fiveComments = [];
+                            if(comments) {
+                                if(comments.length >= page* config.get("paginate")){
+                                    for(i = (page - 1)* config.get("paginate"); i < page* config.get("paginate"); i++) {
+                                        fiveComments.push(comments[i]);
+                                    }
+                                }else {
+                                    for(i = (page - 1)* config.get("paginate"); i < comments.length; i++) {
+                                        fiveComments.push(comments[i]);
+                                    }
+                                }
+                            }
+                            return fn_Result(fiveComments);
                         }
                     })
                     if(trangThaiBoQua == true) return;
