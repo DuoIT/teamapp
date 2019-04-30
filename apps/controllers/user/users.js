@@ -191,10 +191,12 @@ router.get("/listcategoryfoods", function(req, res) {
 //listfoodcate v1
 var food = [];
 router.get("/listfoodcate", function(req, res, next) {
+    var id = req.query.id || req.body.id;
     var nameCate = req.query.namecate || req.body.namecate;
     var page = req.query.page || req.body.page;
     if(!nameCate || nameCate.trim().lenght == 0) return next();
     if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
+    if(!id || id.trim().lenght == 0) return res.status(400).json({success: false});
     //check namecate phat giong quy dinh.
     var kiemTraNameCate = false;
     config.get("danhmuc").forEach(function(elem_Danhmuc) {
@@ -202,7 +204,7 @@ router.get("/listfoodcate", function(req, res, next) {
     })
     if(kiemTraNameCate == false) return res.status(400).json({success: false, notification:"nameCate phai giong quy dinh!"});
 
-    data_User_From_DB.getFoodbyCate(nameCate, function(result) {
+    data_User_From_DB.getFoodbyCate(id, nameCate, function(result) {
         if (!result) res.status(500).json({ data: {success: false} });
         else{
             var fiveFoods = [];
