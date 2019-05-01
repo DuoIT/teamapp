@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-
+const multer = require("multer");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profileUsersModel")); //"../models/profile"
 const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/orderUsersModel")); //"../models/profile"
@@ -87,31 +87,47 @@ router.get("/profile", function(req, res) {
         })
     })
 });
-
-router.put("/profile", function(req, res) {
+var storage_Profile = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './public/imgs/avatar');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().getTime() + "_" + file.originalname);
+    }
+})
+var upload_Profile = multer({ storage: storage_Profile });
+router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
     var id = req.user._id;
     var profile = req.body;
 
-    var name_per = profile.information.name;
-    var address_per = profile.information.address;
-    var avatar_url_per = profile.information.avatar_url;
-
-    if (!name_per || name_per.trim().length == 0 || !address_per || address_per.trim().length == 0) {
+    var name_per = profile.name;
+    var address_per = profile.address;
+    var phonenumber = profile.phonenumber;
+    var avatar_url_per = null;
+    try {
+        if(req.file) avatar_url_per = req.headers.host + "/images/avatar?id=" + req.file.filename;
+    } catch (error) {
+        deleteImageAvatar(req);
+    }
+    
+    if (!name_per || name_per.trim().length == 0 || !address_per || address_per.trim().length == 0
+        || !phonenumber || phonenumber.trim().length == 0) {
+        deleteImageAvatar(req);
         return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
     }
     var data = {
         name_per : name_per,
         address_per : address_per,
-        avatar_url_per : avatar_url_per
+        avatar_url_per : avatar_url_per,
+        phonenumber : phonenumber
     }
 
     data_Profile_From_DB.updateProfileUserById(id, data, function(result) {
-        if (!result) res.status(500).json({ data: { success: false } });
+        if (!result) {
+            deleteImageAvatar(req);
+            res.status(500).json({ success: false });}
         else res.status(200).json({
-            data: {
-                success: true,
-                result: result
-            }
+                success: true
         }) 
     })
 });
@@ -171,5 +187,20 @@ router.post("/listcomment", function(req, res) {
         }) 
     })
 })
+function deleteImageAvatar(req) {
+    try {
+        if(req.file) {
+            fs.unlink(path.join(__dirname, "../../../", "public/imgs/avatar/" + req.file.filename), function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                else console.log("delete img is success");
+            });
+        }
+        else res.status(500).json({success: false, notification: "unknown error"});
+    } catch (error) {
+        console.log(error);
+    }
+}
 //-----------MODULE EXPORTS -----------
 module.exports = router;

@@ -11,6 +11,7 @@ var router = express.Router();
 router.get("/", function(req, res) {});
 router.use("/api", require("./user_api"));
 //---------API SIGNUP FOR USERS ON MOBILE APP-----------
+
 router.post("/signup", function(req, res) {
     console.log("into signup of users");
     var user = req.body;
@@ -21,7 +22,8 @@ router.post("/signup", function(req, res) {
     var name = user.name;
     var address = user.address;
     var phonenumber = user.phonenumber;
-    var avatar_url_user = user.avatar_url;
+    var avatar_url_user = req.headers.host + "/images/avatar?id=avatar_default.jpg";;
+    
     // CHECK Input Valid
     if (!username || username.trim().lenght == 0 || !password || password.trim().lenght == 0 || !name || name.trim().lenght == 0 || 
     !address || address.trim().lenght || !phonenumber || address.trim().lenght == 0) 
@@ -40,7 +42,7 @@ router.post("/signup", function(req, res) {
                     name_per: "monan",
                     description: "CRUD monan cua minh",
                     per_detail: {
-                        view: false,
+                        view: true,
                         create: false,
                         update: false,
                         delete: false

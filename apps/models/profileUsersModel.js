@@ -18,6 +18,7 @@ function updateProfileUserById(id, data, fn_result) {
 
         result.information.name = data.name_per;
         result.information.address = data.address_per;
+        result.information.phonenumber = data.phonenumber;
         if (data.avatar_url_per) result.information.avatar_url = data.avatar_url_per;
 
         var user = new mongoose.model_dichvu(result);
