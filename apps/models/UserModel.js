@@ -109,11 +109,11 @@ function searchByType(type, zipcode_quan, page, content, fn_result) {
     if(!zipcode_quan || zipcode_quan.trim().lenght == 0) 
     query = mongoose.model_dichvu.find({"role.name_role": "store"});
     else query = mongoose.model_dichvu.find({"role.name_role": "store", "dichvu.diachi.zipcode": zipcode_quan});
-
     query.select(ATTRIBUTE_NEED_SHOW).exec(function(err, stores) {
         if(err) fn_result(false);
         else {
             if(page == 1 || elementsForSearch.length == 0) {
+                elementsForSearch.splice(0, elementsForSearch.length);
                 stores.forEach(function(elem_Store) {
                     if(type == config.get("typesearch")[1]) {
                         if(elem_Store.dichvu.ten.search(content) != -1) elementsForSearch.push(elem_Store);
@@ -168,7 +168,7 @@ function getUserByUsername(username, fn_result) {
 }
 function createUser(user, fn_result) {
     mongoose.model_dichvu.create(user, (err, result) => {
-        if (err) console.log(err);
+        if (err) fn_result(false);
         return fn_result(result);
     })
 }
