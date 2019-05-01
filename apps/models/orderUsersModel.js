@@ -234,7 +234,7 @@ function getListOrder(id, page, fn_result) {
     mongoose.model_dichvu.findOne({_id : id}).select("information.order").exec(function(err, result) {
         if(err) fn_result(false);
         else {
-            mongoose.model_order.findOne({_id: {"$in": result.information.order}})
+            mongoose.model_order.find({_id: {"$in": result.information.order}})
             .select("_id giodat trangthai address order_detail dichvu tongtien").exec(function(err, orders){
                 if(err) fn_result(false);
                 else {
