@@ -116,12 +116,12 @@ function searchByType(type, zipcode_quan, page, content, fn_result) {
                 elementsForSearch.splice(0, elementsForSearch.length);
                 stores.forEach(function(elem_Store) {
                     if(type == config.get("typesearch")[1]) {
-                        if(elem_Store.dichvu.ten.search(content) != -1) elementsForSearch.push(elem_Store);
+                        if(elem_Store.dichvu.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Store);
                     }
                     else if(type == config.get("typesearch")[0]) {
                         elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
                             elem_Danhmuc.monan.forEach(function(elem_Monan) {
-                                if(elem_Monan.ten.search(content) != -1) elementsForSearch.push(elem_Monan);
+                                if(elem_Monan.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Monan);
                             })
                         })
                     }
