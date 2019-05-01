@@ -139,7 +139,7 @@ router.get("/liststore", function(req, res) {
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
     var page = req.query.page || req.body.page;
     
-    if(!page || page.trim().lenght == 0) return res.status(400).json({ data: { success: false } });
+    if(!page || isNaN(page) || page < 1) return res.status(400).json({ data: { success: false } });
     data_User_From_DB.getListStoreOfQuanV2(zipcode_quan, page, function(result) {
         if(!result) res.status(500).json({ data: { success: false } });
         else {
