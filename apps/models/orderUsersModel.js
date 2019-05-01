@@ -262,11 +262,11 @@ function getListOrder(id, page, fn_result) {
                     if(listOrder) {
                         if(listOrder.length >= page* config.get("paginate")){
                             for(i = (page - 1) *config.get("paginate"); i < page *config.get("paginate"); i++) {
-                                fiveOrders.push(listOrder[i]);
+                                fiveOrders.unshift(listOrder[i]);
                             }
                         }else {
                             for(i = (page - 1) *config.get("paginate"); i < listOrder.length; i++) {
-                                fiveOrders.push(listOrder[i]);
+                                fiveOrders.unshift(listOrder[i]);
                             }
                         }
                     }
