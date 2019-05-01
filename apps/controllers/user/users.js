@@ -230,11 +230,12 @@ router.get("/listfoodcate", function(req, res, next) {
     })
 });
 router.get("/listfoodcate", function(req, res) {
+    var id = req.query.id || req.body.id;
     var nameCate = req.query.namecate || req.body.namecate;
     var page = req.query.page || req.body.page;
     if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
-    console.log(nameCate);
-    data_User_From_DB.getAllFoods(function(result) {
+    if(!id || id.trim().lenght == 0) return res.status(400).json({success: false});
+    data_User_From_DB.getAllFoods(id, function(result) {
         if (!result) res.status(500).json({ data: {success: false} });
         else {
             var fiveFoods = [];
