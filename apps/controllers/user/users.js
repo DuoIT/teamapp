@@ -22,7 +22,7 @@ router.post("/signup", function(req, res) {
     var name = user.name;
     var address = user.address;
     var phonenumber = user.phonenumber;
-    var avatar_url_user = req.headers.host + "/images/avatar?id=avatar_default.jpg";;
+    var avatar_url_user =config.get("protocol") + req.headers.host + "/images/avatar?id=avatar_default.jpg";
     
     // CHECK Input Valid
     if (!username || username.trim().lenght == 0 || !password || password.trim().lenght == 0 || !name || name.trim().lenght == 0 || 
@@ -76,64 +76,6 @@ router.post("/signup", function(req, res) {
 
     });
 });
-
-// không check token
-// var stores = [];    
-// router.get("/liststore", function(req, res, next) {
-//     var zipcode_quan = req.query.zipcode || req.body.zipcode;
-//     var page = req.query.page || req.body.page;
-//     if(!page || page.trim().lenght == 0) return res.status(400).json({ data: { success: false } });
-//     if(!zipcode_quan || zipcode_quan == "") return next();
-//     data_User_From_DB.getListStoreOfQuan(zipcode_quan, function(result) {
-//         if(!result) res.status(500).json({success: false});
-//         else {
-//             var fiveStore = [];
-//             if(stores.length == 0 || page == 1) stores = result;
-//             if(stores) {
-//                 if(stores.length >= page*5){
-//                     for(i = (page - 1) *5; i < page *5; i++) {
-//                         fiveStore.push(stores[i]);
-//                     }
-//                 }else {
-//                     for(i = (page - 1) *5; i < stores.length; i++) {
-//                         fiveStore.push(stores[i]);
-//                     }
-//                 }
-//             }
-//             res.status(200).json({
-//                     success: true,
-//                     result: fiveStore
-//             })
-//         }
-//     })
-// })
-// router.get("/liststore", function(req, res) {
-//     var page = req.query.page || req.body.page;
-//     if(!page || page.trim().lenght == 0) return res.status(400).json({ data: { success: false } });
-//     data_User_From_DB.getAllStores(function(result) {
-//         if (!result) res.status(500).json({ data: { success: false } });
-//         else {
-//             var fiveStore = [];
-//             if(stores.length == 0 || page == 1) stores = result;
-//             if(stores) {
-//                 var index = 0;
-//                 if(stores.length >= page*5){
-//                     for(i = (page - 1) *5; i < page *5; i++) {
-//                         fiveStore.push(stores[i]);
-//                     }
-//                 }else {
-//                     for(i = (page - 1) *5; i < stores.length; i++) {
-//                         fiveStore.push(stores[i]);
-//                     }
-//                 }
-//             }
-//             res.status(200).json({
-//                 success: true,
-//                 result: fiveStore,
-//             })
-//         }
-//     });
-// });
 //phantrang v2
 router.get("/liststore", function(req, res) {
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
@@ -262,19 +204,6 @@ router.get("/listfoodcate", function(req, res) {
         }
     })
 });
-// //listfoodcate v2
-// router.get("/listfoodcatev2", function(req, res) {
-//     var nameCate = req.query.namecate || req.body.namecate;
-//     var page = req.query.page || req.body.page;
-//     if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
-//     //check namecate phat giong quy dinh.
-//     var kiemTraNameCate = false;
-//     config.get("danhmuc").forEach(function(elem_Danhmuc) {
-//         if(elem_Danhmuc == nameCate) kiemTraNameCate = true;
-//     })
-//     if(kiemTraNameCate == false) return res.status(400).json({success: false, notification:"nameCate phai giong quy dinh!"});
-
-// })
 //list thanh pho
 router.get("/listthanhpho", function(req, res) {
     data_Diachi_From_DB.getListThanhPho(function(result) {

@@ -16,5 +16,6 @@
     "danhmuc": ["com", "thucan", "canh"],
     "default_type_search": "food",
     "typesearch":["food", "store"],
-    "paginate": 5
+    "paginate": 5,
+    "protocol": "https://"
 }

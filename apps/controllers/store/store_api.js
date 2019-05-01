@@ -145,9 +145,9 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
     var danhmuc = sanpham.danhmuc;
     var ten = sanpham.ten;
     var mota = sanpham.mota;
-    var hinhanh_url = req.headers.host + "/images/monan?id=monan_default.jpg";
+    var hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=monan_default.jpg";
     if(sanpham.hinhanh_url) hinhanh_url = sanpham.hinhanh_url;
-    if(req.files && req.files.length != 0 && req.files[0]) hinhanh_url = req.headers.host + "/images/monan?id=" + req.files[0].filename;
+    if(req.files && req.files.length != 0 && req.files[0]) hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=" + req.files[0].filename;
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;
@@ -222,7 +222,7 @@ router.put("/listsanpham/:ignore", upload_Monan.single("monan_img"),function(req
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
         var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;;
-        if(req.file) hinhanh_url = req.headers.host + "/images/monan?id=" + req.file.filename;
+        if(req.file) hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=" + req.file.filename;
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
         if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
@@ -297,7 +297,7 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
         var avatar_url_personal = profile.information.avatar_url;
-        if(req.files && req.files.length >= 1) avatar_url_personal = req.headers.host + "/images/avatar?id=" + req.files[0].filename;
+        if(req.files && req.files.length >= 1) avatar_url_personal = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.files[0].filename;
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
         var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
@@ -305,7 +305,7 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var tenduong_store = profile.dichvu.diachi.tenduong;
         var mota_store = profile.dichvu.mota;
         var avatar_url_store = profile.dichvu.avatar_url;
-        if(req.files && req.files.length >= 2) avatar_url_store = req.headers.host + "/images/avatar?id=" + req.files[1].filename;
+        if(req.files && req.files.length >= 2) avatar_url_store = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.files[1].filename;
         if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
