@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const config = require("config");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/user")); //"../models/user"
 const bcrypt = require(path.join(__dirname, "../../", "/helpers/encode_password")); //"../helpers/encode_password"
 
@@ -27,8 +28,8 @@ router.post("/signup", function(req, res) {
     var tenduong = user.tenduong;
     var mota = user.mota;
     var zipcode = user.zipcode;
-    var avatar_default_url = req.headers.host + "/images/avatar?id=avatar_default.jpg";
-    var dichvu_default_url = req.headers.host + "/images/avatar?id=dichvu_default.jpg";
+    var avatar_default_url = config.get("protocol") + req.headers.host + "/images/avatar?id=avatar_default.jpg";
+    var dichvu_default_url = config.get("protocol") + req.headers.host + "/images/avatar?id=dichvu_default.jpg";
     //CHECK INPUT VALID
     if (!username || username.trim().length == 0 || !password || password.trim().length == 0 || !phonenumber || phonenumber.trim().length == 0 ||
         !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0 ||

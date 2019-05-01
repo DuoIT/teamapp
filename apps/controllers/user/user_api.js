@@ -105,7 +105,7 @@ router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
     var phonenumber = profile.phonenumber;
     var avatar_url_per = null;
     try {
-        if(req.file) avatar_url_per = req.headers.host + "/images/avatar?id=" + req.file.filename;
+        if(req.file) avatar_url_per = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.file.filename;
     } catch (error) {
         deleteImageAvatar(req);
     }
