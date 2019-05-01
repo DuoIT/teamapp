@@ -16,6 +16,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                             elem_Danhmuc.monan.forEach(function(elem_Monan) {
                                 if(elem_Monan._id == elem_Checkout.id_monan) {
                                     var order = {};
+                                    //khi orders rong thi them 1 order vao
                                     if(orders.length == 0) {
                                         var phonenumber = user.phonenumber;
                                         var ten = user.ten;
@@ -57,6 +58,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         };
                                         return;
                                     }
+                                    //kiem tra monan tiep theo co thuoc dichvu cu? khong.
                                     var index = 0;                                   
                                     orders.forEach(function(elem_Order) {
                                         if(elem_Order.dichvu[0].id == String(elem_Store._id)) {
@@ -65,6 +67,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         }
                                         index++;
                                     })
+                                    //neu khong thi tao order moi
                                     if(trangThaiSameStore == false) {
                                         var phonenumber = user.phonenumber;
                                         var ten = user.ten;
@@ -98,7 +101,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                             phonenumber: elem_Store.dichvu.phonenumber
                                         }]
                                         orders.push(order);
-                                        
+                                    //neu trung store thi day? monan vao detail
                                     }else {
                                         var detail_Order = {
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
@@ -132,9 +135,11 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
     }else fn_result(false);
 }
 function createOrdersOfCheckout(orders, user, fn_result) {
+    //tao cac order nho? truoc
     addOrderForStore(orders, function(result) {
         if(!result) fn_result(false);
         else {
+            //ket qua thanh cong thi thuc thien tao. order cho user.
             if(result.length != 0) {
                 try{
                 var phonenumber = user.phonenumber;
@@ -169,13 +174,27 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                 order.tongtien = tongtien;
                 order.lienket = result;
                 mongoose.model_order.create(order, function(err, result_Order){
-                    mongoose.model_dichvu.findOneAndUpdate({_id: user._id}, {$push: {"information.order": result_Order._id}},
-                    {safe: true, upsert: true, new : true}, function(err, result_2) {
-                        if(err) fn_result(false);
-                        else {
-                            fn_result(true);
-                        }
-                    });
+                    // mongoose.model_dichvu.findOneAndUpdate({_id: user._id}, {$push: {"information.order": result_Order._id}},
+                    // {safe: true, upsert: true, new : true}, function(err, result_2) {
+                    //     if(err) fn_result(false);
+                    //     else {
+                    //         fn_result(true);
+                    //     }
+                    // });
+                    if(err) fn_result(false);
+                    else {
+                        mongoose.model_dichvu.findOne({_id: user._id}).exec(function(err, customer) {
+                            if(err) fn_result(false);
+                            else {
+                                customer.information.order.unshift(result_Order._id);
+                                var user = new mongoose.model_dichvu(customer);
+                                user.save(function(err, saved) {
+                                    if(err) fn_result(false);
+                                    else fn_result(true);
+                                })
+                            }
+                        })
+                    }
                 })
                 }catch(error){
                     fn_result(false);
@@ -190,11 +209,20 @@ function addOrderForStore(orders, fn_result) {
         if(err) fn_result(false);
         else {
             result.ops.forEach(function(elem_Order) {
-                mongoose.model_dichvu.findOneAndUpdate({_id: elem_Order.dichvu[0].id}, {$push: {"dichvu.doanhthu.order": elem_Order._id}},
-                {safe: true, upsert: true, new : true}, function(err, result_1) {
+                // mongoose.model_dichvu.findOneAndUpdate({_id: elem_Order.dichvu[0].id}, {$push: {"dichvu.doanhthu.order": elem_Order._id}},
+                // {safe: true, upsert: true, new : true}, function(err, result_1) {
+                //     if(err) fn_result(false);
+                // });
+                mongoose.model_dichvu.findOne({_id: elem_Order.dichvu[0].id}).exec(function(err, store) {
                     if(err) fn_result(false);
-                });
-            
+                    else {
+                        store.dichvu.doanhthu.order.unshift(elem_Order._id);
+                        var user = new mongoose.model_dichvu(store);
+                        user.save(function(err, saved) {
+                            if(err) fn_result(false);
+                        })
+                    }
+                })
                 id_Orders.push(String(elem_Order._id));
             });
             fn_result(id_Orders);
@@ -206,7 +234,7 @@ function getListOrder(id, page, fn_result) {
     mongoose.model_dichvu.findOne({_id : id}).select("information.order").exec(function(err, result) {
         if(err) fn_result(false);
         else {
-            mongoose.model_order.find({_id: {"$in": result.information.order}})
+            mongoose.model_order.findOne({_id: {"$in": result.information.order}})
             .select("_id giodat trangthai address order_detail dichvu tongtien").exec(function(err, orders){
                 if(err) fn_result(false);
                 else {
