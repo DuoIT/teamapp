@@ -168,7 +168,7 @@ function getUserByUsername(username, fn_result) {
 }
 function createUser(user, fn_result) {
     mongoose.model_dichvu.create(user, (err, result) => {
-        if (err) fn_result(false);
+        if (err) return fn_result(false);
         return fn_result(result);
     })
 }
