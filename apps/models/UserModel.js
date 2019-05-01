@@ -187,13 +187,13 @@ function getListStoreOfQuanV2(zipcode, page, fn_result) {
     var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating";
     var query = null;
 
-    if(zipcode && zipcode.trim().lenght != 0)
-    query = mongoose.model_dichvu.find({"role.name_role": "store", "dichvu.diachi.zipcode": zipcode});
-    else query = mongoose.model_dichvu.find({"role.name_role": "store"});
+    if(zipcode || isNaN(zipcode))
+    query = mongoose.model_dichvu.find({"role.name_role": "store"});
+    else query = mongoose.model_dichvu.find({"role.name_role": "store", "dichvu.diachi.zipcode": zipcode});
 
     query.select(ATTRIBUTE_NEED_SHOW)
     .limit(config.get("paginate"))
-    .skip(config.get("paginate")* page)
+    .skip(config.get("paginate")* (page - 1))
     .exec(function(err, stores) {
         if(err) fn_result(false);
         else if(stores) {
