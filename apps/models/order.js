@@ -106,8 +106,16 @@ function setTrangThaiOrder(id, id_Order, trangThai, fn_result) {
                             var rs_Order = new mongoose.model_order(order);
                             rs_Order.save(function(err, result) {
                                 if(err) fn_result(false);
-                                else fn_result(true);
+                                else {
+                                    store.dichvu.doanhthu.tongdoanhthu += order.tongtien; 
+                                    var rs_Store = new mongoose.model_dichvu(store);
+                                    rs_Store.save(function(err, result) {
+                                        if(err) fn_result(false);
+                                        else fn_result(true);
+                                    })
+                                }
                             })
+                            
                         }else fn_result(false);
                     })
                 }else fn_result(false);

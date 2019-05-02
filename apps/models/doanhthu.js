@@ -116,7 +116,7 @@ function getListDoanhThu(id, fn_result) {
                         });
                         var data = {
                             soluongorder: orders.length,
-                            tongtien: doanhthu.tongdoanhthu,
+                            tongtien: result.dichvu.doanhthu.tongdoanhthu,
                             order_detail: order_Detail_String
                         }
                         fn_result(data);
