@@ -111,7 +111,7 @@ router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
     }
     
     if (!name_per || name_per.trim().length == 0 || !address_per || address_per.trim().length == 0
-        || !phonenumber || phonenumber.trim().length == 0) {
+        || !phonenumber || phonenumber.trim().length < 10) {
         deleteImageAvatar(req);
         return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
     }
@@ -162,7 +162,6 @@ router.get("/listorder", function(req, res) {
 router.post("/listcomment", function(req, res) {
     var id = req.user._id;
     var ten = req.user.ten;
-    var avatar_url = req.user.avatar_url;
     var query = req.body;
     var id_monan = query.id;
     var content = query.content;
@@ -175,8 +174,7 @@ router.post("/listcomment", function(req, res) {
         star: rating,
         nguoimua: {
             id: id,
-            name: ten,
-            avatar_url: avatar_url
+            name: ten
         }
     }
     data_Comment_From_DB.addCommentForUser(id_monan, data, function(result) {

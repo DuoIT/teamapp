@@ -66,8 +66,7 @@ var schema_dichvu = mongoose.Schema({
                     star: Number,
                     nguoimua: {
                         id: String,
-                        name: String,
-                        avatar_url: String
+                        name: String
                     }
                 }]
             }]
