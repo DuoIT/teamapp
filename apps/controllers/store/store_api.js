@@ -33,8 +33,6 @@ router.use(function(req, res, next) {
                 data_User_From_DB.getUserByIdToCheckRole(id, function(result) {
                     if (!result) res.status(403).json({ success: false, notification: "token error, not found user" });
                     else {
-                        console.log(result.role.name_role);
-                        console.log(typeof result.role.licensed);
                         if (result.role.name_role == "store" && result.role.licensed == true) {
                             console.log("here");
                             decoded.role = result.role;
