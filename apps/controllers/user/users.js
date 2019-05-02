@@ -26,7 +26,7 @@ router.post("/signup", function(req, res) {
     
     // CHECK Input Valid
     if (!username || username.trim().lenght == 0 || !password || password.trim().lenght == 0 || !name || name.trim().lenght == 0 || 
-    !address || address.trim().lenght || !phonenumber || address.trim().lenght == 0) 
+    !address || address.trim().lenght || !phonenumber || phonenumber.trim().lenght < 10) 
         return res.status(400).json({ data: { success: false, notification: "ban phai nhap day du thong tin" }});
     //ENCODE PASSWORD
     var encode_Password = bcrypt.encode_Password(password);

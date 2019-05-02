@@ -306,10 +306,10 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var mota_store = profile.dichvu.mota;
         var avatar_url_store = profile.dichvu.avatar_url;
         if(req.files && req.files.length >= 2) avatar_url_store = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.files[1].filename;
-        if (!phonenumber_store || phonenumber_store.trim().length == 0 ||
+        if (!phonenumber_store || phonenumber_store.trim().length < 10 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
-            !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length == 0)
+            !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length < 10)
             {
                 if(req.files) deleteImageAvatar(req);
                 return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });

@@ -31,7 +31,7 @@ router.post("/signup", function(req, res) {
     var avatar_default_url = config.get("protocol") + req.headers.host + "/images/avatar?id=avatar_default.jpg";
     var dichvu_default_url = config.get("protocol") + req.headers.host + "/images/avatar?id=dichvu_default.jpg";
     //CHECK INPUT VALID
-    if (!username || username.trim().length == 0 || !password || password.trim().length == 0 || !phonenumber || phonenumber.trim().length == 0 ||
+    if (!username || username.trim().length == 0 || !password || password.trim().length == 0 || !phonenumber || phonenumber.trim().length < 10 ||
         !tenthanhpho || tenthanhpho.trim().length == 0 || !tenquan || tenquan.trim().length == 0 || !name_personal || name_personal.trim().length == 0 ||
         !name_store || name_store.trim().length == 0 || !zipcode || zipcode.trim().length == 0)
         return res.status(400).json({ data: { success: false, notification: "ban phai nhap day du thong tin" } });
