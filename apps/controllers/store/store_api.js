@@ -34,6 +34,7 @@ router.use(function(req, res, next) {
                     if (!result) res.status(403).json({ success: false, notification: "token error, not found user" });
                     else {
                         console.log(result.role.name_role);
+                        console.log(typeof result.role.licensed);
                         if (result.role.name_role == "store" && result.role.licensed == true) {
                             console.log("here");
                             decoded.role = result.role;
@@ -365,6 +366,19 @@ router.get("/listorder", function(req, res) {
         })
     })
 });
+router.put("/listorder/:id", function(req, res) {
+    var id = req.user._id;
+    var id_Order = req.body.id || req.query.id || req.params["id"];
+    var trangthai = req.body.trangthai || req.query.trangthai;
+    if(!trangthai || trangthai.trim() != "dagiao") return res.status(400).json({success:false, notification:"Nhap thieu!"});
+    if(!id_Order || id_Order.trim().length == 0) return res.status(400).json({success:false, notification:"Nhap thieu!"});
+    data_Order_From_DB.setTrangThaiOrder(id, id_Order, trangthai, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true
+        })
+    })
+})
 //--------doanhthu---------
 router.get("/listdoanhthu", function(req, res, next) {
     var id = req.user._id;

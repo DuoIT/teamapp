@@ -93,10 +93,35 @@ function deleteOrderOfStoreById(id, id_Order, fn_result) {
     
     
 }
-
+function setTrangThaiOrder(id, id_Order, trangThai, fn_result) {
+    mongoose.model_dichvu.findOne({_id: id}).exec(function(err, store) {
+        if(err) fn_result(false);
+        else if(store) {
+            try {
+                if(store.dichvu.doanhthu.order.includes(id_Order)) {
+                    mongoose.model_order.findOne({_id: id_Order}).exec(function(err, order) {
+                        if(err) fn_result(false);
+                        else if(order) {
+                            order.trangthai = trangThai;
+                            var rs_Order = new mongoose.model_order(order);
+                            rs_Order.save(function(err, result) {
+                                if(err) fn_result(false);
+                                else fn_result(true);
+                            })
+                        }else fn_result(false);
+                    })
+                }else fn_result(false);
+            } catch (error) {
+                fn_result(false);
+            }
+        }else fn_result(false);
+    })
+    
+}
 //-----------------------MODULE EXPORTS--------------------
 module.exports = {
     getListOrderOfStoreById : getListOrderOfStoreById,
     deleteOrderOfStoreById : deleteOrderOfStoreById,
-    getOrderById : getOrderById
+    getOrderById : getOrderById,
+    setTrangThaiOrder: setTrangThaiOrder
 }

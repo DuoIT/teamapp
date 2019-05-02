@@ -106,27 +106,39 @@ router.post("/avatar/user", upload.single("avatar"), function(req, res, next) {
 
 })
 router.get("/avatar", function(req, res) {
-    var filename = req.query.id || req.body.id;
-    res.contentType('image/jpeg');
+    try {
+        var filename = req.query.id || req.body.id;
+        res.contentType('image/jpeg');
 
-    var director = path.join(__dirname, "../../", "public/imgs/avatar/");
-    data = fs.readFileSync(director + filename);
-    res.send(data);
+        var director = path.join(__dirname, "../../", "public/imgs/avatar/");
+        data = fs.readFileSync(director + filename);
+        res.send(data);
+    } catch (error) {
+        res.status(500).json({notification: "fail"});
+    }
 })
 router.get("/monan", function(req, res) {
-    var filename = req.query.id;
-    res.contentType('image/jpeg');
+    try {
+        var filename = req.query.id;
+        res.contentType('image/jpeg');
 
-    var director = path.join(__dirname, "../../", "public/imgs/monan/"); //path to monan model
-    data = fs.readFileSync(director + filename);
-    res.send(data);
+        var director = path.join(__dirname, "../../", "public/imgs/monan/"); //path to monan model
+        data = fs.readFileSync(director + filename);
+        res.send(data);
+    } catch (error) {
+        res.status(500).json({notification: "fail"});
+    }
 })
 
 function deleteImage(req) {
-    fs.unlink(path.join(__dirname, "../../", "public/imgs/avatar/" + req.file.filename), function(err) {
-        if (err) console.log("loiunlinkimg");
-        else console.log("success");
-    });
+    try {
+        fs.unlink(path.join(__dirname, "../../", "public/imgs/avatar/" + req.file.filename), function(err) {
+            if (err) console.log("loiunlinkimg");
+            else console.log("success");
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 //------------upload image--avatar----------------
 

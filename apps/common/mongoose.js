@@ -3,70 +3,70 @@ const config = require("config")
 var connect = mongoose.connect('mongodb+srv://songtuyen97:proxike123@@cluster0-rmdzb.mongodb.net/test?retryWrites=true', { useNewUrlParser: true });
 
 var schema_dichvu = mongoose.Schema({
-    username: String,
-    password: String,
+    username: {type: String, required: true},
+    password: {type: String, required: true},
     role: {
-        name_role: String,
-        description: String,
-        licensed: Boolean,
+        name_role: {type: String, required: true},
+        description: {type: String, required: false},
+        licensed: {type: Boolean, required: true},
         permission: [{
-            name_per: String,
-            description: String,
+            name_per: {type: String, required: true},
+            description: {type: String, required: false},
             per_detail: {
-                view: Boolean,
-                create: Boolean,
-                update: Boolean,
-                delete: Boolean
+                view: {type: Boolean, required: true},
+                create: {type: Boolean, required: true},
+                update: {type: Boolean, required: true},
+                delete: {type: Boolean, required: true}
             }
         }]
     },
     information: {
-        name: String,
-        address: String,
-        phonenumber: String,
-        avatar_url: String,
+        name: {type: String, required: true},
+        address: {type: String, required: true},
+        phonenumber: {type: String, required: true},
+        avatar_url: {type: String, required: true},
         danhgia: [{
-            comment: String,
-            star: Number,
+            comment: {type: String, required: false},
+            star: {type: Number, required: false},
             monan: {
-                id: String,
-                ten: String,
+                id: {type: String, required: false},
+                ten: {type: String, required: false},
             }
         }],
-        order: [String]
+        order: [{type: String, required: false}]
     },
     dichvu: {
-        ten: String,
+        ten: {type: String, required: false},
         diachi: {
-            tenthanhpho: String,
-            tenquan: String,
-            tenduong: String,
-            zipcode: Number
+            tenthanhpho: {type: String, required: false},
+            tenquan: {type: String, required: false},
+            tenduong: {type: String, required: false},
+            zipcode: {type: Number, required: false}
         },
-        rating: Number,
-        mota: String,
-        avatar_url: String,
-        phonenumber: String,
+        rating: {type: Number, required: false},
+        mota: {type: String, required: false},
+        avatar_url: {type: String, required: false},
+        phonenumber: {type: String, required: false},
         doanhthu: {
-            tongdoanhthu: Number,
-            order: [String]
+            tongdoanhthu: {type: Number, required: false},
+            order: [{type: String, required: false}]
         },
         danhmuc: [{
-            ten: String,
-            mota: String,
+            ten: {type: String, required: false},
+            mota: {type: String, required: false},
             monan: [{
-                ten: String,
-                mota: String,
-                hinhanh_url: String,
-                gia: Number,
-                soluong: Number,
-                trungbinhsao: Number,
+                ten: {type: String, required: false},
+                mota: {type: String, required: false},
+                hinhanh_url: {type: String, required: false},
+                gia: {type: Number, required: false},
+                soluong: {type: Number, required: false},
+                trungbinhsao: {type: Number, required: false},
                 danhgia: [{
-                    comment: String,
-                    star: Number,
+                    comment: {type: String, required: false},
+                    star: {type: Number, required: false},
                     nguoimua: {
-                        id: String,
-                        name: String
+                        id: {type: String, required: false},
+                        name: {type: String, required: false}
                     }
                 }]
             }]
@@ -74,136 +74,44 @@ var schema_dichvu = mongoose.Schema({
     }
 });
 var schema_order = mongoose.Schema({
-        tongtien: Number,
-        giodat: Date,
-        trangthai: String,
-        address: String,
+        tongtien: {type: Number, required: true},
+        giodat: {type: Date, required: true},
+        trangthai: {type: String, required: true},
+        address: {type: String, required: true},
         information: {
-            ten: String,
-            id: String,
-            phonenumber: Number
+            ten: {type: String, required: true},
+            id: {type: String, required: true},
+            phonenumber: {type: Number, required: true}
         },
         dichvu: [{
-            ten: String,
-            id: String,
-            phonenumber: Number
+            ten: {type: String, required: true},
+            id: {type: String, required: true},
+            phonenumber: {type: Number, required: true}
         }],
         order_detail: [{
             monan: {
-                ten: String,
-                id: String
+                ten: {type: String, required: true},
+                id: {type: String, required: true}
             },
-            tongtien: Number,
-            soluong: Number,
-            gia: Number
+            tongtien: {type: Number, required: true},
+            soluong: {type: Number, required: true},
+            gia: {type: Number, required: true}
         }],
-        lienket: [String]
-})
-var schema_checkout = mongoose.Schema({
-        id_monan: String,
-        id_dichvu: String,
-        soluong: Number
+        lienket: [{type: String, required: true}]
 })
 var schema_diachi = mongoose.Schema({
-    "tenthanhpho":String,
-	"zipcode":Number,
+    "tenthanhpho": {type: String, required: true},
+	"zipcode": {type: Number, required: true},
 	"quan":[{
-        "tenquan":String,
-        "zipcode":Number
+        "tenquan": {type: String, required: true},
+        "zipcode": {type: Number, required: true}
     }]
 });
 const model_dichvu = mongoose.model("user", schema_dichvu);
 const model_order = mongoose.model("orders", schema_order);
-const model_checkout = mongoose.model("checkout", schema_checkout);
 const model_diachi = mongoose.model("diachi", schema_diachi);
-// model_diachi.create({
-//     "tenthanhpho": "HO CHI MINH",
-//     "zipcode" : 70000,
-//     "quan": [{
-//         "tenquan": "QUAN 1",
-//         "zipcode": 71000
-//     },
-//     {
-//         "tenquan": "QUAN 2",
-//         "zipcode": 71100
-//     },
-//     {
-//         "tenquan": "QUAN 3",
-//         "zipcode": 72400
-//     },
-//     {
-//         "tenquan": "QUAN 4",
-//         "zipcode": 72800
-//     },
-//     {
-//         "tenquan": "QUAN 5",
-//         "zipcode": 72700
-//     },
-//     {
-//         "tenquan": "QUAN 6",
-//         "zipcode": 73100
-//     },
-//     {
-//         "tenquan": "QUAN 7",
-//         "zipcode": 72900
-//     },
-//     {
-//         "tenquan": "QUAN 8",
-//         "zipcode": 73000
-//     },
-//     {
-//         "tenquan": "QUAN 9",
-//         "zipcode": 73000
-//     },
-//     {
-//         "tenquan": "QUAN 10",
-//         "zipcode": 72500
-//     },
-//     {
-//         "tenquan": "QUAN 11",
-//         "zipcode": 72600
-//     },
-//     {
-//         "tenquan": "QUAN 12",
-//         "zipcode": 71500
-//     }]
-// })
-// model_order.create({
-//     tongtien: 30000,
-//     giodat: new Date(),
-//     trangthai: "chưa thanh toán",
-//     diachi: {
-//         tenthanhpho: "Da nang",
-//         tenquan: "lien chieu"
-//     },
-//     information: {
-//         ten: "chinh",
-//         id: "5cb6187df335fd00047121c4"
-//     },
-//     dichvu: {
-//         ten: "songtuyen",
-//         id: "5c9350f032aacf04b862e50e"
-//     },
-//     order_detail: [{
-//         monan: {
-//             ten: "conchien",
-//             id: "5cb73d5ef7d6630004dbf4b7"
-//         },
-//         soluong: 3,
-//         gia: 10000
-//     }]
-// }, function(err, result) {
-//     if(err) console.log("loioday");
-// })
-// model_checkout.create({
-//     id_monan: "5cb73d5ef7d6630004dbf4b7",
-//     id_dichvu: "5c9350f032aacf04b862e50e"
-// }, function(err, result) {
-//     if(err) console.log("loioday");
-// })
 module.exports = {
     model_dichvu: model_dichvu,
     model_order: model_order,
-    model_checkout: model_checkout,
     model_diachi: model_diachi
 };
