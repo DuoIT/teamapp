@@ -163,9 +163,9 @@ router.post("/listcomment", function(req, res) {
     var id = req.user._id;
     var ten = req.user.ten;
 
-    var permission = user.role.permission;
-    if (check_Permission(permission, "comment", 2) == false) 
-        return res.status(401).json({success: false, notification: "You can't comment"});
+    // var permission = user.role.permission;
+    // if (check_Permission(permission, "comment", 2) == false) 
+    //     return res.status(401).json({success: false, notification: "You can't comment"});
 
     var query = req.body;
     var id_monan = query.id;
