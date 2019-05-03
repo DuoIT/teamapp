@@ -30,6 +30,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         order.giodat = new Date();
                                         order.trangthai = "chuagiao";
                                         order.address = CheckoutAll.diachi;
+                                        order.sodichvudadathang = 1;
                                         order.order_detail = [{
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
                                             monan:{
@@ -49,6 +50,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                             id: elem_Store._id,
                                             phonenumber: elem_Store.dichvu.phonenumber
                                         }]
+
                                         orders.push(order);
                                         if(elem_Checkout === Checkout[Checkout.length - 1]) {
                                             createOrdersOfCheckout(orders, user, function(result) {
@@ -81,6 +83,7 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         order.giodat = new Date();
                                         order.trangthai = "chuagiao";
                                         order.address = CheckoutAll.diachi;
+                                        order.sodichvudadathang = 1;
                                         order.order_detail = [{
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
                                             monan:{
@@ -155,6 +158,7 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                 order.trangthai = "chuagiao";
                 order.address = orders[0].address;
                 order.order_detail = [];
+                order.sodichvudadathang = orders.length;
                 order.information = {
                     ten: ten,
                     id: user._id,
@@ -190,7 +194,21 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                                 var user = new mongoose.model_dichvu(customer);
                                 user.save(function(err, saved) {
                                     if(err) fn_result(false);
-                                    else fn_result(true);
+                                    else {
+                                        mongoose.model_order.find({_id: {$in: result}}).exec(function(err, orders) {
+                                            if(err) fn_result(false);
+                                            else if(orders) {
+                                                orders.forEach(function(elem_Order) {
+                                                    elem_Order.lienketcha = result_Order._id;
+                                                    var rs_order = new mongoose.model_order(elem_Order);
+                                                    rs_order.save(function(err, result) {
+                                                        if(err) fn_result(false);
+                                                        else fn_result(true);
+                                                    })
+                                                })
+                                            }else fn_result(fasle);
+                                        })
+                                    }
                                 })
                             }
                         })
@@ -278,7 +296,47 @@ function getListOrder(id, page, fn_result) {
         }
     });
 }
+function cancelOrder(id, id_Order, fn_result) {
+    mongoose.model_dichvu.findOne({_id: id, "information.order": id_Order}).exec(function(err, store) {
+        if(err) fn_result(false);
+        else if(store) {
+            mongoose.model_order.findOne({_id: id_Order, "trangthai": config.get("trangthaichuagiaodonhang")})
+            .exec(function(err, order) {
+                if(err) fn_result(false);
+                else if(order) {
+                    try {
+                        order.trangthai = config.get("trangthaihuydonhang");
+                        mongoose.model_order.find({_id: {"$in": order.lienket}}).exec(function(err, orders) {
+                            if(err) fn_result(false);
+                            else if(orders && orders.length != 0) {
+                                orders.forEach(function(elem_Order) {
+                                    if(elem_Order.trangthai == config.get("trangthaichuagiaodonhang")) {
+                                        elem_Order.trangthai = config.get("trangthaihuydonhang");
+                                        
+                                        var rs_Order = new mongoose.model_order(elem_Order);
+                                        rs_Order.save(function(err, result) {
+                                            if(err) fn_result(false);
+                                        })
+                                    }
+                                })
+                                var rs_Order_Main = new mongoose.model_order(order);
+                                rs_Order_Main.save(function(err, result) {
+                                            if(err) fn_result(false);
+                                            else fn_result(true);
+                                })
+                            }else fn_result(false);
+                        })
+                    } catch (error) {
+                        fn_result(false);
+                    }
+                    
+                }else fn_result(false);
+            })
+        }else fn_result(false);
+    })
+}
 module.exports = {
     addCheckoutToOrders: addCheckoutToOrders,
-    getListOrder: getListOrder
+    getListOrder: getListOrder,
+    cancelOrder: cancelOrder
 }

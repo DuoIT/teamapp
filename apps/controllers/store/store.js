@@ -69,7 +69,7 @@ router.post("/signup", function(req, res) {
                     name_per: "profile",
                     description: "EDIT profile cua minh",
                     per_detail: {
-                        view: false,
+                        view: true,
                         create: false,
                         update: true,
                         delete: false
