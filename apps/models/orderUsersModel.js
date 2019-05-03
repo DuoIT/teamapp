@@ -171,6 +171,7 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                         order.order_detail.push(elem_OD);
                     })
                     elem_Order.dichvu.forEach(function(elem_DV) {
+                        console.log(elem_DV.phonenumber+"//");
                         order.dichvu.push(elem_DV);
                     })
                     tongtien += elem_Order.tongtien;
@@ -185,7 +186,10 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                     //         fn_result(true);
                     //     }
                     // });
-                    if(err) fn_result(false);
+                    if(err) {
+                        console.log(err);
+                        fn_result(false);
+                    }
                     else {
                         mongoose.model_dichvu.findOne({_id: user._id}).exec(function(err, customer) {
                             if(err) fn_result(false);
@@ -201,11 +205,9 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                                                 orders.forEach(function(elem_Order) {
                                                     elem_Order.lienketcha = result_Order._id;
                                                     var rs_order = new mongoose.model_order(elem_Order);
-                                                    rs_order.save(function(err, result) {
-                                                        if(err) fn_result(false);
-                                                        else fn_result(true);
-                                                    })
+                                                    rs_order.save();
                                                 })
+                                                return fn_result(true);
                                             }else fn_result(fasle);
                                         })
                                     }
