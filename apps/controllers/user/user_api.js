@@ -162,6 +162,11 @@ router.get("/listorder", function(req, res) {
 router.post("/listcomment", function(req, res) {
     var id = req.user._id;
     var ten = req.user.ten;
+
+    var permission = user.role.permission;
+    if (check_Permission(permission, "comment", 2) == false) 
+        return res.status(401).json({success: false, notification: "You can't comment"});
+
     var query = req.body;
     var id_monan = query.id;
     var content = query.content;
@@ -182,6 +187,20 @@ router.post("/listcomment", function(req, res) {
         else  res.status(200).json({
             success: true,
             result: result
+        }) 
+    })
+})
+router.put("/cancelorder", function(req, res) {
+    var id = req.user._id;
+    var id_Order = req.body.id_Order || req.query.id_Order;
+
+    if(!id_Order || id_Order.trim().length == 0) 
+        return res.status(401).json({success: false, notification: "Nhap thieu id_order"});
+    
+    data_Order_From_DB.cancelOrder(id, id_Order, function(result) {
+        if(!result) res.status(500).json({ data: { success: false} });
+        else  res.status(200).json({
+            success: true,
         }) 
     })
 })

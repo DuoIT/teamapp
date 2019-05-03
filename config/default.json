@@ -17,5 +17,8 @@
     "default_type_search": "food",
     "typesearch":["food", "store"],
     "paginate": 5,
-    "protocol": "https://"
+    "protocol": "https://",
+    "trangthaihuydonhang": "dahuy",
+    "trangthaichuagiaodonhang": "chuagiao",
+    "trangthaidagiaodonhang": "dagiao"
 }

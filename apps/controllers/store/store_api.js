@@ -134,7 +134,6 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
     var id = user._id;
     var permission = user.role.permission;
     var name_dictionary = "monan";
-    console.log(id);
     //---CHECK PERMISSION-----
     if (check_Permission(permission, "monan", 2) == false) {
         deleteImage(req);
@@ -256,7 +255,7 @@ router.put("/listsanpham/:ignore", upload_Monan.single("monan_img"),function(req
     //------profile---------
 router.get("/profile", function(req, res, next) {
     var id = req.user._id;
-    
+
     var id_Profile = req.body.id || req.query.id;
     if(!id_Profile || id_Profile.trim().length == 0) return next();
 

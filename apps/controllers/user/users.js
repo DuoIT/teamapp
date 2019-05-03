@@ -40,7 +40,7 @@ router.post("/signup", function(req, res) {
             licensed: true,
             permission: [{
                     name_per: "monan",
-                    description: "CRUD monan cua minh",
+                    description: "CRUD monan",
                     per_detail: {
                         view: true,
                         create: false,
@@ -56,6 +56,16 @@ router.post("/signup", function(req, res) {
                         create: true,
                         update: true,
                         delete: true
+                    }
+                },
+                {
+                    name_per: "profile",
+                    description: "CRUD comment trong profile cua minh",
+                    per_detail: {
+                        view: true,
+                        create: false,
+                        update: true,
+                        delete: false
                     }
                 }
             ]

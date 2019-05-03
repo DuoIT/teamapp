@@ -1,5 +1,5 @@
 const mongoose = require("../common/mongoose");
-
+const config = require("config");
 function getOrderById(id, id_Order, fn_result){
     mongoose.model_order.findOne({_id: id_Order}).exec(function(err, result) {
         if(err) fn_result(false);
@@ -112,6 +112,19 @@ function setTrangThaiOrder(id, id_Order, trangThai, fn_result) {
                                     rs_Store.save(function(err, result) {
                                         if(err) fn_result(false);
                                         else fn_result(true);
+                                    })
+                                    mongoose.model_order.findOne({_id: order.lienketcha}).exec(function(err, f_Order) {
+                                        if(err) fn_result(false);
+                                        else if(f_Order) {
+                                            f_Order.sodichvudagiao += 1;
+                                            if(f_Order.sodichvudagiao >= f_Order.sodichvudadathang) 
+                                                f_Order.trangthai = config.get("trangthaidagiaodonhang");
+                                                var rs_F_Order = new mongoose.model_order(f_Order);
+                                                rs_F_Order.save(function(err, result) {
+                                                    if(err) fn_result(false);
+                                                    else fn_result(true);
+                                                })
+                                        }else fn_result(false);
                                     })
                                 }
                             })

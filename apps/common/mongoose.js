@@ -33,7 +33,7 @@ var schema_dichvu = mongoose.Schema({
                 ten: {type: String, required: false},
             }
         }],
-        order: [{type: String, required: false}]
+        order: [{type: String, required: false, ref: "orders"}]
     },
     dichvu: {
         ten: {type: String, required: false},
@@ -49,7 +49,7 @@ var schema_dichvu = mongoose.Schema({
         phonenumber: {type: String, required: false},
         doanhthu: {
             tongdoanhthu: {type: Number, required: false},
-            order: [{type: String, required: false}]
+            order: [{type: String, required: false, ref: "orders"}]
         },
         danhmuc: [{
             ten: {type: String, required: false},
@@ -97,7 +97,10 @@ var schema_order = mongoose.Schema({
             soluong: {type: Number, required: true},
             gia: {type: Number, required: true}
         }],
-        lienket: [{type: String, required: true}]
+        lienket: [{type: String, required: true}],
+        sodichvudagiao: {type: Number, default: 0},
+        sodichvudadathang: {type: Number, required: true},
+        lienketcha: {type: String, required: false}
 })
 var schema_diachi = mongoose.Schema({
     "tenthanhpho": {type: String, required: true},
