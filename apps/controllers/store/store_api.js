@@ -530,6 +530,15 @@ function deleteImageAvatar(req) {
     }
     else res.status(500).json({success: false, notification: "unknown error"});
 }
-
+router.get("/notification", function(req, res) {
+    var id = req.user._id;
+    data_Order_From_DB.getNotificationOrdersToday(id, function(result) {
+        if (!result) res.status(500).json({ success: false });
+        else res.status(200).json({
+            success: true,
+            result: result
+        })
+    })
+})
 //-----------MODULE EXPORTS -----------
 module.exports = router;
