@@ -258,7 +258,7 @@ router.get("/search", function(req, res) {
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
     var page = req.query.page || req.body.page;
     if(!type || type.trim().lenght == 0) type = config.get("default_type_search");
-    if(!content || content.trim().lenght == 0) return res.status(400).json({success: false, notification:"noi dung tim kiem trong!"});
+    // if(!content || content.trim().lenght == 0) return res.status(400).json({success: false, notification:"noi dung tim kiem trong!"});
     var kiem_Tra_Type = false;
     if(!page || isNaN(page)) return res.status(400).json({success: false, notification:"nhap sai so page!"});
     config.get("typesearch").forEach(function(elem_TypeSearch) {

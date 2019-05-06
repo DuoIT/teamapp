@@ -104,29 +104,38 @@ function getAllFoods(id, fn_result){
 //search
 var elementsForSearch = [];
 function searchByType(type, zipcode_quan, page, content, fn_result) {
+    //cac field can show ra cho FE
     var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating dichvu.danhmuc";
     var query = null;
+    //kiem tra zipquan khong ton tai thi lay tat ca store/ neu co thi lay store co zipcode trung
     if(!zipcode_quan || zipcode_quan.trim().lenght == 0) 
     query = mongoose.model_dichvu.find({"role.name_role": "store"});
     else query = mongoose.model_dichvu.find({"role.name_role": "store", "dichvu.diachi.zipcode": zipcode_quan});
+    //lay data tu DB ve
     query.select(ATTRIBUTE_NEED_SHOW).exec(function(err, stores) {
         if(err) fn_result(false);
         else {
+            //page = 1 hoac mang rong thi load lai data
             if(page == 1 || elementsForSearch.length == 0) {
                 elementsForSearch.splice(0, elementsForSearch.length);
                 stores.forEach(function(elem_Store) {
                     if(type == config.get("typesearch")[1]) {
-                        if(elem_Store.dichvu.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Store);
+                        //neu khong nhap gi thi se search tat ca cac store, con khong thi tim store co ten giong voi content
+                        if(!content || content.trim().lenght == 0) elementsForSearch.push(elem_Store);
+                        else if(elem_Store.dichvu.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Store);
                     }
                     else if(type == config.get("typesearch")[0]) {
                         elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
                             elem_Danhmuc.monan.forEach(function(elem_Monan) {
-                                if(elem_Monan.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Monan);
+                                //neu khong nhap gi thi se search tat ca cac food, con khong thi tim food co ten giong voi content
+                                if(!content || content.trim().lenght == 0) elementsForSearch.push(elem_Monan);
+                                else if(elem_Monan.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Monan);
                             })
                         })
                     }
                 })
             }
+            //neu type tim kiem co dang food thi thuc hien phan trang
             if(type == config.get("typesearch")[1]) {
                 var fiveStore = [];
                 if(elementsForSearch) {
@@ -142,6 +151,7 @@ function searchByType(type, zipcode_quan, page, content, fn_result) {
                 }                
                 return fn_result(fiveStore)
             };
+            //neu type tim kiem co dang store thi thuc hien phan trang
             if(type == config.get("typesearch")[0]) {
                 var fiveFoods = [];
                 if(elementsForSearch) {
