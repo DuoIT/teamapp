@@ -94,10 +94,12 @@ function deleteOrderOfStoreById(id, id_Order, fn_result) {
     
 }
 function setTrangThaiOrder(id, id_Order, trangThai, fn_result) {
+    //tim store
     mongoose.model_dichvu.findOne({_id: id}).exec(function(err, store) {
         if(err) fn_result(false);
         else if(store) {
             try {
+                //kiem order can tim co trong trong danh sach order cua store nay khong. de thuc hien set trang thai
                 if(store.dichvu.doanhthu.order.includes(id_Order)) {
                     mongoose.model_order.findOne({_id: id_Order}).exec(function(err, order) {
                         if(err) fn_result(false);
@@ -112,6 +114,7 @@ function setTrangThaiOrder(id, id_Order, trangThai, fn_result) {
                                     rs_Store.save(function(err, result) {
                                         if(err) fn_result(false);
                                         else {
+                                            //tim den order cua customer da dat hang de set sodichvudagiao
                                             mongoose.model_order.findOne({_id: order.lienketcha}).exec(function(err, f_Order) {
                                                 if(err) fn_result(false);
                                                 else if(f_Order) {
@@ -141,10 +144,30 @@ function setTrangThaiOrder(id, id_Order, trangThai, fn_result) {
     })
     
 }
+function getNotificationOrdersToday(id, fn_result) {
+    mongoose.model_dichvu.findOne({_id: id}).exec(function(err, store) {
+        if(err) fn_result(false);
+        else if(store) {
+            //lay 0h ngay hom check
+            var current_Date = new Date();
+            var date = new Date(current_Date.getFullYear(), current_Date.getMonth(), current_Date.getDate());
+            //lay tat ca order ngay hom check
+            mongoose.model_order
+            .find({_id: {$in: store.dichvu.doanhthu.order}, trangthai: config.get("trangthaichuagiaodonhang"), giodat: {$gt: date}})
+            .select("information _id tongtien giodat trangthai address").exec(function(err, orders) {
+                if(err) fn_result(false);
+                else if(orders) {
+                    return fn_result(orders);
+                }else fn_result(false);
+            })
+        }else fn_result(false);
+    })
+}
 //-----------------------MODULE EXPORTS--------------------
 module.exports = {
     getListOrderOfStoreById : getListOrderOfStoreById,
     deleteOrderOfStoreById : deleteOrderOfStoreById,
     getOrderById : getOrderById,
-    setTrangThaiOrder: setTrangThaiOrder
+    setTrangThaiOrder: setTrangThaiOrder,
+    getNotificationOrdersToday: getNotificationOrdersToday
 }
