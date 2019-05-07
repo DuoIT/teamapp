@@ -221,7 +221,17 @@ router.put("/listsanpham/:ignore", upload_Monan.single("monan_img"),function(req
         var mota = req.query.mota || req.body.mota;
         var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;;
         var test_HA = req.query.monan_img || req.body.monan_img;;
-        console.log("____day_____nay____:" + test_HA + typeof test_HA);
+        if(test_HA) {
+            console.log("____day_____nay____:" + test_HA +"//"+ JSON.stringify(test_HA));
+            try {
+                test_HA.forEach((rs)=> {
+                    console.log(+"__hihi__:"+rs + "//" + JSON.stringify(rs));
+                })
+            } catch (error) {
+                console.log("_______//loi\\________");
+            }
+        }
+        
         if(req.file) hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=" + req.file.filename;
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
