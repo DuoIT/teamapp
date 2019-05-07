@@ -34,7 +34,8 @@ function updateProfileStoreById(id, data, fn_result) {
                 result.dichvu.diachi.tenduong = data.tenduong_store;
                 var trangThai = false;
                 thanhpho.quan.forEach(function(elem_Quan) {
-                    if(elem_Quan.tenquan == data.tenquan_store) {
+                    if(String(elem_Quan.tenquan).toLowerCase() == String(data.tenquan_store).toLowerCase()) {
+                        console.log("sosanhthanhcong");
                         trangThai = true;
                         result.dichvu.diachi.zipcode = elem_Quan.zipcode;
                     }
