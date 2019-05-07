@@ -17,24 +17,36 @@ function updateProfileStoreById(id, data, fn_result) {
     mogoose.model_dichvu.findOne({ _id: id }).exec(function(err, result) {
         if (err) return fn_result(false);
         if (!result) return fn_result(false);
-        result.information.name = data.name_personal;
-        result.information.address = data.address_personal;
-        result.information.phonenumber = data.phonenumber_personal;
-        if(data.avatar_url_personal) result.information.avatar_url = data.avatar_url_personal;
+        mogoose.model_diachi.findOne({tenthanhpho: "DA NANG"}).exec(function(thanhpho) {
+            result.information.name = data.name_personal;
+            result.information.address = data.address_personal;
+            result.information.phonenumber = data.phonenumber_personal;
+            if(data.avatar_url_personal) result.information.avatar_url = data.avatar_url_personal;
 
-        result.dichvu.ten = data.name_store;
-        result.dichvu.mota = data.mota_store;
-        result.dichvu.phonenumber = data.phonenumber_store;
-        if(data.avatar_url_store) result.dichvu.avatar_url = data.avatar_url_store;
-        result.dichvu.diachi.tenthanhpho = data.tenthanhpho_store;
-        result.dichvu.diachi.tenquan = data.tenquan_store;
-        result.dichvu.diachi.tenduong = data.tenduong_store;
-
-        var user = new mogoose.model_dichvu(result);
-        user.save(function(err, result) {
-            if (!err) return fn_result(result);
-            else return fn_result(false);
-        });
+            result.dichvu.ten = data.name_store;
+            result.dichvu.mota = data.mota_store;
+            result.dichvu.phonenumber = data.phonenumber_store;
+            if(data.avatar_url_store) result.dichvu.avatar_url = data.avatar_url_store;
+            result.dichvu.diachi.tenthanhpho = data.tenthanhpho_store;
+            result.dichvu.diachi.tenquan = data.tenquan_store;
+            result.dichvu.diachi.tenduong = data.tenduong_store;
+            var trangThai = false;
+            thanhpho.quan.forEach(function(elem_Quan) {
+                if(elem_Quan.tenquan == data.tenquan_store) {
+                    trangThai = true;
+                    result.dichvu.diachi.zipcode = elem_Quan.zipcode;
+                }
+            })
+            console.log("da vao profile");
+            if(trangThai) {
+                var user = new mogoose.model_dichvu(result);
+                user.save(function(err, result) {
+                    if (!err) return fn_result(result);
+                    else return fn_result(false);
+                });
+            }else fn_result(false);
+        })
+        
 
     })
 }
