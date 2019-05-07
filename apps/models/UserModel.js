@@ -128,8 +128,11 @@ function searchByType(type, zipcode_quan, page, content, fn_result) {
                         elem_Store.dichvu.danhmuc.forEach(function(elem_Danhmuc) {
                             elem_Danhmuc.monan.forEach(function(elem_Monan) {
                                 //neu khong nhap gi thi se search tat ca cac food, con khong thi tim food co ten giong voi content
-                                if(!content || content.trim().lenght == 0) elementsForSearch.push(elem_Monan);
-                                else if(elem_Monan.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(elem_Monan);
+                                var rs_monan = elem_Monan.toObject();
+                                rs_monan.ten_store = elem_Store.dichvu.ten;
+                                elem_Monan.ten_store = elem_Store.dichvu.ten;
+                                if(!content || content.trim().lenght == 0) elementsForSearch.push(rs_monan);
+                                else if(elem_Monan.ten.toLowerCase().search(content.toLowerCase()) != -1) elementsForSearch.push(rs_monan);
                             })
                         })
                     }
