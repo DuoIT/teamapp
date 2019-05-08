@@ -16,12 +16,14 @@ var router = express.Router();
 
 //---------------------check role-------------------
 router.use(function(req, res, next) {
+    //kiem tra co nhan bearer token tu authorization khong
     var tokenBearer = req.headers['authorization'];
     var bearer = null;
     if(typeof tokenBearer !== 'undefined') {
         tokenBearerSplit = tokenBearer.split(' ');
         bearer = tokenBearerSplit[1];
     }
+    //thuc hien kiem tra token
     var token = req.body.token || req.query.token || bearer;
     console.log("token in image:" + token);
     if (!token) return res.status(403).json({ success: false, notification: "no token" });
@@ -34,8 +36,8 @@ router.use(function(req, res, next) {
                     if (!result) res.status(403).json({ success: false, notification: "token error, not found user" });
                     else {
                         if (result.role.name_role == "store" && result.role.licensed == true) {
-                            console.log("here");
                             decoded.role = result.role;
+                            //chuyen thong tin user duoc decode vao req.user
                             req.user = decoded;
                             next();
                         } else res.status(401).json({ success: false, notification: "this account can't access" });
@@ -47,6 +49,7 @@ router.use(function(req, res, next) {
 });
 //---------API FOR STORE--------------
 function check_Permission(permission, name_permission, id) {
+    //kiem tra cac permission co duoc chap nhan khong
     for (i = 0; i < permission.length; i++) {
         if (permission[i].name_per == name_permission) {
             if (id == 1) {
@@ -73,10 +76,12 @@ function check_Permission(permission, name_permission, id) {
 //xem-them-sua-xoa
 //listcomment
 router.get("/listcomments", function(req, res) {
+    //get thong tin user tu req.user ra
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
     //------CHECK PERMISSION-------------
+    //check xem user co quyen su dung khong
     if (check_Permission(permission, "comment", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
     data_Comment_From_DB.getListCommentsById(id, function(result) {
         if(!result) res.status(500).json({ success: false } );
@@ -88,12 +93,14 @@ router.get("/listcomments", function(req, res) {
 })
 //-----sanpham-------------
 router.get("/listsanpham", function(req, res, next) {
+    //get thong tin user tu req.user ra
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
-
+    //check xem co nhan duoc field khong, neu khong thi chuyen sang router khac cung ten
     var id_Monan = req.body.id || req.query.id;
     if(!id_Monan || id_Monan.trim().length == 0) return next();
+    //check xem user co quyen su dung khong
     if (check_Permission(permission, "monan", 1) == false) return res.status(401).json({success: false, notification: "You can't view monan"});
 
     data_Monan_From_DB.getMonAnById(id, id_Monan, function(result) {
@@ -105,6 +112,7 @@ router.get("/listsanpham", function(req, res, next) {
     })
 })
 router.get("/listsanpham", function(req, res) {
+    //get thong tin user tu req.user ra
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
@@ -120,15 +128,6 @@ router.get("/listsanpham", function(req, res) {
 
     });
 })
-var storage_Monan = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './public/imgs/monan');
-    },
-    filename: function(req, file, cb) {
-        cb(null, new Date().getTime() + "_" + file.originalname);
-    }
-})
-var upload_Monan = multer({ storage: storage_Monan });
 router.post("/listsanpham", function(req, res) {
     var user = req.user;
     var id = user._id;
@@ -142,6 +141,7 @@ router.post("/listsanpham", function(req, res) {
     var danhmuc = sanpham.danhmuc;
     var ten = sanpham.ten;
     var mota = sanpham.mota;
+    //check: thiet lap uu tien: file > link_url
     var hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=monan_default.jpg";
     if(sanpham.hinhanh_url) hinhanh_url = sanpham.hinhanh_url;
     //ss
@@ -152,6 +152,7 @@ router.post("/listsanpham", function(req, res) {
         if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
         else {
             try {
+                //kiem tra dinh dang base64 
                 var base64Data = null;
                 if(avatar_url_per.indexOf("data:image\/jpeg;base64,") != -1){
                     base64Data = avatar_url_per.replace("data:image\/jpeg;base64,", "");
@@ -164,7 +165,7 @@ router.post("/listsanpham", function(req, res) {
                 if(base64Data){
                     //luu anh
                     fs.writeFileSync(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File1), base64Data, 'base64');   
-                    //luu lai
+                    //luu lai url vao db
                     hinhanh_url = config.get("protocol") + req.headers.host + "/images/avatar?id=" + name_File1;
                     check_Upload_File_AV1 = true;
                 }       
@@ -220,6 +221,7 @@ router.delete("/listsanpham", function(req, res) {
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
+    //-----CHECK PERMISSION----
     if (check_Permission(permission, "monan", 4) == false) return res.status(401).json({success: false, notification: "You can't DELETE monan"});
     var id_monan = req.query.id || req.body.id;
 
@@ -249,7 +251,7 @@ router.put("/listsanpham/:ignore", function(req, res) {
         var mota = req.query.mota || req.body.mota;
         var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;
         var avatar_base64 = req.query.avatar_base64 || req.body.avatar_base64;
-        //ss
+        //---CHECK FILE TU FE
         var check_Upload_File_AV1 = false;
         var name_File1 = null;
         if(avatar_base64) {
