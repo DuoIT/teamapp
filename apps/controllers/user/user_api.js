@@ -3,6 +3,7 @@ const path = require("path");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const multer = require("multer");
+const fs = require("fs");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profileUsersModel")); //"../models/profile"
 const data_Order_From_DB = require(path.join(__dirname, "../../", "/models/orderUsersModel")); //"../models/profile"
@@ -47,30 +48,30 @@ router.use(function(req, res, next) {
     }
 })
 
-// function check_Permission(permission, name_permission, id) {
-//     for (i = 0; i < permission.length; i++) {
-//         if (permission[i].name_per == name_permission) {
-//             if (id == 1) {
-//                 if (permission[i].per_detail.view == true) {
-//                     return true;
-//                 }
-//             } else if (id == 2) {
-//                 if (permission[i].per_detail.create == true) {
-//                     return true;
-//                 }
-//             } else if (id == 3) {
-//                 if (permission[i].per_detail.update == true) {
-//                     return true;
-//                 }
-//             } else if (id == 4) {
-//                 if (permission[i].per_detail.delete == true) {
-//                     return true;
-//                 }
-//             }
-//         }
-//     }
-//     return false;
-// }
+function check_Permission(permission, name_permission, id) {
+    for (i = 0; i < permission.length; i++) {
+        if (permission[i].name_per == name_permission) {
+            if (id == 1) {
+                if (permission[i].per_detail.view == true) {
+                    return true;
+                }
+            } else if (id == 2) {
+                if (permission[i].per_detail.create == true) {
+                    return true;
+                }
+            } else if (id == 3) {
+                if (permission[i].per_detail.update == true) {
+                    return true;
+                }
+            } else if (id == 4) {
+                if (permission[i].per_detail.delete == true) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 
 // API for users
 
@@ -87,34 +88,39 @@ router.get("/profile", function(req, res) {
         })
     })
 });
-
-var storage_Profile = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './public/imgs/avatar');
-    },
-    filename: function(req, file, cb) {
-        cb(null, new Date().getTime() + "_" + file.originalname);
-    }
-});
-
-var upload_Profile = multer({ storage: storage_Profile });
-router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
+router.put("/profile", function(req, res) {
     var id = req.user._id;
     var profile = req.body;
 
     var name_per = profile.name;
     var address_per = profile.address;
     var phonenumber = profile.phonenumber;
-    var avatar_url_per = null;
-    try {
-        if(req.file) avatar_url_per = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.file.filename;
-    } catch (error) {
-        deleteImageAvatar(req);
-    }
-    
+    var avatar_url_per = profile.avatar_url;
+    var name_File = null;
+    if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
+    else {
+        try {
+            var base64Data = null;
+            if(avatar_url_per.indexOf("data:image\/jpeg;base64,") != -1){
+                base64Data = avatar_url_per.replace("data:image\/jpeg;base64,", "");
+                name_File = String(new Date().getTime()) + ".jpg";
+            }  
+            else if(avatar_url_per.indexOf("data:image\/png;base64,") != -1) {
+                base64Data = avatar_url_per.replace("data:image\/png;base64,", "");
+                name_File = String(new Date().getTime()) + ".png";
+            }
+            if(base64Data){
+                fs.writeFileSync(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File), base64Data, 'base64');   
+                avatar_url_per = config.get("protocol") + req.headers.host + "/images/avatar?id=" + name_File;
+            }       
+            else avatar_url_per = null;
+        } catch (error) {
+            avatar_url_per = null;
+        }         
+    }   
     if (!name_per || name_per.trim().length == 0 || !address_per || address_per.trim().length == 0
         || !phonenumber || phonenumber.trim().length < 10) {
-        deleteImageAvatar(req);
+        if(avatar_url_per) deleteImageAvatar(name_File);
         return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
     }
     var data = {
@@ -126,14 +132,13 @@ router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
 
     data_Profile_From_DB.updateProfileUserById(id, data, function(result) {
         if (!result) {
-            deleteImageAvatar(req);
+            if(avatar_url_per) deleteImageAvatar(name_File);
             res.status(500).json({ success: false });}
         else res.status(200).json({
                 success: true
         }) 
     })
 });
-
 router.post("/checkout", function(req, res) {
     var checkout = req.body;
     var user = req.user;
@@ -146,8 +151,7 @@ router.post("/checkout", function(req, res) {
                 result: result
         }) 
     })
-});
-
+})
 router.get("/listorder", function(req, res) {
     var user = req.user;
     var id = user._id;
@@ -162,8 +166,7 @@ router.get("/listorder", function(req, res) {
                 result: result
         }) 
     })
-});
-
+})
 router.post("/listcomment", function(req, res) {
     var id = req.user._id;
     var ten = req.user.ten;
@@ -194,8 +197,7 @@ router.post("/listcomment", function(req, res) {
             result: result
         }) 
     })
-});
-
+})
 router.put("/cancelorder", function(req, res) {
     var id = req.user._id;
     var id_Order = req.body.id_Order || req.query.id_Order;
@@ -209,21 +211,17 @@ router.put("/cancelorder", function(req, res) {
             success: true,
         }) 
     })
-});
-
-function deleteImageAvatar(req) {
+})
+function deleteImageAvatar(name_File) {
     try {
-        if(req.file) {
-            fs.unlink(path.join(__dirname, "../../../", "public/imgs/avatar/" + req.file.filename), function(err) {
-                if (err) {
-                    console.log(err);
-                }
-                else console.log("delete img is success");
-            });
-        }
-        else res.status(500).json({success: false, notification: "unknown error"});
+        fs.unlink(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File), function(err) {
+            if (err) {
+                console.log("daynay:"+err);
+            }
+            else console.log("delete img is success");
+        });
     } catch (error) {
-        console.log(error);
+        console.log("day2:"+error);
     }
 }
 //-----------MODULE EXPORTS -----------
