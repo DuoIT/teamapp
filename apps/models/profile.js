@@ -45,7 +45,10 @@ function updateProfileStoreById(id, data, fn_result) {
                     var user = new mogoose.model_dichvu(result);
                     user.save(function(err, result) {
                         if (!err) return fn_result(result);
-                        else return fn_result(false);
+                        else {
+                            console.log(err);
+                            return fn_result(false);
+                        }
                     });
                 }else fn_result(false);
             }else fn_result(false);

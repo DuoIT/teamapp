@@ -96,7 +96,6 @@ router.put("/profile", function(req, res) {
     var phonenumber = profile.phonenumber;
     var avatar_url_per = profile.avatar_url;
     var name_File = null;
-    console.log("__//||__:" + JSON.stringify(avatar_url_per));
     if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
     else {
         try {
