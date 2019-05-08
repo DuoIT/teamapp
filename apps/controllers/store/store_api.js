@@ -279,23 +279,42 @@ router.get("/profile", function(req, res) {
     })
 });
 //EDIT PROFILE-------------------------
-var storage_Profile = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './public/imgs/avatar');
-    },
-    filename: function(req, file, cb) {
-        cb(null, new Date().getTime() + "_" + file.originalname);
-    }
-})
-var upload_Profile = multer({ storage: storage_Profile });
-router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res) {
+router.put("/profile/:ignore", function(req, res) {
         var id = req.user._id;
         var profile = req.body;
         var name_personal = profile.information.name;
         var address_personal = profile.information.address;
         var phonenumber_personal = profile.information.phonenumber;
         var avatar_url_personal = profile.information.avatar_url;
-        if(req.files && req.files.length >= 1) avatar_url_personal = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.files[0].filename;
+        var check_Upload_File_AV1 = false;
+        var name_File1 = null;
+        if(profile.information.avatar_base64) {
+            var avatar_url_per = profile.information.avatar_base64;
+            if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
+            else {
+                try {
+                    var base64Data = null;
+                    if(avatar_url_per.indexOf("data:image\/jpeg;base64,") != -1){
+                        base64Data = avatar_url_per.replace("data:image\/jpeg;base64,", "");
+                        name_File1 = String(new Date().getTime()) + ".jpg";
+                    }  
+                    else if(avatar_url_per.indexOf("data:image\/png;base64,") != -1) {
+                        base64Data = avatar_url_per.replace("data:image\/png;base64,", "");
+                        name_File1 = String(new Date().getTime()) + ".png";
+                    }
+                    if(base64Data){
+                        //luu anh
+                        fs.writeFileSync(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File1), base64Data, 'base64');   
+                        //luu lai
+                        avatar_url_personal = config.get("protocol") + req.headers.host + "/images/avatar?id=" + name_File1;
+                        check_Upload_File_AV1 = true;
+                    }       
+                    else avatar_url_per = null;
+                } catch (error) {
+                    avatar_url_per = null;
+                }         
+            }
+        }
         var name_store = profile.dichvu.ten;
         var phonenumber_store = profile.dichvu.phonenumber;
         var tenthanhpho_store = profile.dichvu.diachi.tenthanhpho;
@@ -303,13 +322,43 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
         var tenduong_store = profile.dichvu.diachi.tenduong;
         var mota_store = profile.dichvu.mota;
         var avatar_url_store = profile.dichvu.avatar_url;
+        var check_Upload_File_AV2 = false;
+        var name_File2 = null;
+        if(profile.dichvu.avatar_base64) {
+            var avatar_url_per = profile.dichvu.avatar_base64;
+           
+            if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
+            else {
+                try {
+                    var base64Data = null;
+                    if(avatar_url_per.indexOf("data:image\/jpeg;base64,") != -1){
+                        base64Data = avatar_url_per.replace("data:image\/jpeg;base64,", "");
+                        name_File2 = String(new Date().getTime()) + ".jpg";
+                    }  
+                    else if(avatar_url_per.indexOf("data:image\/png;base64,") != -1) {
+                        base64Data = avatar_url_per.replace("data:image\/png;base64,", "");
+                        name_File2 = String(new Date().getTime()) + ".png";
+                    }
+                    if(base64Data){
+                        //luu anh
+                        fs.writeFileSync(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File2), base64Data, 'base64');   
+                        //luu lai
+                        avatar_url_store = config.get("protocol") + req.headers.host + "/images/avatar?id=" + name_File2;
+                        check_Upload_File_AV2 = true;
+                    }       
+                } catch (error) {
+                    console.log(error);
+                }         
+            }
+        }
         if(req.files && req.files.length >= 2) avatar_url_store = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.files[1].filename;
         if (!phonenumber_store || phonenumber_store.trim().length < 10 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
             !name_store || name_store.trim().length == 0 || !phonenumber_personal || phonenumber_personal.trim().length < 10)
             {
-                if(req.files) deleteImageAvatar(req);
+                if(check_Upload_File_AV2) deleteImageAvatarV2(name_File2);
+                if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
                 return res.status(400).json({ success: false, notification: "ban phai nhap day du thong tin" });
             }
         
@@ -329,7 +378,8 @@ router.put("/profile/:ignore", upload_Profile.array('avatar'),function(req, res)
 
         data_Profile_From_DB.updateProfileStoreById(id, data, function(result) {
             if (!result) {
-                if(req.files) deleteImageAvatar(req)
+                if(check_Upload_File_AV2) deleteImageAvatarV2(name_File2);
+                if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
                 res.status(500).json({ success: false } );}
             else res.status(200).json({ 
                 success: true, 
@@ -529,6 +579,18 @@ function deleteImageAvatar(req) {
         })
     }
     else res.status(500).json({success: false, notification: "unknown error"});
+}
+function deleteImageAvatarV2(name_File) {
+    try {
+        fs.unlink(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File), function(err) {
+            if (err) {
+                console.log("daynay:"+err);
+            }
+            else console.log("delete img is success");
+        });
+    } catch (error) {
+        console.log("day2:"+error);
+    }
 }
 router.get("/notification", function(req, res) {
     var id = req.user._id;
