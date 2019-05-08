@@ -1,7 +1,7 @@
 const mogoose = require("../common/mongoose");
 
 function getListDoanhThu(fn_result) {
-    mogoose.model_dichvu.find({"role.name_role":"store"}).select("dichvu.doanhthu dichvu.ten").exec(function(err, result) {
+    mogoose.model_dichvu.find({"role.name_role":"store"}).select("dichvu.doanhthu dichvu.ten information").exec(function(err, result) {
         if(err) fn_result(false);
         else {
             var listdoanhthu = [];
