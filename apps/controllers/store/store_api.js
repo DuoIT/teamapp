@@ -129,15 +129,14 @@ var storage_Monan = multer.diskStorage({
     }
 })
 var upload_Monan = multer({ storage: storage_Monan });
-router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
+router.post("/listsanpham", function(req, res) {
     var user = req.user;
     var id = user._id;
     var permission = user.role.permission;
     var name_dictionary = "monan";
     //---CHECK PERMISSION-----
-    if (check_Permission(permission, "monan", 2) == false) {
-        deleteImage(req);
-        return res.status(401).json({success: false, notification: "You can't ADD monan"});}
+    if (check_Permission(permission, "monan", 2) == false) 
+        return res.status(401).json({success: false, notification: "You can't ADD monan"});
 
     var sanpham = req.body;
     var danhmuc = sanpham.danhmuc;
@@ -145,25 +144,55 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
     var mota = sanpham.mota;
     var hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=monan_default.jpg";
     if(sanpham.hinhanh_url) hinhanh_url = sanpham.hinhanh_url;
-    if(req.files && req.files.length != 0 && req.files[0]) hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=" + req.files[0].filename;
+    //ss
+    var check_Upload_File_AV1 = false;
+    var name_File1 = null;
+    if(sanpham.avatar_base64) {
+        var avatar_url_per = sanpham.avatar_base64;
+        if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
+        else {
+            try {
+                var base64Data = null;
+                if(avatar_url_per.indexOf("data:image\/jpeg;base64,") != -1){
+                    base64Data = avatar_url_per.replace("data:image\/jpeg;base64,", "");
+                    name_File1 = String(new Date().getTime()) + ".jpg";
+                }  
+                else if(avatar_url_per.indexOf("data:image\/png;base64,") != -1) {
+                    base64Data = avatar_url_per.replace("data:image\/png;base64,", "");
+                    name_File1 = String(new Date().getTime()) + ".png";
+                }
+                if(base64Data){
+                    //luu anh
+                    fs.writeFileSync(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File1), base64Data, 'base64');   
+                    //luu lai
+                    hinhanh_url = config.get("protocol") + req.headers.host + "/images/avatar?id=" + name_File1;
+                    check_Upload_File_AV1 = true;
+                }       
+            } catch (error) {
+                console.log(error);
+            }         
+        }
+    }
     var gia = sanpham.gia;
     var soluong = sanpham.soluong;
     var trungbinhsao = 0;
+
+
     //CHECK INPUT VALID
     if (!danhmuc || danhmuc.trim().length == 0) {
-        if(req.files) deleteImage(req);
+        if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
         return res.status(400).json({success: false, notification: "input's wrong"});}
     else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh"){
-        if(req.files) deleteImage(req);   
+        if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1); 
         return res.status(400).json({success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});}
 
     if (!sanpham) {
-        if(req.files) deleteImage(req);
+        if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
         return res.status(400).json({success: false, notification: "input's wrong"});}
 
     if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
         {
-            if(req.files) deleteImage(req, name_dictionary);
+            if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
             return res.status(400).json({success: false, notification: "input's wrong"});
         }
     var data = {
@@ -177,7 +206,7 @@ router.post("/listsanpham", upload_Monan.array('monan_img'),function(req, res) {
 
     data_Monan_From_DB.createMonAnOfStore(id, danhmuc, data, function(result) {
         if (!result) {
-            if(req.files) deleteImage(req);
+            if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
             res.status(500).json({success: false, notification: "unknown error"});}
         else res.status(200).json({
             success: true, 
@@ -207,31 +236,60 @@ router.delete("/listsanpham", function(req, res) {
 
 })
 
-router.put("/listsanpham/:ignore", upload_Monan.single("monan_img"),function(req, res) {
+router.put("/listsanpham/:ignore", function(req, res) {
         //DEFINE CODDE........
         var user = req.user;
         var id = user._id;
         var permission = user.role.permission;
-        if (check_Permission(permission, "monan", 3) == false) {
-            if(req.file) deleteImage(req);
-            return res.status(401).json({ success: false, notification: "You can't EDIT monan"});}
+        if (check_Permission(permission, "monan", 3) == false) 
+            return res.status(401).json({ success: false, notification: "You can't EDIT monan"});
         var id_monan =req.body.id ||  req.query.id;
         var danhmuc = req.query.ten_danhmuc || req.body.ten_danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
         var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;
-        if(req.file) hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=" + req.file.filename;
+        var avatar_base64 = req.query.avatar_base64 || req.body.avatar_base64;
+        //ss
+        var check_Upload_File_AV1 = false;
+        var name_File1 = null;
+        if(avatar_base64) {
+            var avatar_url_per = avatar_base64;
+            if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
+            else {
+                try {
+                    var base64Data = null;
+                    if(avatar_url_per.indexOf("data:image\/jpeg;base64,") != -1){
+                        base64Data = avatar_url_per.replace("data:image\/jpeg;base64,", "");
+                        name_File1 = String(new Date().getTime()) + ".jpg";
+                    }  
+                    else if(avatar_url_per.indexOf("data:image\/png;base64,") != -1) {
+                        base64Data = avatar_url_per.replace("data:image\/png;base64,", "");
+                        name_File1 = String(new Date().getTime()) + ".png";
+                    }
+                    if(base64Data){
+                        //luu anh
+                        fs.writeFileSync(path.join(__dirname, "../../../", "public/imgs/avatar/" + name_File1), base64Data, 'base64');   
+                        //luu lai
+                        hinhanh_url = config.get("protocol") + req.headers.host + "/images/avatar?id=" + name_File1;
+                        check_Upload_File_AV1 = true;
+                    }       
+                } catch (error) {
+                    console.log(error);
+                }         
+            }
+        }
+
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
         if (!danhmuc || danhmuc.trim().length == 0) return res.status(400).json({success: false, notification: "input's wrong"});
         else if (danhmuc.trim() != "com" && danhmuc.trim() != "thucan" && danhmuc.trim() != "canh")
             {
-                if(req.file) deleteImage(req);
+                if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
                 return res.status(400).json({ success: false, notification: "danhmuc have to 1 in 3 values ('com','canh','thucan')"});}
 
         if (!ten || ten.trim().length == 0 || !gia || Number.isNaN(gia) || !soluong || Number.isNaN(soluong))
             {
-                if(req.file) deleteImage(req);
+                if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
                 return res.status(400).json({ success: false, notification: "input's wrong" });}
 
         var data = {
@@ -244,7 +302,7 @@ router.put("/listsanpham/:ignore", upload_Monan.single("monan_img"),function(req
 
         data_Monan_From_DB.updateMonAnById(id, id_monan, danhmuc, data, function(result) {
             if (!result) {
-                if(req.file) deleteImage(req);
+                if(check_Upload_File_AV1) deleteImageAvatarV2(name_File1);
                 res.status(500).json({ success: false, notification: "unknow error" });}
             else res.status(200).json({ 
                 success: true,
