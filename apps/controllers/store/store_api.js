@@ -219,7 +219,7 @@ router.put("/listsanpham/:ignore", upload_Monan.single("monan_img"),function(req
         var danhmuc = req.query.ten_danhmuc || req.body.ten_danhmuc;
         var ten = req.query.ten || req.body.ten;
         var mota = req.query.mota || req.body.mota;
-        var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;;
+        var hinhanh_url = req.query.hinhanh_url || req.body.hinhanh_url;
         if(req.file) hinhanh_url = config.get("protocol") + req.headers.host + "/images/monan?id=" + req.file.filename;
         var gia = req.query.gia || req.body.gia;
         var soluong = req.query.soluong || req.body.soluong;
