@@ -15,6 +15,7 @@ function getListDoanhThu(fn_result) {
                         var data = {
                             _id: elem_result._id,
                             ten: elem_result.dichvu.ten,
+                            ten_chu_quan: elem_result.information.name,
                             soluongorder: orders.length,
                             tongtien: tongtien
                         }
