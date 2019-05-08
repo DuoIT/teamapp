@@ -2,7 +2,6 @@ const express = require("express");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const multer = require("multer");
 const fs = require("fs");
 const data_User_From_DB = require(path.join(__dirname, "../../", "/models/UserModel")); //"../models/user"
 const data_Profile_From_DB = require(path.join(__dirname, "../../", "/models/profileUsersModel")); //"../models/profile"
@@ -97,6 +96,7 @@ router.put("/profile", function(req, res) {
     var phonenumber = profile.phonenumber;
     var avatar_url_per = profile.avatar_url;
     var name_File = null;
+    console.log("__//||__:" + avatar_url_per);
     if(!avatar_url_per || avatar_url_per.trim().length == 0) avatar_url_per = null;
     else {
         try {
