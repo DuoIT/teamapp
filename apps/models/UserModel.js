@@ -85,6 +85,7 @@ function getFoodbyCate(id, nameCate, fn_result) {
         }
     })
 }
+
 function getAllFoods(id, fn_result){
     mongoose.model_dichvu.find({_id: id ,"role.name_role": "store" }).select("dichvu.danhmuc").exec(function(err, stores) {
         if (err) fn_result(false);
@@ -101,6 +102,7 @@ function getAllFoods(id, fn_result){
         }
     })
 }
+
 //search
 var elementsForSearch = [];
 function searchByType(type, zipcode_quan, page, content, fn_result) {
@@ -173,18 +175,21 @@ function searchByType(type, zipcode_quan, page, content, fn_result) {
         }
     })
 }
+
 function getUserByUsername(username, fn_result) {
     mongoose.model_dichvu.findOne({ username: username }).exec((err, result) => {
         if (err) return fn_result(false);
         return fn_result(result);
     });
 }
+
 function createUser(user, fn_result) {
     mongoose.model_dichvu.create(user, (err, result) => {
         if (err) return fn_result(false);
         return fn_result(result);
     })
 }
+
 function getListStoreOfQuan(zipcode, fn_result) {
     var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating";
     mongoose.model_dichvu.find({ "role.name_role": "store", "dichvu.diachi.zipcode": zipcode }).select(ATTRIBUTE_NEED_SHOW).exec((err, results) => {
@@ -195,6 +200,7 @@ function getListStoreOfQuan(zipcode, fn_result) {
         else fn_result(results);    
     })
 }
+
 //phan trang store v2
 function getListStoreOfQuanV2(zipcode, page, fn_result) {
     var ATTRIBUTE_NEED_SHOW = "dichvu.ten dichvu.diachi dichvu.mota dichvu.avatar_url dichvu.rating";
@@ -214,7 +220,7 @@ function getListStoreOfQuanV2(zipcode, page, fn_result) {
         }else fn_result(false);
     })
 }
-//
+
 module.exports = {
     getUserByIdToCheckRole: getUserByIdToCheckRole,
     getAllStores: getAllStores,

@@ -101,8 +101,8 @@ router.get("/liststore", function(req, res) {
             })
         }
     })
-})
-//
+});
+
 router.get("/detailstore", function(req, res) {
     var id = req.query.idstore || req.body.idstore;
 
@@ -183,6 +183,7 @@ router.get("/listfoodcate", function(req, res, next) {
         }     
     })
 });
+
 router.get("/listfoodcate", function(req, res) {
     var id = req.query.id || req.body.id;
     var nameCate = req.query.namecate || req.body.namecate;
@@ -225,7 +226,8 @@ router.get("/listthanhpho", function(req, res) {
             }
         })
     })
-})
+});
+
 router.get("/listquan", function(req, res) {
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
     if(!zipcode_quan) return res.status(400).json({ data: {success: false} });
@@ -238,7 +240,8 @@ router.get("/listquan", function(req, res) {
             }
         })
     })
-})
+});
+
 router.get("/listcomment", function(req, res) {
     var id_monan = req.query.id || req.body.id;
     var page = req.query.page || req.body.page;
@@ -251,7 +254,8 @@ router.get("/listcomment", function(req, res) {
                 result: result
         })
     })
-})
+});
+
 router.get("/search", function(req, res) {
     var type = req.query.type || req.body.type;
     var content = req.query.content || req.body.content;

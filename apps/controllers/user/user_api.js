@@ -47,30 +47,30 @@ router.use(function(req, res, next) {
     }
 })
 
-function check_Permission(permission, name_permission, id) {
-    for (i = 0; i < permission.length; i++) {
-        if (permission[i].name_per == name_permission) {
-            if (id == 1) {
-                if (permission[i].per_detail.view == true) {
-                    return true;
-                }
-            } else if (id == 2) {
-                if (permission[i].per_detail.create == true) {
-                    return true;
-                }
-            } else if (id == 3) {
-                if (permission[i].per_detail.update == true) {
-                    return true;
-                }
-            } else if (id == 4) {
-                if (permission[i].per_detail.delete == true) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
+// function check_Permission(permission, name_permission, id) {
+//     for (i = 0; i < permission.length; i++) {
+//         if (permission[i].name_per == name_permission) {
+//             if (id == 1) {
+//                 if (permission[i].per_detail.view == true) {
+//                     return true;
+//                 }
+//             } else if (id == 2) {
+//                 if (permission[i].per_detail.create == true) {
+//                     return true;
+//                 }
+//             } else if (id == 3) {
+//                 if (permission[i].per_detail.update == true) {
+//                     return true;
+//                 }
+//             } else if (id == 4) {
+//                 if (permission[i].per_detail.delete == true) {
+//                     return true;
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
 
 // API for users
 
@@ -87,6 +87,7 @@ router.get("/profile", function(req, res) {
         })
     })
 });
+
 var storage_Profile = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './public/imgs/avatar');
@@ -94,7 +95,8 @@ var storage_Profile = multer.diskStorage({
     filename: function(req, file, cb) {
         cb(null, new Date().getTime() + "_" + file.originalname);
     }
-})
+});
+
 var upload_Profile = multer({ storage: storage_Profile });
 router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
     var id = req.user._id;
@@ -131,6 +133,7 @@ router.put("/profile", upload_Profile.single("avatar"), function(req, res) {
         }) 
     })
 });
+
 router.post("/checkout", function(req, res) {
     var checkout = req.body;
     var user = req.user;
@@ -143,7 +146,8 @@ router.post("/checkout", function(req, res) {
                 result: result
         }) 
     })
-})
+});
+
 router.get("/listorder", function(req, res) {
     var user = req.user;
     var id = user._id;
@@ -158,7 +162,8 @@ router.get("/listorder", function(req, res) {
                 result: result
         }) 
     })
-})
+});
+
 router.post("/listcomment", function(req, res) {
     var id = req.user._id;
     var ten = req.user.ten;
@@ -189,7 +194,8 @@ router.post("/listcomment", function(req, res) {
             result: result
         }) 
     })
-})
+});
+
 router.put("/cancelorder", function(req, res) {
     var id = req.user._id;
     var id_Order = req.body.id_Order || req.query.id_Order;
@@ -203,7 +209,8 @@ router.put("/cancelorder", function(req, res) {
             success: true,
         }) 
     })
-})
+});
+
 function deleteImageAvatar(req) {
     try {
         if(req.file) {
