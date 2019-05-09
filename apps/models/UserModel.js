@@ -217,7 +217,8 @@ function getListStoreOfQuanV2(zipcode, page, fn_result) {
         if(err) fn_result(false);
         else if(stores) {
             fn_result(stores);
-        }else fn_result(false);
+        }
+        else fn_result(false);
     })
 }
 
