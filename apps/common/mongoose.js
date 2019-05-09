@@ -86,7 +86,7 @@ var schema_order = mongoose.Schema({
         dichvu: [{
             ten: {type: String, required: true},
             id: {type: String, required: true},
-            phonenumber: {type: Number, required: true}
+            phonenumber: {type: Number, required: false}
         }],
         order_detail: [{
             monan: {

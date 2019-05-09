@@ -84,6 +84,7 @@ router.post("/signup", function(req, res) {
             avatar_url: avatar_default_url,
         },
         dichvu: {
+            phonenumber: phonenumber,
             rating: 0,
             ten: name_store,
             diachi: {
