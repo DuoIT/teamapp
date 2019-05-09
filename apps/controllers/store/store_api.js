@@ -411,7 +411,6 @@ router.put("/profile/:ignore", function(req, res) {
                 }         
             }
         }
-        if(req.files && req.files.length >= 2) avatar_url_store = config.get("protocol") + req.headers.host + "/images/avatar?id=" + req.files[1].filename;
         if (!phonenumber_store || phonenumber_store.trim().length < 10 ||
             !tenthanhpho_store || tenthanhpho_store.trim().length == 0 || !tenquan_store || tenquan_store.trim().length == 0 || 
             !name_personal || name_personal.trim().length == 0 ||
