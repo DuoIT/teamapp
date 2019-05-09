@@ -119,6 +119,7 @@ router.get("/detailstore", function(req, res) {
 
 router.get("/listfood", function (req, res) {
     var id = req.query.id_dv || req.body.id_dv;
+
     data_User_From_DB.getFoodByStoreId(id, function (result) {
         if (!result) res.status(500).json({ data: { success: false} });
         else res.status(200).json({
@@ -132,6 +133,7 @@ router.get("/listfood", function (req, res) {
 
 router.get("/listcategoryfoods", function(req, res) {
     var id = req.query.id_dv || req.body.id_dv;
+
     data_User_From_DB.getAllCategoryFoods(id, function(result) {
         if (!result) res.status(500).json({data: {success: false}});
         else res.status(200).json({
@@ -142,12 +144,14 @@ router.get("/listcategoryfoods", function(req, res) {
         })
     })
 });
+
 //listfoodcate v1
 var food = [];
 router.get("/listfoodcate", function(req, res, next) {
     var id = req.query.id || req.body.id;
     var nameCate = req.query.namecate || req.body.namecate;
     var page = req.query.page || req.body.page;
+
     if(!nameCate || nameCate.trim().lenght == 0) return next();
     if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
     if(!id || id.trim().lenght == 0) return res.status(400).json({success: false});
@@ -188,8 +192,10 @@ router.get("/listfoodcate", function(req, res) {
     var id = req.query.id || req.body.id;
     var nameCate = req.query.namecate || req.body.namecate;
     var page = req.query.page || req.body.page;
+
     if(!page || page.trim().lenght == 0 || isNaN(page)) return res.status(400).json({success: false, notification:"page nhap sai hoac khong ton tai!"});
     if(!id || id.trim().lenght == 0) return res.status(400).json({success: false});
+
     data_User_From_DB.getAllFoods(id, function(result) {
         if (!result) res.status(500).json({ data: {success: false} });
         else {
@@ -215,6 +221,7 @@ router.get("/listfoodcate", function(req, res) {
         }
     })
 });
+
 //list thanh pho
 router.get("/listthanhpho", function(req, res) {
     data_Diachi_From_DB.getListThanhPho(function(result) {
@@ -230,6 +237,7 @@ router.get("/listthanhpho", function(req, res) {
 
 router.get("/listquan", function(req, res) {
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
+
     if(!zipcode_quan) return res.status(400).json({ data: {success: false} });
     data_Diachi_From_DB.getListQuan(zipcode_quan, function(result) {
         if(!result) res.status(500).json({ data: {success: false} });
@@ -245,6 +253,7 @@ router.get("/listquan", function(req, res) {
 router.get("/listcomment", function(req, res) {
     var id_monan = req.query.id || req.body.id;
     var page = req.query.page || req.body.page;
+
     if(!id_monan || !page || isNaN(page) || page.trim().lenght == 0) return res.status(400).json({success: false});
 
     data_Comment_From_DB.getListCommentOfMonan(id_monan, page, function(result) {
@@ -261,6 +270,7 @@ router.get("/search", function(req, res) {
     var content = req.query.content || req.body.content;
     var zipcode_quan = req.query.zipcode || req.body.zipcode;
     var page = req.query.page || req.body.page;
+    
     if(!type || type.trim().lenght == 0) type = config.get("default_type_search");
     // if(!content || content.trim().lenght == 0) return res.status(400).json({success: false, notification:"noi dung tim kiem trong!"});
     var kiem_Tra_Type = false;

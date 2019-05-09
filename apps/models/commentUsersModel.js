@@ -1,6 +1,7 @@
 const mongoose = require("../common/mongoose");
 const config = require("config");
 var comments = [];
+
 function getListCommentOfMonan(id_Monan, page, fn_Result) {
     mongoose.model_dichvu.find({"role.name_role": "store"}).select("dichvu.danhmuc").exec(function(err, stores) {
         if(err) return fn_Result(false);
@@ -35,6 +36,7 @@ function getListCommentOfMonan(id_Monan, page, fn_Result) {
         }else fn_Result(false);
     })
 }
+
 function addCommentForUser(id_Monan, data, fn_result) {
     mongoose.model_dichvu.find({"role.name_role": "store"}).exec(function(err, stores) {
         if(err) return fn_Result(false);

@@ -8,6 +8,7 @@ function getListThanhPho(fn_result) {
         }
     })
 }
+
 function getListQuan(zipcode, fn_result) {
     mongoose.model_diachi.findOne({zipcode: zipcode}).exec(function(err, result) {
         if(err) fn_result(false);
@@ -17,6 +18,7 @@ function getListQuan(zipcode, fn_result) {
         }
     })
 }
+
 module.exports = {
     getListThanhPho: getListThanhPho,
     getListQuan: getListQuan
