@@ -164,7 +164,6 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                 order.address = orders[0].address;
                 order.order_detail = [];
                 order.sodichvudadathang = orders.length;
-                order.sodichvudadagiao = 0;
                 order.information = {
                     ten: ten,
                     id: user._id,
