@@ -31,6 +31,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         order.trangthai = "chuagiao";
                                         order.address = CheckoutAll.diachi;
                                         order.sodichvudadathang = 1;
+                                        order.sodichvudagiao = 0;
+                                        order.lienket = [];
                                         order.order_detail = [{
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
                                             monan:{
@@ -84,6 +86,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         order.trangthai = "chuagiao";
                                         order.address = CheckoutAll.diachi;
                                         order.sodichvudadathang = 1;
+                                        order.sodichvudagiao = 0;
+                                        order.lienket = [];
                                         order.order_detail = [{
                                             tongtien: elem_Checkout.soluong * elem_Monan.gia,
                                             monan:{
@@ -118,7 +122,8 @@ function addCheckoutToOrders(user, CheckoutAll, fn_result){
                                         orders[index].order_detail.push(detail_Order);
                                         orders[index].tongtien = orders[index].tongtien + detail_Order.tongtien;
                                         trangThaiSameStore = false;
-                                    }                                                          
+                                    }          
+                                    //neu la phan tu cuoi cung thi thuc hien                                                
                                     if(elem_Checkout === Checkout[Checkout.length - 1]) {       
                                         createOrdersOfCheckout(orders, user, function(result) {
                                             if(!result) fn_result(false);
@@ -159,6 +164,7 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                 order.address = orders[0].address;
                 order.order_detail = [];
                 order.sodichvudadathang = orders.length;
+                order.sodichvudadagiao = 0;
                 order.information = {
                     ten: ten,
                     id: user._id,
@@ -178,14 +184,8 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                 })
                 order.tongtien = tongtien;
                 order.lienket = result;
+                //tao order cho customer, roi lay ket qua _id them vao lienketcha cua cac order con
                 mongoose.model_order.create(order, function(err, result_Order){
-                    // mongoose.model_dichvu.findOneAndUpdate({_id: user._id}, {$push: {"information.order": result_Order._id}},
-                    // {safe: true, upsert: true, new : true}, function(err, result_2) {
-                    //     if(err) fn_result(false);
-                    //     else {
-                    //         fn_result(true);
-                    //     }
-                    // });
                     if(err) {
                         console.log(err);
                         fn_result(false);
@@ -203,9 +203,19 @@ function createOrdersOfCheckout(orders, user, fn_result) {
                                             if(err) fn_result(false);
                                             else if(orders) {
                                                 orders.forEach(function(elem_Order) {
-                                                    elem_Order.lienketcha = result_Order._id;
-                                                    var rs_order = new mongoose.model_order(elem_Order);
-                                                    rs_order.save();
+                                                    //thay the order cu.
+                                                    mongoose.model_order.deleteOne({_id: elem_Order._id}, function(err) {
+                                                        if(err) fn_result(false);
+                                                        else {
+                                                            var rs_elem_order = elem_Order.toObject();
+                                                            rs_elem_order.lienketcha = result_Order._id;
+                                                            console.log("__id__:"+rs_elem_order._id);
+                                                            var rs_order = new mongoose.model_order(rs_elem_order);
+                                                            rs_order.save(function(err, rs) {
+                                                                if(err) console.log(err);
+                                                            });
+                                                        }
+                                                    })
                                                 })
                                                 return fn_result(true);
                                             }else fn_result(fasle);
@@ -229,13 +239,10 @@ function addOrderForStore(orders, fn_result) {
         if(err) fn_result(false);
         else {
             result.ops.forEach(function(elem_Order) {
-                // mongoose.model_dichvu.findOneAndUpdate({_id: elem_Order.dichvu[0].id}, {$push: {"dichvu.doanhthu.order": elem_Order._id}},
-                // {safe: true, upsert: true, new : true}, function(err, result_1) {
-                //     if(err) fn_result(false);
-                // });
                 mongoose.model_dichvu.findOne({_id: elem_Order.dichvu[0].id}).exec(function(err, store) {
                     if(err) fn_result(false);
                     else {
+                        //dua order moi nhat lem phia tren
                         store.dichvu.doanhthu.order.unshift(elem_Order._id);
                         var user = new mongoose.model_dichvu(store);
                         user.save(function(err, saved) {
@@ -299,14 +306,17 @@ function getListOrder(id, page, fn_result) {
     });
 }
 function cancelOrder(id, id_Order, fn_result) {
+    //kiem tra xem order co thuoc store nay khong
     mongoose.model_dichvu.findOne({_id: id, "information.order": id_Order}).exec(function(err, store) {
         if(err) fn_result(false);
         else if(store) {
+            //kiem tra order co thuoc trang thai chua giao hay khong. neu chuagiao thi huy, neu dagiao or dahuy thi bo qua
             mongoose.model_order.findOne({_id: id_Order, "trangthai": config.get("trangthaichuagiaodonhang")})
             .exec(function(err, order) {
                 if(err) fn_result(false);
                 else if(order) {
                     try {
+                        //tim tat ca order con cua nha hang de set trang thai huy. neu trang thai chuagiao thi chuyen sang dahuy, khong thi bo qua
                         order.trangthai = config.get("trangthaihuydonhang");
                         mongoose.model_order.find({_id: {"$in": order.lienket}}).exec(function(err, orders) {
                             if(err) fn_result(false);
