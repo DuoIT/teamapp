@@ -5,11 +5,13 @@ function getListDoanhThu(fn_result) {
         if(err) fn_result(false);
         else {
             var listdoanhthu = [];
+            var index = 0;
             result.forEach(function(elem_result) {
                 var doanhthu = elem_result.dichvu.doanhthu;
                 mogoose.model_order.find({_id: {"$in": doanhthu.order}, trangthai:"dagiao"}, function(err, orders) {
                     if(err) fn_result(false);
-                    else {        
+                    else {   
+                        index++;     
                         tongtien = 0;
                         if(doanhthu.tongdoanhthu != undefined) tongtien = doanhthu.tongdoanhthu;                       
                         var data = {
@@ -20,7 +22,7 @@ function getListDoanhThu(fn_result) {
                             tongtien: tongtien
                         }
                         listdoanhthu.push(data);
-                        if(elem_result === result[result.length - 1]) fn_result(listdoanhthu);
+                        if(index == result.length) fn_result(listdoanhthu);
                     }
                     
                 })
